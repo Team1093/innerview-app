@@ -87,13 +87,21 @@ app.whenReady().then(() => {
   mkdirSync(app.getPath('downloads') + '/innerview-videos/processed', { recursive: true })
   app.setPath('downloads', app.getPath('downloads') + '/innerview-videos')
 
-  systemPreferences.askForMediaAccess('camera').then((status) => {
-    console.log('카메라 접근 권한:', status)
-  })
+  if (process.platform === 'darwin') {
+    systemPreferences.askForMediaAccess('camera').then((status) => {
+      console.log('카메라 접근 권한:', status)
+    })
 
-  systemPreferences.askForMediaAccess('microphone').then((status) => {
-    console.log('마이크 접근 권한:', status)
-  })
+    systemPreferences.askForMediaAccess('microphone').then((status) => {
+      console.log('마이크 접근 권한:', status)
+    })
+  } else if (process.platform === 'win32') {
+    ipcMain.on('request-meia-access', (event) => {
+      event.reply('media-access-response')
+    })
+  } else {
+    console.log('운영체제에서 지원하지 않는 기능입니다.')
+  }
 
   ipcMain.on('save-video', (event, arg) => {
     saveFileToDownloads(arg.fileContent, arg.fileName)
