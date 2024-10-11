@@ -1,0 +1,48 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.section {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.section h3 {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.section button {
+    width: 150px;
+    padding: 10px 20px;
+    margin: 5px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    background-color: #ffffff;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.section button:hover {
+    background-color: #e0e0e0;
+}
+
+.section button.selected {
+    border-color: #007bff56;
+    background-color: #007bff56;
+    color: #ffffff;
+}
+
+.section button.hovered {
+    border-color: #ff9800;
+    background-color: #ff9800;
+    color: #ffffff;
+}
