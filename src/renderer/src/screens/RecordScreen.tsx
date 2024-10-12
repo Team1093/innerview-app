@@ -130,18 +130,26 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
   }
 
   const handleStartRecording = () => {
+
+    // 아직 녹화할 준비가 되지 않았을 때
     if (!mediaRecorderRef.current) {
-      return
+      setTimeout(() => {
+        handleStartRecording()
+        return
+        }, 100);
     }
 
-    setIsRecording(true)
-
-    chunksRef.current = []
-    try {
-      mediaRecorderRef.current.start(1000)
-    } catch (err) {
-      console.error('Error starting recording:', err)
+    // 녹화 준비가 다 되었을 때
+    else {
+      setIsRecording(true)
+      chunksRef.current = []
+      try {
+        mediaRecorderRef.current.start(500)
+      } catch (err) {
+        console.error('Error starting recording:', err)
+      }
     }
+
   }
 
   const handleEndRecording = () => {
@@ -206,8 +214,14 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
     const blob = new Blob(chunksRef.current, {
       type: 'video/mp4'
     })
-    const randomString = Math.random().toString(36).substring(7)
-    const fileName = `interview_${randomString}.mp4`
+    const timeString = new Date().toLocaleString('ko-KR',
+      { year: 'numeric', month: '2-digit', day: '2-digit', 
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
+        .replace(/[^0-9]/g, '')
+        .replace(/\s/g, '')
+        .replace(/(\d{8})(\d{6})/, '$1_$2')
+    // 파일 이름 정하는 곳 ; 파일 이름을 랜덤이 아닌 그날의 날짜와 시간으로 표기(yyyymmdd_hhmmss)
+    const fileName = `raw_innerview_${timeString}.mp4`
     const file = new File([blob], fileName, { type: 'video/mp4' })
 
     setVideoFile(file)
@@ -330,9 +344,9 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
   useEffect(() => {
     openInfoModal()
     setTimeout(() => {
-      closeInfoModal()
-      handleStartRecording()
-    }, READY_SECONDS * 1000)
+      closeInfoModal();
+      handleStartRecording();
+    }, READY_SECONDS*1000 )
 
     window.addEventListener('keydown', handleKeyDown)
 

@@ -1,8 +1,8 @@
 const ffmpeg = require('fluent-ffmpeg')
 const path = require('path')
-import { createWriteStream, mkdirSync, readFile, unlinkSync, writeFile } from 'fs'
+import { createWriteStream, mkdirSync, readFile, unlinkSync } from 'fs'//, writeFile
 import { resolve } from 'path'
-import { platform, arch } from 'os'
+//import { platform, arch } from 'os'
 import { app } from 'electron'
 
 export interface subtitleData {
@@ -58,32 +58,19 @@ export async function processVideoFile({
   subtitles: subtitleData[]
   toGrayScale?: boolean
 }): Promise<Buffer> {
-  const platformName = `${platform()}-${arch()}`
-  const ffmpegPath =
-    process.env.NODE_ENV === 'development'
-      ? path.join(
-          __dirname,
-          '../../resources',
-          'ffmpeg-bin',
-          platformName,
-          `ffmpeg${platform() === 'win32' ? '.exe' : ''}`
-        )
-      : path.join(
-          process.resourcesPath,
-          'resources',
-          'ffmpeg-bin',
-          platformName,
-          `ffmpeg${platform() === 'win32' ? '.exe' : ''}`
-        )
-  ffmpeg.setFfmpegPath(ffmpegPath)
 
-  const tempCode = Math.random().toString(36).substring(7)
-  const tempDir = path.join(app.getPath('temp'), tempCode)
-  mkdirSync(tempDir)
+  const tempCode = new Date().toLocaleDateString('ko-KR',
+    { year: 'numeric', month: '2-digit', day: '2-digit'})
+      .replace(/[^0-9]/g, '')
+      .replace(/\s/g, '')
+      .slice(0, 8)
+  
+  const tempDir = (process.platform==='win32') ? `../../innerview-downloads/${tempCode}` : path.join(app.getPath('temp'), tempCode)
+  mkdirSync(tempDir,{ recursive: true })
 
-  const inputFileName = resolve(tempDir, originalFileName)
-  const outputFileName = resolve(tempDir, 'output.mp4')
-  const subtitleFileName = resolve(tempDir, 'subtitles.srt')
+  const inputFileName = (process.platform==='win32') ? (tempDir +'/'+ originalFileName) : resolve(tempDir, originalFileName)
+  const outputFileName = (process.platform==='win32') ? (tempDir +'/'+ 'output.mp4') : resolve(tempDir, 'output.mp4')
+  const subtitleFileName = (process.platform==='win32') ? (tempDir +'/'+ 'subtitles.srt') : resolve(tempDir, 'subtitles.srt')
 
   await new Promise<void>((resolve, reject) => {
     const inputWriteStream = createWriteStream(inputFileName)
@@ -94,11 +81,11 @@ export async function processVideoFile({
   })
 
   await new Promise<void>((resolve, reject) => {
-    const bom = Buffer.from([0xef, 0xbb, 0xbf])
+    // const bom = Buffer.from([0xef, 0xbb, 0xbf])
     const subtitleWriteStream = createWriteStream(subtitleFileName, {
       encoding: 'utf-8'
     })
-    subtitleWriteStream.write(bom)
+    // subtitleWriteStream.write(bom)
     subtitleWriteStream.write(subtitleDataToString(subtitles))
     subtitleWriteStream.end()
     subtitleWriteStream.on('finish', resolve)
