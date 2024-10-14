@@ -1,6 +1,6 @@
 const ffmpeg = require('fluent-ffmpeg')
 const path = require('path')
-import { createWriteStream, mkdirSync, readFile, unlinkSync, writeFile } from 'fs'
+import { createWriteStream, mkdirSync, readFile, unlinkSync } from 'fs'
 import { resolve } from 'path'
 import { platform, arch } from 'os'
 import { app } from 'electron'
