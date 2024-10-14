@@ -1,28 +1,31 @@
 import { useState, useEffect } from "react";
 
-const useTimer = (start: boolean, duration: number, onEnd: () => void) => {
+const useTimer = (isRecording: boolean, duration: number, onEnd: () => void) => {
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
-    if (!start) return;
-    const timer = setInterval(() => {
-      setSeconds((prev) => {
-        if (prev >= duration) {
-          clearInterval(timer);
-          onEnd();
-          return prev;
+    if (!isRecording) return;
+  
+    const timer = setTimeout(() => {
+      setSeconds((seconds) => {
+        if (seconds >= duration) {
+          onEnd(); // 종료 콜백 호출
+          return seconds;
         }
-        return prev + 1;
+        return seconds + 1;
       });
     }, 1000);
-
-    return () => clearInterval(timer);
-  }, [start]);
+  
+    return () => clearTimeout(timer);
+  }, [isRecording, seconds]); 
 
   const formattedTime = `${Math.floor(seconds / 60)
     .toString()
     .padStart(2, "0")}:${(seconds % 60).toString().padStart(2, "0")}`;
+  
 
+
+  
   return { formattedTime, seconds };
 };
 

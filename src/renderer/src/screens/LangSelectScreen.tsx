@@ -6,6 +6,7 @@ import {
   quotes
 } from '../assets/constants'
 import { useEffect, useState } from 'react'
+import DeviceSelectModal from './DeviceSelectModal';
 
 interface LangSelectScreenProps {
   lang: 'ko' | 'en'
@@ -24,6 +25,11 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
 }) => {
   const [currentRow, setCurrentRow] = useState<number>(0)
   const [currentColumn, setCurrentColumn] = useState<number>(0)
+
+  // DeviceSelectModal
+  const [isDeviceModalOpen, setIsDeviceModalOpen] = useState<boolean>(false);
+  const openDeviceModal = () => setIsDeviceModalOpen(true);
+  const closeDeviceModal = () => setIsDeviceModalOpen(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -54,7 +60,7 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [currentRow, currentColumn])
+  }, [currentRow, currentColumn]) //useEffect ends here
 
   return (
     <div className={styles.main}>
@@ -97,6 +103,11 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
       <div className={styles.section}>
         <button className={currentRow === 2 ? styles.hovered : ''}>{quotes[4][lang]}</button>
       </div>
+        
+      <button id={styles.deviceBtn} onClick={openDeviceModal}>{lang==='ko' ? "기기 설정" : "Device Settings"}</button>
+      {isDeviceModalOpen && <DeviceSelectModal onClose={closeDeviceModal} />}
+        
+
     </div>
   )
 }

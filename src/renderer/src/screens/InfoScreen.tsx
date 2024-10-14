@@ -26,7 +26,7 @@ const InfoScreen: React.FC<InfoScreenProps> = ({ lang, peopleMode, nextScreen })
       <MotionP key="msg">
         인터뷰는 주제 선택 후부터
         <br />
-        {peopleMode === 1 ? '10' : '15'}분 간 진행됩니다.
+        {peopleMode === 1 ? '5' : '5'}분 간 진행됩니다.
       </MotionP>,
       <MotionP key="msg">
         선택하시는 주제 별로 질문 수가 다르니

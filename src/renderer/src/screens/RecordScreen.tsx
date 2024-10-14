@@ -4,6 +4,7 @@ import useTimer from '../lib/useTimer'
 import { useService } from '../service/useService'
 import useModal from '../lib/useModal'
 import textLogo from '../assets/images/textLogo.svg'
+import { useDevice } from '../lib/DeviceContext';
 
 import {
   KEYS_SCREEN_BACK,
@@ -13,6 +14,7 @@ import {
   questionSuffixs,
   quotes
 } from '../assets/constants'
+
 import { subtitleData, VideoData } from '../service/file/interface'
 import { InterviewCreateDto } from '../service/interview/interface'
 import LastInfoModal from '../components/LastInfoModal'
@@ -42,34 +44,42 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
   setVideoFile,
   setVideoMetadata
 }) => {
-  const READY_SECONDS = 10
-  const TIME_LIMIT_SECONDS = peopleMode === 1 ? 600 : 900
+  // 시간 관련값 세팅
+  const READY_SECONDS = 5
+  const TimeLimitof = [5*60, 5*60]
+  
+  const TIME_LIMIT_SECONDS = peopleMode === 1 ? TimeLimitof[0] : TimeLimitof[1]
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [isRecording, setIsRecording] = useState(false)
   const [timestamps, setTimestamps] = useState<number[]>([0])
   const [videoUploadState, setVideoUploadState] = useState<number>(0)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
-  const { formattedTime, seconds } = useTimer(isRecording, 60000, () => nextScreen(6))
+  const { formattedTime, seconds } = useTimer(isRecording, TIME_LIMIT_SECONDS, () => nextScreen(6))
 
-  const playType: string = '1'
+  
+
+  const playType: string = '2'
 
   const {
     renderModal: renderLoadingModal,
     openModal: openLoadingModal,
     closeModal: closeLoadingModal,
     isModalOpen: isLoadingModalOpen
-  } = useModal()
+  } = useModal();
+
   const {
     renderModal: renderInfoModal,
     openModal: openInfoModal,
     closeModal: closeInfoModal
-  } = useModal()
+  } = useModal();
 
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
+
   const streamRef = useRef<MediaStream | null>(null)
+  const { selectedAudio, selectedVideo } = useDevice();
 
   const timestampsRef = useRef(timestamps)
   const secondsRef = useRef(seconds)
@@ -97,11 +107,13 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
 
   const initializeMedia = async () => {
     try {
+
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true
-      })
-      streamRef.current = stream
+        video: selectedVideo ? { deviceId: { exact: selectedVideo } } : true,
+        audio: selectedAudio ? { deviceId: { exact: selectedAudio } } : true,
+      });
+      streamRef.current = stream;
+
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream
@@ -130,26 +142,35 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
   }
 
   const handleStartRecording = () => {
+
+    // 아직 녹화할 준비가 되지 않았을 때
     if (!mediaRecorderRef.current) {
-      return
+      setTimeout(() => {
+        handleStartRecording()
+        return
+        }, 100);
     }
 
-    setIsRecording(true)
-
-    chunksRef.current = []
-    try {
-      mediaRecorderRef.current.start(1000)
-    } catch (err) {
-      console.error('Error starting recording:', err)
+    // 녹화 준비가 다 되었을 때
+    else {
+      setIsRecording(true)
+      chunksRef.current = []
+      try {
+        mediaRecorderRef.current.start(500)
+      } catch (err) {
+        console.error('Error starting recording:', err)
+      }
     }
+
   }
 
   const handleEndRecording = () => {
     setIsRecording(false)
-
+    console.log('tryed to set timer stopped')
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
       try {
         mediaRecorderRef.current.stop()
+        console.log('recording stopped')
       } catch (err) {
         console.error('Error stopping recording:', err)
       }
@@ -206,8 +227,14 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
     const blob = new Blob(chunksRef.current, {
       type: 'video/mp4'
     })
-    const randomString = Math.random().toString(36).substring(7)
-    const fileName = `interview_${randomString}.mp4`
+    const timeString = new Date().toLocaleString('ko-KR',
+      { year: 'numeric', month: '2-digit', day: '2-digit', 
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
+        .replace(/[^0-9]/g, '')
+        .replace(/\s/g, '')
+        .replace(/(\d{8})(\d{6})/, '$1_$2')
+    // 파일 이름 정하는 곳 ; 파일 이름을 랜덤이 아닌 그날의 날짜와 시간으로 표기(yyyymmdd_hhmmss)
+    const fileName = `raw_innerview_${timeString}.mp4`
     const file = new File([blob], fileName, { type: 'video/mp4' })
 
     setVideoFile(file)
@@ -286,7 +313,7 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
     videoUploadStateRef.current = videoUploadState
     isInfoModalOpenRef.current = isInfoModalOpen
 
-    if (seconds >= TIME_LIMIT_SECONDS && playType === '2') {
+    if (seconds >= TIME_LIMIT_SECONDS) {
       handleEndRecording()
     }
 
@@ -330,9 +357,9 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
   useEffect(() => {
     openInfoModal()
     setTimeout(() => {
-      closeInfoModal()
-      handleStartRecording()
-    }, READY_SECONDS * 1000)
+      closeInfoModal();
+      handleStartRecording();
+    }, READY_SECONDS*1000 )
 
     window.addEventListener('keydown', handleKeyDown)
 

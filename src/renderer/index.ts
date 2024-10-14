@@ -3,7 +3,6 @@ const { ipcRenderer } = require('electron')
 window.addEventListener('DOMContentLoaded', () => {
   if (process.platform === 'win32') {
     ipcRenderer.send('request-media-access')
-
     ipcRenderer.on('media-access-response', () => {
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })

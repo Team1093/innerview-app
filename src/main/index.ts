@@ -20,8 +20,11 @@ function createWindow(): void {
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
+      webSecurity: false,  // 로컬 장치 접근 허용
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      nodeIntegration: true,
+      contextIsolation: false,
     }
   })
 
@@ -89,24 +92,23 @@ app.whenReady().then(() => {
 
   if (process.platform === 'darwin') {
     systemPreferences.askForMediaAccess('camera').then((status) => {
-      console.log('카메라 접근 권한:', status)
+      console.log('carmera access authority:', status)
     })
 
     systemPreferences.askForMediaAccess('microphone').then((status) => {
-      console.log('마이크 접근 권한:', status)
+      console.log('mic access authority:', status)
     })
   } else if (process.platform === 'win32') {
     ipcMain.on('request-meia-access', (event) => {
       event.reply('media-access-response')
     })
   } else {
-    console.log('운영체제에서 지원하지 않는 기능입니다.')
+    console.log('not supported by the os:',process.platform)
   }
 
   ipcMain.on('save-video', (event, arg) => {
     saveFileToDownloads(arg.fileContent, arg.fileName)
     saveMetaDataToDownloads(arg.videoData, `meta_${arg.fileName}.json`)
-
     const fileArrayBuffer = arg.fileContent
     const formData = new FormData()
     const file = new Blob([fileArrayBuffer], { type: 'video/mp4' })
@@ -123,7 +125,7 @@ app.whenReady().then(() => {
         // save to downloads
         const downloadPath = app.getPath('downloads')
         mkdirSync(path.join(downloadPath, 'processed'), { recursive: true })
-        const filePath = path.join(downloadPath, 'processed', arg.fileName)
+        const filePath = path.join(downloadPath, 'processed', (arg.fileName.replace('raw_','')))
 
         // put file to aws s3 using arg.presignedPutUrl and send server the s3 url
         axios
@@ -132,23 +134,23 @@ app.whenReady().then(() => {
               'Content-Type': 'video/mp4'
             }
           })
-          .then((res) => {
-            console.log('파일 업로드 성공:')
+          .then(() => {
+            console.log('file upload success!')
           })
           .catch((err) => {
-            console.error('파일 업로드 실패:', err)
+            console.error('file upload fail:', err)
           })
 
         writeFile(filePath, buffer, (err) => {
           if (err) {
-            console.error('파일 저장 중 오류 발생:', err)
+            console.error('file upload fail ; error:', err)
           } else {
-            console.log('파일이 다운로드 폴더에 성공적으로 저장되었습니다:', filePath)
+            console.log('file is successfully saved:', filePath)
           }
         })
       })
       .catch((err) => {
-        console.error('비디오 처리 중 오류 발생:', err)
+        console.error('video processing error:', err)
       })
 
     axios
@@ -159,10 +161,10 @@ app.whenReady().then(() => {
         }
       )
       .then((res) => {
-        console.log('인터뷰 정보 업데이트 성공:', res.data.message)
+        console.log('interview_data update success:', res.data.message)
       })
       .catch((err) => {
-        console.error('인터뷰 정보 업데이트 실패:', err)
+        console.error('interview_data update fail:', err)
       })
 
     // axios
@@ -213,15 +215,16 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 
 export async function saveFileToDownloads(fileContent: ArrayBuffer, fileName: string) {
-  const downloadPath = app.getPath('downloads')
+  const downloadPath = (process.platform==='win32') ? `../../innerview-downloads` : app.getPath('temp')
+  mkdirSync(downloadPath,{ recursive: true })
 
   const filePath = path.join(downloadPath, fileName)
 
   writeFile(filePath, new Uint8Array(fileContent), (err) => {
     if (err) {
-      console.error('파일 저장 중 오류 발생:', err)
+      console.error('video file saving failed:', err)
     } else {
-      console.log('파일이 다운로드 폴더에 성공적으로 저장되었습니다:', filePath)
+      console.log('raw video file saved well:', filePath)
     }
   })
 
@@ -229,16 +232,17 @@ export async function saveFileToDownloads(fileContent: ArrayBuffer, fileName: st
 }
 
 export async function saveMetaDataToDownloads(metaData: any, fileName: string) {
-  const downloadPath = app.getPath('downloads')
+  const downloadPath = (process.platform==='win32') ? `../../innerview-downloads` : app.getPath('temp')
+  mkdirSync(downloadPath,{ recursive: true });
 
   const filePath = path.join(downloadPath, fileName)
   const fileContent = JSON.stringify(metaData, null, 2)
 
   writeFile(filePath, fileContent, (err) => {
     if (err) {
-      console.error('파일 저장 중 오류 발생:', err)
+      console.error('metadata file saving failed:', err)
     } else {
-      console.log('파일이 다운로드 폴더에 성공적으로 저장되었습니다:', filePath)
+      console.log('metadata file saved well:', filePath)
     }
   })
 
