@@ -6,6 +6,7 @@
     justify-content: center;
     height: 100vh;
     width: 100vw;
+    overflow: hidden;
     text-align: center;
     z-index: 1;
 }
@@ -14,17 +15,21 @@
     object-fit: cover;
     position: absolute;
     width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 .screen p {
     font-size: 3.25rem;
     font-weight: 300;
     color: black;
+    
 }
 
 .screen p span {
     font-weight: 500;
     text-decoration: underline;
+    
 }
 
 .text {

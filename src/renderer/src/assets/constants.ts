@@ -66,62 +66,77 @@ export const krNumPrefixs: langText[] = [
 ]
 
 export const quotes: langText[] = [
+  //0
   {
     ko: '원하시는 언어를 선택해주세요.',
     en: 'Please select your preferred language.'
   },
+  //1
   {
     ko: '인터뷰 인원을 선택해주세요.',
     en: 'Please select the number of people for the interview.'
   },
+  //2
   {
     ko: '1인용',
     en: 'Single'
   },
+  //3
   {
     ko: '2인용',
     en: 'Couple'
   },
+  //4
   {
     ko: '시작하기',
     en: 'Start'
   },
+  //5
   {
     ko: '안내사항',
     en: 'Info'
   },
+  //6
   {
-    ko: '인터뷰가 10초 뒤에 시작됩니다.',
-    en: 'The interview will start in 10 seconds.'
+    ko: '인터뷰가 5초 뒤에 시작됩니다.',
+    en: 'The interview will start in 5 seconds.'
   },
+  //7
   {
     ko: '인터뷰를 저장하는 중입니다...',
     en: 'Saving the interview...'
   },
+  //8
   {
     ko: '이 과정은 30 ~ 60초 정도가 소요됩니다. 잠시만 기다려주세요!',
     en: 'This process will take about 30 to 60 seconds. Please wait a moment!'
   },
+  //9
   {
     ko: 'QR 코드를 스캔 혹은 촬영해주세요!',
     en: 'Please scan or take a picture of the QR code!'
   },
+  //10
   {
     ko: '영상은 일주일 후까지 다운로드하실 수 있습니다.',
     en: 'You can download the video until a week later.'
   },
+  //11
   {
     ko: '나의 ',
     en: 'My '
   },
+  //12
   {
     ko: '여기까지.',
     en: ''
   },
+  //13
   {
     ko: '마침.',
     en: 'The end.'
   },
+  //14
   {
     ko: '아래 화살표 버튼을 누르면 넘어갑니다.',
     en: 'Press the arrow button below to proceed.'

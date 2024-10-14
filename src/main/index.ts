@@ -20,6 +20,7 @@ function createWindow(): void {
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
+      webSecurity: false,  // 로컬 장치 접근 허용
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       nodeIntegration: true,
