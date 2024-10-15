@@ -123,7 +123,7 @@ app.whenReady().then(() => {
       originalFileBuffer: Buffer.from(fileArrayBuffer),
       originalFileName: arg.fileName,
       subtitles: arg.videoData.subtitles,
-      toGrayScale: arg.videoData.isGrayscale
+      toGrayScale: arg.videoData.isGrayScale
     })
       .then((buffer) => {
         // save to downloads
