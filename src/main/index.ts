@@ -1,8 +1,8 @@
-import { app, shell, BrowserWindow, ipcMain, systemPreferences } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, systemPreferences, dialog } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { mkdirSync, writeFile } from 'fs'
+import fs, { mkdirSync, writeFile } from 'fs'
 import axios from 'axios'
 import { processVideoFile } from './utils'
 import { autoUpdater } from 'electron-updater'
@@ -87,7 +87,11 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  mkdirSync(app.getPath('downloads') + '/innerview-videos/processed', { recursive: true })
+  try {
+    mkdirSync(app.getPath('downloads') + '/innerview-videos/processed', { recursive: true })
+  } catch (error) {
+    dialog.showErrorBox('Error creating directory:', (error as Error).message)
+  }
   app.setPath('downloads', app.getPath('downloads') + '/innerview-videos')
 
   if (process.platform === 'darwin') {
@@ -124,7 +128,11 @@ app.whenReady().then(() => {
       .then((buffer) => {
         // save to downloads
         const downloadPath = app.getPath('downloads')
-        mkdirSync(path.join(downloadPath, 'processed'), { recursive: true })
+        try {
+          mkdirSync(path.join(downloadPath, 'processed'), { recursive: true })
+        } catch (error) {
+          dialog.showErrorBox('Error creating directory:', (error as Error).message)
+        }
         const filePath = path.join(downloadPath, 'processed', (arg.fileName.replace('raw_','')))
 
         // put file to aws s3 using arg.presignedPutUrl and send server the s3 url
@@ -138,19 +146,19 @@ app.whenReady().then(() => {
             console.log('file upload success!')
           })
           .catch((err) => {
-            console.error('file upload fail:', err)
+            dialog.showErrorBox('file upload fail:', err.message)
           })
 
         writeFile(filePath, buffer, (err) => {
           if (err) {
-            console.error('file upload fail ; error:', err)
+            dialog.showErrorBox('file upload fail ; error:', err.message)
           } else {
             console.log('file is successfully saved:', filePath)
           }
         })
       })
       .catch((err) => {
-        console.error('video processing error:', err)
+        dialog.showErrorBox('video processing error:', err.message)
       })
 
     axios
@@ -164,7 +172,7 @@ app.whenReady().then(() => {
         console.log('interview_data update success:', res.data.message)
       })
       .catch((err) => {
-        console.error('interview_data update fail:', err)
+        dialog.showErrorBox('interview_data update fail:', err.message)
       })
 
     // axios
@@ -183,11 +191,11 @@ app.whenReady().then(() => {
     //         console.log('인터뷰 정보 업데이트 성공:', res.data.message)
     //       })
     //       .catch((err) => {
-    //         console.error('인터뷰 정보 업데이트 실패:', err)
+    //         dialog.showErrorBox('인터뷰 정보 업데이트 실패:', err.message)
     //       })
     //   })
     //   .catch((err) => {
-    //     console.error('파일 업로드 실패:', err)
+    //     dialog.showErrorBox('파일 업로드 실패:', err.message)
     //   })
 
     event.returnValue = 'success'
@@ -214,15 +222,54 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
+//device-settings 저장 프로세스
+const CACHE_PATH =  path.join(app.getPath('userData'), 'device-settings.json'); // 절대 경로로 설정
+console.log('cache path:', CACHE_PATH)
+
+// 설정 저장
+ipcMain.handle('save-settings', (_, settings) => {
+  try {
+    fs.writeFileSync(CACHE_PATH, JSON.stringify(settings, null, 2)); // JSON 파일로 저장
+    console.log('Settings saved:', settings);
+  } catch (error) {
+    dialog.showErrorBox('Error saving settings:', (error as Error).message)
+  }
+});
+
+// 설정 불러오기
+ipcMain.handle('load-settings', () => {
+  try {
+    if (fs.existsSync(CACHE_PATH)) {
+      const data = fs.readFileSync(CACHE_PATH, 'utf-8');
+      console.log('Settings loaded:', data);
+      return JSON.parse(data); // JSON 파일 파싱
+    } else {
+      console.warn('No settings file found, returning default values.');
+      return { audio: null, video: null }; // 기본 값
+    }
+  } catch (error) {
+    dialog.showErrorBox('Error loading settings:', (error as Error).message)
+    return { audio: null, video: null }; // 오류 시 기본 값 반환
+  }
+});
+
 export async function saveFileToDownloads(fileContent: ArrayBuffer, fileName: string) {
   const downloadPath = (process.platform==='win32') ? `../../innerview-downloads` : app.getPath('temp')
-  mkdirSync(downloadPath,{ recursive: true })
+  try {
+    mkdirSync(downloadPath, { recursive: true })
+  } catch (error) {
+    if (error instanceof Error) {
+      dialog.showErrorBox('file saving failed:', error.message)
+    } else {
+      dialog.showErrorBox('file saving failed:', 'Unknown error')
+    }
+  }
 
   const filePath = path.join(downloadPath, fileName)
 
   writeFile(filePath, new Uint8Array(fileContent), (err) => {
     if (err) {
-      console.error('video file saving failed:', err)
+      dialog.showErrorBox('video file saving failed:', err.message)
     } else {
       console.log('raw video file saved well:', filePath)
     }
@@ -233,14 +280,18 @@ export async function saveFileToDownloads(fileContent: ArrayBuffer, fileName: st
 
 export async function saveMetaDataToDownloads(metaData: any, fileName: string) {
   const downloadPath = (process.platform==='win32') ? `../../innerview-downloads` : app.getPath('temp')
-  mkdirSync(downloadPath,{ recursive: true });
+  try {
+    mkdirSync(downloadPath, { recursive: true })
+  } catch (error) {
+    dialog.showErrorBox('Error creating directory:', (error as Error).message)
+  }
 
   const filePath = path.join(downloadPath, fileName)
   const fileContent = JSON.stringify(metaData, null, 2)
 
   writeFile(filePath, fileContent, (err) => {
     if (err) {
-      console.error('metadata file saving failed:', err)
+      dialog.showErrorBox('metadata file saving failed:', err.message)
     } else {
       console.log('metadata file saved well:', filePath)
     }

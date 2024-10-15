@@ -2,8 +2,8 @@ const ffmpeg = require('fluent-ffmpeg')
 const path = require('path')
 import { createWriteStream, mkdirSync, readFile, unlinkSync } from 'fs'//, writeFile
 import { resolve } from 'path'
-//import { platform, arch } from 'os'
-import { app } from 'electron'
+import { platform, arch } from 'os'
+import { app, dialog } from 'electron'
 
 export interface subtitleData {
   startSeconds: number
@@ -58,6 +58,26 @@ export async function processVideoFile({
   subtitles: subtitleData[]
   toGrayScale?: boolean
 }): Promise<Buffer> {
+  const platformName = `${platform()}-${arch()}`
+  const ffmpegPath =
+    process.env.NODE_ENV === 'development'
+      ? path.join(
+          __dirname,
+          '../../resources',
+          'ffmpeg-bin',
+          platformName,
+          `ffmpeg${platform() === 'win32' ? '.exe' : ''}`
+        )
+      : path.join(
+          process.resourcesPath,
+          'resources',
+          'ffmpeg-bin',
+          platformName,
+          `ffmpeg${platform() === 'win32' ? '.exe' : ''}`
+        )
+  ffmpeg.setFfmpegPath(ffmpegPath)
+
+
 
   const tempCode = new Date().toLocaleDateString('ko-KR',
     { year: 'numeric', month: '2-digit', day: '2-digit'})
@@ -98,32 +118,34 @@ export async function processVideoFile({
       .videoCodec('libx264')
       .audioCodec('aac')
       .videoFilters(
-        `hflip,subtitles=${subtitleFileName}:force_style='FontName=NotoSansCJK,Alignment=1,Outline=0'${
-          toGrayScale ? ',format=gray' : ''
-        }`
+      `hflip,subtitles=${subtitleFileName}:force_style='FontName=NotoSansCJK,Alignment=1,Outline=0'${
+        toGrayScale ? ',format=gray' : ''
+      }`
       )
       .on('start', (commandLine) => {
-        console.log('FFmpeg command:', commandLine)
+      console.log('FFmpeg command:', commandLine)
       })
-      .on('error', (err) => {
-        reject(err)
+      .on('error', (err: Error) => {
+      dialog.showErrorBox('FFmpeg Error', err.message)
+      reject(err)
       })
       .on('end', () => {
-        readFile(outputFileName, (err, data) => {
-          if (err) {
-            reject(err)
-          } else {
-            ;[inputFileName, subtitleFileName, outputFileName].forEach((file) => {
-              try {
-                unlinkSync(file)
-              } catch (err) {
-                console.error(`Error deleting file ${file}:`, err)
-              }
-            })
-
-            resolve(data)
+      readFile(outputFileName, (err, data) => {
+        if (err) {
+        dialog.showErrorBox('Read File Error', err.message)
+        reject(err)
+        } else {
+        ;[inputFileName, subtitleFileName, outputFileName].forEach((file) => {
+          try {
+          unlinkSync(file)
+          } catch (err) {
+          dialog.showErrorBox('Delete File Error', (err as Error).message)
           }
         })
+
+        resolve(data)
+        }
+      })
       })
       .run()
   })
