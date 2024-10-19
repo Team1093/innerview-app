@@ -1,6 +1,6 @@
 export const KEYS_SCREEN_BACK = ['ArrowLeft', 'ArrowUp', 'PageUp']
 export const KEYS_SCREEN_NEXT = ['ArrowRight', 'ArrowDown', 'PageDown']
-export const KEYS_SCREEN_CONFIRM = ['Enter']
+export const KEYS_SCREEN_CONFIRM = ['Enter', 'Tab']
 
 export interface langText {
   ko: string

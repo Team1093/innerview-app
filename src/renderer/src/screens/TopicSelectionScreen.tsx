@@ -54,7 +54,9 @@ const TopicSelectionScreen: React.FC<TopicSelectionScreenProps> = ({
             <button
               key={index}
               onClick={() => handleSelectTopic(topic.topicId)}
-              className={`${styles.topicButton} ${selectedTopicIndex === index && styles.selected}`}
+              className={`
+                ${styles.topicButton} ${selectedTopicIndex === index && styles.selected}`}
+              tabIndex={-1}
             >
               <p>{topic.topic[lang]}</p>
             </button>

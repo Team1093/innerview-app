@@ -224,7 +224,7 @@ app.on('window-all-closed', () => {
 
 //device-settings 저장 프로세스
 const CACHE_PATH =  path.join(app.getPath('userData'), 'device-settings.json'); // 절대 경로로 설정
-console.log('cache path:', CACHE_PATH)
+
 
 // 설정 저장
 ipcMain.handle('save-settings', (_, settings) => {
@@ -241,7 +241,6 @@ ipcMain.handle('load-settings', () => {
   try {
     if (fs.existsSync(CACHE_PATH)) {
       const data = fs.readFileSync(CACHE_PATH, 'utf-8');
-      console.log('Settings loaded:', data);
       return JSON.parse(data); // JSON 파일 파싱
     } else {
       console.warn('No settings file found, returning default values.');

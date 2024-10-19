@@ -46,7 +46,7 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
 }) => {
   // 시간 관련값 세팅
   const READY_SECONDS = 5
-  const TimeLimitof = [5*60, 5*60]
+  const TimeLimitof = [10*60, 15*60]
   
   const TIME_LIMIT_SECONDS = peopleMode === 1 ? TimeLimitof[0] : TimeLimitof[1]
 

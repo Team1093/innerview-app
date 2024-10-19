@@ -71,12 +71,14 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
             ${currentRow === 0 && currentColumn === 0 ? styles.hovered : ''}
             ${lang === 'ko' ? styles.selected : ''}
             `}
+          tabIndex={-1}
         >
           한국어
         </button>
         <button
           className={`${currentRow === 0 && currentColumn === 1 ? styles.hovered : ''}
               ${lang === 'en' ? styles.selected : ''}`}
+              tabIndex={-1}
         >
           English
         </button>
@@ -88,6 +90,7 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
             ${peopleMode === 1 ? styles.selected : ''}
             ${currentRow === 1 && currentColumn === 0 ? styles.hovered : ''}
             `}
+          tabIndex={-1}
         >
           {quotes[2][lang]}
         </button>
@@ -96,15 +99,20 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
             ${peopleMode === 2 ? styles.selected : ''}
             ${currentRow === 1 && currentColumn === 1 ? styles.hovered : ''}
             `}
+            tabIndex={-1}
         >
           {quotes[3][lang]}
         </button>
       </div>
       <div className={styles.section}>
-        <button className={currentRow === 2 ? styles.hovered : ''}>{quotes[4][lang]}</button>
+        <button className={currentRow === 2 ? styles.hovered : ''} tabIndex={-1}>
+          {quotes[4][lang]}</button>
       </div>
         
-      <button id={styles.deviceBtn} onClick={openDeviceModal}>{lang==='ko' ? "기기 설정" : "Device Settings"}</button>
+      <button id={styles.deviceBtn} onClick={openDeviceModal} tabIndex={-1}>
+        {lang==='ko' ? "기기 설정" : "Device Settings"}
+      </button>
+
       {isDeviceModalOpen && <DeviceSelectModal onClose={closeDeviceModal} />}
         
 
