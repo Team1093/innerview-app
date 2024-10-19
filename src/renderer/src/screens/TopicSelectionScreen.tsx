@@ -23,6 +23,7 @@ const TopicSelectionScreen: React.FC<TopicSelectionScreenProps> = ({
 
   const handleSelectTopic = (topicId: number) => {
     selectTopic(topicId)
+    // 만약 촬영장 팝업 안정화를 시킨다면 여기서 !
     nextScreen(5)
   }
 
@@ -54,8 +55,7 @@ const TopicSelectionScreen: React.FC<TopicSelectionScreenProps> = ({
             <button
               key={index}
               onClick={() => handleSelectTopic(topic.topicId)}
-              className={`
-                ${styles.topicButton} ${selectedTopicIndex === index && styles.selected}`}
+              className={`${styles.topicButton} ${selectedTopicIndex === index && styles.selected}`}
               tabIndex={-1}
             >
               <p>{topic.topic[lang]}</p>
