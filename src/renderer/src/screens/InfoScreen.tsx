@@ -53,7 +53,7 @@ const InfoScreen: React.FC<InfoScreenProps> = ({ lang, peopleMode, nextScreen, t
         so manage your time accordingly.
       </MotionP>,
       <MotionP key="msg">
-        To select/confirm, press the [top button] <span>twice</span>.
+        To select/confirm, press the [top button].
         <br />
         To go back to the previous screen/question, press the [up button].
         <br />
