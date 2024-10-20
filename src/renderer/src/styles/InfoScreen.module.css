@@ -1,14 +1,15 @@
 .screen {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    display: grid; /* 그리드 레이아웃을 사용 */
+    align-items: center; /* 수직 가운데 정렬 */
+    justify-items: center; /* 각 그리드 아이템을 수평 가운데 정렬 */
     height: 100vh;
     width: 100vw;
     overflow: hidden;
     text-align: center;
     z-index: 1;
+    gap: 20px; /* 그리드 아이템 간의 간격 */
+    background-color: black;
 }
 
 .bg {
@@ -17,36 +18,34 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-}
-
-.screen p {
-    font-family: 'pretendard';
-    font-size: 3.25rem;
-    font-weight: 300;
     color: black;
-    
 }
 
-.screen p span {
-    font-family: 'pretendard';
+.info {
+    position: absolute;
+    align-items: flex-start;
+    left: 0;
+    bottom: 0;
+    padding: 10px;
+    gap: 5px;
+    width: 100%;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.70) 0%, rgba(0, 0, 0, 0.00) 100%);
+    z-index: 1;
+}
+
+.info p {
+    text-align: center;
+    font-size: 30px;
     font-weight: 800;
-    text-decoration: underline;
-    
-}
-
-.text {
-    font-size: 96px;
-    font-weight: 800;
     font-family: 'pretendard';
-    color: white;
+    color: rgb(255, 255, 255);
 }
 
-.button {
-    padding: 20px 40px;
-    font-size: 32px;
-    background-color: white;
-    color: black;
-    border: none;
-    cursor: pointer;
-    margin-top: 40px;
+.video {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 95%;
+    object-fit: cover;
+    z-index: -1;
 }
