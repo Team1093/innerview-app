@@ -80,6 +80,7 @@
 
 .description h4 {
     text-align: left;
+    white-space: pre-wrap;
     font-size: 36px;
     font-weight: 400;
     margin-bottom: 20px;

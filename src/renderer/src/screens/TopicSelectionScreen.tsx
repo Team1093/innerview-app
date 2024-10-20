@@ -63,7 +63,7 @@ const TopicSelectionScreen: React.FC<TopicSelectionScreenProps> = ({
           ))}
         </div>
         <div className={styles.description}>
-          <h3>{`\[${topics[selectedTopicIndex].topic[lang]}\]`}</h3>
+          <h3>{`\[ (${selectedTopicIndex}) : ${topics[selectedTopicIndex].topic[lang]}\]`}</h3>
           <h4>{topics[selectedTopicIndex].description[lang]}</h4>
           <p>
             {questions.find((q) => q.topicId === topics[selectedTopicIndex].topicId)
