@@ -7,9 +7,10 @@ import { useEffect, useMemo, useState } from 'react'
 interface LastInfoModalProps {
   lang: 'ko' | 'en'
   closeModal: () => void
+  time_limit_seconds: number
 }
 
-const LastInfoModal: React.FC<LastInfoModalProps> = ({ lang, closeModal }) => {
+const LastInfoModal: React.FC<LastInfoModalProps> = ({ lang, closeModal, time_limit_seconds }) => {
   const [currentMessageIndex, setCurrentMessageIndex] = useState<number>(0)
 
   const InfoMessages = useMemo(
@@ -23,7 +24,7 @@ const LastInfoModal: React.FC<LastInfoModalProps> = ({ lang, closeModal }) => {
           transition={{ duration: 0.4 }}
         >
           <p>이번 INNERVIEW는 여기까지였습니다.</p>,
-          <p>짧다면 짧고 길다면 긴 5분의 시간이</p>
+          <p>짧다면 짧고 길다면 긴 {time_limit_seconds/60} 분의 시간이</p>
           <p>나 혹은 우리를 되돌아보는 소중한 시간이 되셨길 바랍니다.</p>
         </motion.div>,
         <motion.div

@@ -6,7 +6,7 @@ import {
   quotes
 } from '../assets/constants'
 import { useEffect, useState } from 'react'
-import DeviceSelectModal from './DeviceSelectModal';
+import DeviceSelectModal from '../components/DeviceSelectModal';
 
 interface LangSelectScreenProps {
   lang: 'ko' | 'en'

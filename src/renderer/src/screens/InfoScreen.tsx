@@ -26,14 +26,14 @@ const InfoScreen: React.FC<InfoScreenProps> = ({ lang, peopleMode, nextScreen })
       <MotionP key="msg">
         인터뷰는 주제 선택 후부터
         <br />
-        {peopleMode === 1 ? '10' : '15'}분 간 진행됩니다.
+        {10}분 간 진행됩니다.
       </MotionP>,
       <MotionP key="msg">
         선택하시는 주제 별로 질문 수가 다르니
         <br />이 점 유의해서 시간을 배분하시길 바랍니다.
       </MotionP>,
       <MotionP key="msg">
-        [맨 위의 버튼]을 <span>두 번</span> 누르면 선택/확인되고
+        [맨 위의 버튼]을 누르면 선택되고
         <br />
         [위 화살표 버튼]을 누르면 이전 화면/질문으로 넘어가고
         <br />

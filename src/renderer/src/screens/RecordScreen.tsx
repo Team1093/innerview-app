@@ -47,15 +47,14 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
   // 시간 관련값 세팅
   const READY_SECONDS = 5
   const TimeLimitof = [10*60, 15*60]
-  
-  const TIME_LIMIT_SECONDS = peopleMode === 1 ? TimeLimitof[0] : TimeLimitof[1]
+  const time_limit_seconds = peopleMode === 1 ? TimeLimitof[0] : TimeLimitof[1]
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [isRecording, setIsRecording] = useState(false)
   const [timestamps, setTimestamps] = useState<number[]>([0])
   const [videoUploadState, setVideoUploadState] = useState<number>(0)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
-  const { formattedTime, seconds } = useTimer(isRecording, TIME_LIMIT_SECONDS, () => nextScreen(6))
+  const { formattedTime, seconds } = useTimer(isRecording, time_limit_seconds, () => nextScreen(6))
 
   
 
@@ -313,7 +312,7 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
     videoUploadStateRef.current = videoUploadState
     isInfoModalOpenRef.current = isInfoModalOpen
 
-    if (seconds >= TIME_LIMIT_SECONDS) {
+    if (seconds >= time_limit_seconds) {
       handleEndRecording()
     }
 
@@ -326,7 +325,7 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
     timestamps,
     videoUploadState,
     isInfoModalOpen,
-    TIME_LIMIT_SECONDS,
+    time_limit_seconds,
     playType,
     isLoadingModalOpen,
     nextScreen
@@ -429,6 +428,7 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
               setIsInfoModalOpen(false)
               videoUploadStateRef.current === 2 && nextScreen(6)
             }}
+            time_limit_seconds={time_limit_seconds}
           />
         </div>
       )}
