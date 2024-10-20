@@ -11,6 +11,7 @@ interface InfoScreenProps {
   lang: 'ko' | 'en'
   peopleMode: number
   nextScreen: (screenNumber: number) => void
+  time_limit_seconds: number
 }
 
 const MotionP: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -19,14 +20,14 @@ const MotionP: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </motion.p>
 )
 
-const InfoScreen: React.FC<InfoScreenProps> = ({ lang, peopleMode, nextScreen }) => {
+const InfoScreen: React.FC<InfoScreenProps> = ({ lang, peopleMode, nextScreen, time_limit_seconds }) => {
   const InfoMessages1: { ko: React.ReactNode[]; en: React.ReactNode[] } = {
     ko: [
       <MotionP key="msg">INNERVIEW에 오신 것을 환영합니다.</MotionP>,
       <MotionP key="msg">
         인터뷰는 주제 선택 후부터
         <br />
-        {10}분 간 진행됩니다.
+        {time_limit_seconds/60}분 간 진행됩니다.
       </MotionP>,
       <MotionP key="msg">
         선택하시는 주제 별로 질문 수가 다르니

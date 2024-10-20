@@ -140,5 +140,10 @@ export const quotes: langText[] = [
   {
     ko: '아래 화살표 버튼을 누르면 넘어갑니다.',
     en: 'Press the arrow button below to proceed.'
+  },
+  //15
+  {
+    ko: '기기 설정',
+    en: 'Device Settings'
   }
 ]

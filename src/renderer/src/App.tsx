@@ -36,6 +36,13 @@ export default function App() {
   const [videoFile, setVideoFile] = useState<File | null>(null)
   const [videoMetadata, setVideoMetadata] = useState<VideoData | null>(null)
 
+  // 인터뷰 제한시간 설정
+  const TimeLimitof = [10*60, 15*60] //1인용 10분, 2인용 15분
+  const [time_limit_seconds, setTimeLimit] = useState<number>(TimeLimitof[peopleMode-1])
+  useEffect(() => {
+    setTimeLimit(TimeLimitof[peopleMode-1])
+  },[peopleMode]);
+
   const { topicService } = useService()
 
   const {
@@ -58,13 +65,15 @@ export default function App() {
       const month = new Date().getMonth() + 1
       const date = new Date().getDate()
 
-      const todayKR = `${year}년 ${month}월 ${date}일`
-      const todayEN = `${month}/${date}/${year}`
+      const today = {
+        ko: `${year}년 ${month}월 ${date}일`,
+        en: `${month}/${date}/${year}`
+      }
 
       res.questions.forEach((question: Question) => {
         question.questions.push({
-          ko: `${todayKR} ${peopleMode === 1 ? '나' : '우리'}의 INNERVIEW 여기까지.`,
-          en: `${peopleMode === 1 ? 'My' : 'Our'} INNERVIEW on ${todayEN} finished.`
+          ko: `${today['ko']} ${peopleMode === 1 ? '나' : '우리'}의 INNERVIEW 여기까지.`,
+          en: `${peopleMode === 1 ? 'My' : 'Our'} INNERVIEW on ${today['en']} finished.`
         })
         setAllQuestions(res.questions)
       })
@@ -77,7 +86,7 @@ export default function App() {
     <div className={styles.app}>
       {currentScreen === 1 && <StartScreen lang={lang} nextScreen={nextScreen} />}
       {currentScreen === 2 && (
-        <InfoScreen nextScreen={nextScreen} lang={lang} peopleMode={peopleMode} />
+        <InfoScreen nextScreen={nextScreen} lang={lang} peopleMode={peopleMode} time_limit_seconds={time_limit_seconds} />
       )}
       {currentScreen === 3 && (
         <ColorSelectScreen
@@ -107,7 +116,7 @@ export default function App() {
       {currentScreen === 5 && (
         <RecordScreen
           lang={lang}
-          peopleMode={peopleMode}
+          //peopleMode={peopleMode}
           nextScreen={nextScreen}
           questions={allQuestions.find((q) => q.topicId === selectedTopicId)!.questions}
           setQRCodeLink={(link: string) => {
@@ -124,6 +133,7 @@ export default function App() {
           setVideoMetadata={(metadata: VideoData) => {
             setVideoMetadata(metadata)
           }}
+          time_limit_seconds={time_limit_seconds}
         />
       )}
       {currentScreen === 6 && (

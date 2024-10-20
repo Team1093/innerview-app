@@ -21,7 +21,7 @@ import LastInfoModal from '../components/LastInfoModal'
 
 interface RecordScreenProps {
   lang: 'ko' | 'en'
-  peopleMode: number
+  //peopleMode: number
   nextScreen: (screenNumber: number) => void
   questions: langText[]
   setQRCodeLink: (link: string) => void
@@ -30,11 +30,12 @@ interface RecordScreenProps {
   setFileName: (fileName: string) => void
   setVideoFile: (file: File) => void
   setVideoMetadata: (metadata: VideoData) => void
+  time_limit_seconds: number
 }
 
 const RecordScreen: React.FC<RecordScreenProps> = ({
   lang,
-  peopleMode,
+  //peopleMode,
   nextScreen,
   questions,
   setQRCodeLink,
@@ -42,12 +43,11 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
   videoMode,
   setFileName,
   setVideoFile,
-  setVideoMetadata
+  setVideoMetadata,
+  time_limit_seconds
 }) => {
   // 시간 관련값 세팅
   const READY_SECONDS = 5
-  const TimeLimitof = [10*60, 15*60]
-  const time_limit_seconds = peopleMode === 1 ? TimeLimitof[0] : TimeLimitof[1]
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [isRecording, setIsRecording] = useState(false)

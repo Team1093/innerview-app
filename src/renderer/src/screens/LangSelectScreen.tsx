@@ -110,7 +110,7 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
       </div>
         
       <button id={styles.deviceBtn} onClick={openDeviceModal} tabIndex={-1}>
-        {lang==='ko' ? "기기 설정" : "Device Settings"}
+        {quotes[15][lang]}
       </button>
 
       {isDeviceModalOpen && <DeviceSelectModal onClose={closeDeviceModal} />}
