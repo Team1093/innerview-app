@@ -84,13 +84,19 @@ export async function processVideoFile({
       .replace(/[^0-9]/g, '')
       .replace(/\s/g, '')
       .slice(0, 8)
+
+  const localTime = new Date().toLocaleTimeString('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  }).replace(':', '')
   
   const tempDir = (process.platform==='win32') ? `../../innerview-downloads/${tempCode}` : path.join(app.getPath('temp'), tempCode)
   mkdirSync(tempDir,{ recursive: true })
 
   const inputFileName = (process.platform==='win32') ? (tempDir +'/'+ originalFileName) : resolve(tempDir, originalFileName)
   const outputFileName = (process.platform==='win32') ? (tempDir +'/'+ 'output.mp4') : resolve(tempDir, 'output.mp4')
-  const subtitleFileName = (process.platform==='win32') ? (tempDir +'/'+ tempCode+'subtitles.srt') : resolve(tempDir, tempCode+'subtitles.srt')
+  const subtitleFileName = (process.platform==='win32') ? (tempDir +'/'+ localTime+'subtitles.srt') : resolve(tempDir, localTime+'subtitles.srt')
 
   await new Promise<void>((resolve, reject) => {
     const inputWriteStream = createWriteStream(inputFileName)
