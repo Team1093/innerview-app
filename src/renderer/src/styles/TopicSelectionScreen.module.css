@@ -1,6 +1,15 @@
 .screen {
     display: flex;
     flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.screen_1 {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
@@ -15,6 +24,18 @@
     position: absolute;
     width: 100%;
     height: 100%;
+}
+
+.title{
+    font-family: "Pretendard Variable";
+    font-weight: 600;
+    font-size: 110px;
+    display: flex;
+    justify-content: flex-start; /* 왼쪽 정렬 */
+    padding-top: 1%; /* 위쪽 패딩 제거 */
+    margin-left: 3%; /* 왼쪽 마진 추가 */
+    align-items: flex-start; /* 수직 정렬을 위쪽으로 */
+    color:rgba(74, 74, 74, 1);
 }
 
 .screen h2 {

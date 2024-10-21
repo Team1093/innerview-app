@@ -3,10 +3,11 @@
 import React, { useEffect, useState } from 'react'
 import styles from '../styles/ColorSelectScreen.module.css'
 import WebcamStream from '../components/WebcamStream'
-import colorLogo from '../assets/images/colorLogo.svg'
-import blackwhiteLogo from '../assets/images/blackwhiteLogo.svg'
+import colorLogo from '../assets/images/BoothImgColor.svg'
+import blackwhiteLogo from '../assets/images/BoothImgBNW.svg'
+// import COLORbg from '../assets/images/noiseBg.svg'
+// import BNWbg from '../assets/images/ColorSelectScreenBG.svg'
 import { KEYS_SCREEN_BACK, KEYS_SCREEN_CONFIRM, KEYS_SCREEN_NEXT } from '../assets/constants'
-import NextIcon from '../assets/icons/NextIcon'
 
 interface ColorSelectScreenProps {
   nextScreen: (screenNumber: number) => void
@@ -39,7 +40,7 @@ const ColorSelectScreen: React.FC<ColorSelectScreenProps> = ({ nextScreen, setVi
   return (
     <div className={styles.screen}>
       <div className={`${styles.section} ${styles.alt} ${!selectedGrayScale && styles.selected}`}>
-        <img src={colorLogo} alt="color" width={480} height={240} />
+        <img src={colorLogo} alt="color" width={468} height={408}/>
         <WebcamStream
           width={WEBCAM_SIZE}
           height={WEBCAM_SIZE * (9 / 16)}
@@ -48,14 +49,13 @@ const ColorSelectScreen: React.FC<ColorSelectScreenProps> = ({ nextScreen, setVi
         />
       </div>
       <div className={`${styles.section} ${selectedGrayScale && styles.selected}`}>
-        <img src={blackwhiteLogo} alt="gray" width={480} height={240} />
+        <img src={blackwhiteLogo} alt="gray" width={468} height={408} />
         <WebcamStream
           width={WEBCAM_SIZE}
           height={WEBCAM_SIZE * (9 / 16)}
           ratio="16/9"
           isGrayScale={true}
         />
-        <NextIcon size={50} />
       </div>
     </div>
   )

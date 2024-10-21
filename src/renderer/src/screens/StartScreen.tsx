@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react'
 import styles from '../styles/StartScreen.module.css'
-import bgImage1 from '../assets/images/background1.svg'
-import { KEYS_SCREEN_CONFIRM, KEYS_SCREEN_NEXT, quotes } from '../assets/constants'
-import NextIcon from '../assets/icons/NextIcon'
+import bgImage1 from '../assets/images/StartScreenImg.svg'
+import { KEYS_SCREEN_CONFIRM, KEYS_SCREEN_NEXT, KEYS_SCREEN_BACK } from '../assets/constants'
 
 interface StartScreenProps {
   lang: 'ko' | 'en'
   nextScreen: (screenNumber: number) => void
 }
 
-const StartScreen: React.FC<StartScreenProps> = ({ lang, nextScreen }) => {
+const StartScreen: React.FC<StartScreenProps> = ({ nextScreen }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (KEYS_SCREEN_CONFIRM.includes(e.key) || KEYS_SCREEN_NEXT.includes(e.key)) {
+      if (KEYS_SCREEN_CONFIRM.includes(e.key) || KEYS_SCREEN_NEXT.includes(e.key) || KEYS_SCREEN_BACK.includes(e.key)) {
         nextScreen(2)
       }
     }
@@ -25,9 +24,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ lang, nextScreen }) => {
 
   return (
     <div className={styles.screen}>
-      <NextIcon size={50} />
-      <img className={styles.bg} src={bgImage1} alt="background" />
-      <p className={styles.bottomText}>{quotes[14][lang]}</p>
+      <img className={styles.bg} src={bgImage1} alt="background"/>
     </div>
   )
 }

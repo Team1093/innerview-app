@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styles from '../styles/TopicSelectionScreen.module.css'
-import topicBg from '../assets/images/topicBg.svg'
+import topicBg from '../assets/images/InfoScreenBG.svg'
 import { KEYS_SCREEN_BACK, KEYS_SCREEN_CONFIRM, KEYS_SCREEN_NEXT } from '../assets/constants'
 import { Question, Topic } from '../service/topic/interface'
 
@@ -50,6 +50,8 @@ const TopicSelectionScreen: React.FC<TopicSelectionScreenProps> = ({
     <>
       <img className={styles.bg} src={topicBg} alt="topic" />
       <div className={styles.screen}>
+        <div className={styles.title}>TOPIC</div>
+        <div className={styles.screen_1}>
         <div className={styles.topicButtons}>
           {topics.map((topic, index) => (
             <button
@@ -63,7 +65,7 @@ const TopicSelectionScreen: React.FC<TopicSelectionScreenProps> = ({
           ))}
         </div>
         <div className={styles.description}>
-          <h3>{`\[ (${selectedTopicIndex}) : ${topics[selectedTopicIndex].topic[lang]}\]`}</h3>
+          <h3>{`\[${topics[selectedTopicIndex].topic[lang]}\]`}</h3>
           <h4>{topics[selectedTopicIndex].description[lang]}</h4>
           <p>
             {questions.find((q) => q.topicId === topics[selectedTopicIndex].topicId)
@@ -80,6 +82,7 @@ const TopicSelectionScreen: React.FC<TopicSelectionScreenProps> = ({
                 lang
               ]}
           </p>
+        </div>
         </div>
       </div>
     </>

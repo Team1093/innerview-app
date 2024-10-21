@@ -63,6 +63,7 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
   }, [currentRow, currentColumn]) //useEffect ends here
 
   return (
+    <div className={styles.bg}>
     <div className={styles.main}>
       <div className={styles.section}>
         <h3>{quotes[0][lang]}</h3>
@@ -115,7 +116,7 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
 
       {isDeviceModalOpen && <DeviceSelectModal onClose={closeDeviceModal} />}
         
-
+    </div>
     </div>
   )
 }
