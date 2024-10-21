@@ -402,7 +402,7 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
             )}
           </div>
           <p className={styles.questionIndex}>
-            {currentQuestionIndex + 1} / {questions.length}
+            {currentQuestionIndex+1 === questions.length ? '' : `${currentQuestionIndex + 1} / ${questions.length-1}`}
           </p>
           <p className={styles.timer}>{formattedTime}</p>
         </>
