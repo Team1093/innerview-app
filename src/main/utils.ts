@@ -90,7 +90,7 @@ export async function processVideoFile({
 
   const inputFileName = (process.platform==='win32') ? (tempDir +'/'+ originalFileName) : resolve(tempDir, originalFileName)
   const outputFileName = (process.platform==='win32') ? (tempDir +'/'+ 'output.mp4') : resolve(tempDir, 'output.mp4')
-  const subtitleFileName = (process.platform==='win32') ? (tempDir +'/'+ 'subtitles.srt') : resolve(tempDir, 'subtitles.srt')
+  const subtitleFileName = (process.platform==='win32') ? (tempDir +'/'+ tempCode+'subtitles.srt') : resolve(tempDir, tempCode+'subtitles.srt')
 
   await new Promise<void>((resolve, reject) => {
     const inputWriteStream = createWriteStream(inputFileName)

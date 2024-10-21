@@ -5,3 +5,5 @@ out
 *.log*
 
 resources/ffmpeg-bin
+innerview-downloads
+download
