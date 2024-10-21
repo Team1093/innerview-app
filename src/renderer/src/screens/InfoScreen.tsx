@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import styles from '../styles/InfoScreen.module.css'
-import bgImage2 from '../assets/images/background2.png'
+import bgImage2 from '../assets/images/InfoScreenBG.svg'
 import { KEYS_SCREEN_BACK, KEYS_SCREEN_NEXT } from '../assets/constants'
 import { motion } from 'framer-motion'
 import NextIcon from '../assets/icons/NextIcon'
@@ -20,32 +20,32 @@ const MotionP: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </motion.p>
 )
 
-const InfoScreen: React.FC<InfoScreenProps> = ({ lang, peopleMode, nextScreen, time_limit_seconds }) => {
+const InfoScreen: React.FC<InfoScreenProps> = ({ lang, nextScreen, time_limit_seconds }) => {
   const InfoMessages1: { ko: React.ReactNode[]; en: React.ReactNode[] } = {
     ko: [
       <MotionP key="msg">INNERVIEW에 오신 것을 환영합니다.</MotionP>,
       <MotionP key="msg">
         인터뷰는 주제 선택 후부터
-        <br />
-        {time_limit_seconds/60}분 간 진행됩니다.
+        <br/>
+        {(time_limit_seconds/60)}분 간 진행됩니다.
       </MotionP>,
       <MotionP key="msg">
         선택하시는 주제 별로 질문 수가 다르니
         <br />이 점 유의해서 시간을 배분하시길 바랍니다.
       </MotionP>,
       <MotionP key="msg">
-        [맨 위의 버튼]을 누르면 선택되고
+        <span className={styles.span}>◉</span> 은 선택 버튼이고
         <br />
-        [위 화살표 버튼]을 누르면 이전 화면/질문으로 넘어가고
+        <span className={styles.span}>▲</span> 은 이전 화면/질문으로 돌아가는 버튼이며
         <br />
-        [아래 화살표 버튼]을 누르면 다음 화면/질문으로 넘어갑니다.
+        <span className={styles.span}>▼</span> 은 다음 화면/질문으로 넘어가는 버튼입니다.
       </MotionP>
     ],
     en: [
       <MotionP key="msg">Welcome to INNERVIEW.</MotionP>,
       <MotionP key="msg">
         The interview will begin after you choose a topic <br />
-        and will last for {peopleMode === 1 ? '10' : '15'} minutes.
+        and will last for {time_limit_seconds/60} minutes.
       </MotionP>,
       <MotionP key="msg">
         Please note that the number of questions varies depending on the topic you select,
@@ -53,11 +53,11 @@ const InfoScreen: React.FC<InfoScreenProps> = ({ lang, peopleMode, nextScreen, t
         so manage your time accordingly.
       </MotionP>,
       <MotionP key="msg">
-        To select/confirm, press the [top button].
+        To select/confirm, press the <span className={styles.span}>◉.</span>
         <br />
-        To go back to the previous screen/question, press the [up button].
+        To go back to the previous screen/question, press the <span className={styles.span}> ▲.</span>
         <br />
-        To move to the next screen/question, press the [down button].
+        To move to the next screen/question, press the <span className={styles.span}> ▼.</span>
       </MotionP>
     ]
   }
@@ -66,16 +66,15 @@ const InfoScreen: React.FC<InfoScreenProps> = ({ lang, peopleMode, nextScreen, t
     ko: [
       <MotionP key="msg1">
         인터뷰는 주제 선택 후부터 <br />
-        <span>10분간 진행</span>됩니다.
+        {time_limit_seconds/60}분간 진행됩니다.
       </MotionP>,
       <MotionP key="msg2">
         질문에 답변을 모두 마치신 뒤<br />
-        <span>{"'질문 넘어가기'"}</span>를 눌러주시면
-        <br />
-        다음 질문으로 넘어갑니다.
+        <span>▼ 버튼</span>를 눌러주시면
+        <br />다음 질문으로 넘어갑니다.
       </MotionP>,
       <MotionP key="msg3">
-        <span>10분이 지나면 곧바로 종료</span>되니
+        {time_limit_seconds/60}분이 지나면 곧바로 종료되니
         <br />
         시간을 확인하며 답변해주세요.
       </MotionP>
@@ -83,15 +82,15 @@ const InfoScreen: React.FC<InfoScreenProps> = ({ lang, peopleMode, nextScreen, t
     en: [
       <MotionP key="msg1">
         The interview will last for <br />
-        <span>10 minutes</span> after selecting the topic.
+        {time_limit_seconds/60} minutes after selecting the topic.
       </MotionP>,
       <MotionP key="msg2">
         After answering all the questions, <br />
-        press {"'Next Question'"} to proceed.
+        press ▼ button to proceed.
       </MotionP>,
       <MotionP key="msg3">
         The interview will end <br />
-        <span>immediately after 10 minutes</span>,
+        immediately after {time_limit_seconds/60} minutes,
         <br />
         so please answer carefully.
       </MotionP>
