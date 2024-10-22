@@ -1,6 +1,6 @@
 const ffmpeg = require('fluent-ffmpeg')
 const path = require('path')
-import { createWriteStream, mkdirSync, readFile, unlinkSync } from 'fs'//, writeFile
+import { createWriteStream, mkdirSync, readFile } from 'fs'//, writeFile unlinkSync
 import { resolve } from 'path'
 import { platform, arch } from 'os'
 import { app, dialog } from 'electron'
@@ -135,19 +135,22 @@ export async function processVideoFile({
       dialog.showErrorBox('FFmpeg Error', err.message)
       reject(err)
       })
+      .on('progress', (progress) => {
+        console.log(`Processing: ${progress.percent.toFixed(2)}% done`);
+      })
       .on('end', () => {
       readFile(outputFileName, (err, data) => {
         if (err) {
         dialog.showErrorBox('Read File Error', err.message)
         reject(err)
         } else {
-        ;[inputFileName, subtitleFileName, outputFileName].forEach((file) => {
-          try {
-          unlinkSync(file)
-          } catch (err) {
-          dialog.showErrorBox('Delete File Error', (err as Error).message)
-          }
-        })
+        // ;[inputFileName, subtitleFileName, outputFileName].forEach((file) => {
+        //   try {
+        //   unlinkSync(file) // 위에 import도 취소해둠
+        //   } catch (err) {
+        //   dialog.showErrorBox('Delete File Error', (err as Error).message)
+        //   }
+        // })
 
         resolve(data)
         }
