@@ -48,7 +48,9 @@ const InfoScreen: React.FC<InfoScreenProps> = ({ lang, nextScreen, time_limit_se
         and will last for {time_limit_seconds/60} minutes.
       </MotionP>,
       <MotionP key="msg">
-        Please note that the number of questions varies depending on the topic you select,
+        Please note that the number of questions varies 
+        <br />
+        depending on the topic you select,
         <br />
         so manage your time accordingly.
       </MotionP>,

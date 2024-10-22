@@ -54,13 +54,14 @@
     opacity: 0.4;
 }
 
-.screen .timer {
+.timer {
     position: absolute;
-    bottom: 1.67vh; /* 32px */
+    bottom: 1vh; /* 32px */
     right: 1.56vw; /* 30px */
     font-size: 3vw;
     font-weight: 300;
     color: #FFF;
+    width: auto;
     /* text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; */
 }
 
@@ -74,7 +75,7 @@
 }
 
 .question {
-    position: absolute;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -83,8 +84,8 @@
     padding: 2vh; /* 32px */
     gap: 0.5vh; /* 5px */
     width: 100%;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.70) 0%, rgba(0, 0, 0, 0.00) 100%);
-    white-space: pre-wrap;
+    /* background: linear-gradient(0deg, rgba(0, 0, 0, 0.70) 0%, rgba(0, 0, 0, 0.00) 100%); */
+    box-sizing: border-box;
 }
 
 .question h3 {
@@ -99,6 +100,10 @@
     color: white;
     font-size: 3vw;
     font-weight: 300;
+    width: 100%;
+    overflow-wrap: break-word; /* 긴 단어 줄바꿈 */
+    word-break: break-word; /* 단어가 길 경우 강제 줄바꿈 */
+    white-space: pre-wrap;
 }
 
 .buttonContainer {
@@ -136,4 +141,18 @@
     text-align: center;
     font-size: 3vh; /* 10px */
     font-weight: 300;
+}
+
+.container {
+    display: grid;
+    position: absolute;
+    bottom: 0;
+    z-index: 999;
+    grid-template-columns: 9fr 1fr; /* 9:1 비율 설정 */
+    align-items: center ; /* 세로 정렬 */
+    width: 100%; /* 부모 요소에 맞추기 */
+    height: auto; /* 컨텐츠에 맞게 조정 */
+    box-sizing: border-box; /* 패딩 포함 크기 계산 */
+    gap: 10px; /* 질문과 타이머 사이의 여백 */
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.70) 0%, rgba(0, 0, 0, 0.00) 100%);
 }

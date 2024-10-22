@@ -22,18 +22,17 @@
 
 .section h3 {
     margin-bottom: 0.93vh;
-    font-size: 1.5rem;
+    font-size: 2vw;
     color: #333;
 }
 
 .section button {
-    width: 9vw; /* 150px / 1920 * 100 */
-    height: 5.56wh; /* 60px / 1080 * 100 */
+    width: 10vw; 
     padding: 0.52vh 1.04vw; /* 10px / 1080 * 100 and 20px / 1920 * 100 */
     margin: 0.26vh; /* 5px / 1080 * 100 */
     border: 0.1vw solid transparent; /* 2px / 1920 * 100 */
     border-radius: 0.52vh; /* 10px / 1080 * 100 */
-    font-size: 2wv;
+    font-size: 2vw;
     background-color: #ffffff;
     color: #333;
     cursor: pointer;

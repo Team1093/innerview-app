@@ -47,8 +47,7 @@ const LastInfoModal: React.FC<LastInfoModalProps> = ({ lang, closeModal, time_li
           transition={{ duration: 0.4 }}
         >
           <p>This concludes your INNERVIEW.</p>,
-          <p>
-            We hope that this 10 to 15 minutes has been a meaningful time for you to reflect on
+          <p>We hope that this 10 to 15 minutes has been a meaningful time <br/>for you to reflect on
             yourself.
           </p>
         </motion.div>,
