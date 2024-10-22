@@ -15,7 +15,7 @@ interface InfoScreenProps {
 }
 
 const MotionP: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
+  <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }} className={styles.motionP}>
     {children}
   </motion.p>
 )

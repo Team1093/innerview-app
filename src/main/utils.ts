@@ -135,8 +135,9 @@ export async function processVideoFile({
       dialog.showErrorBox('FFmpeg Error', err.message)
       reject(err)
       })
-      .on('progress', (progress) => {
-        console.log(`Processing: ${progress.percent.toFixed(2)}% done`);
+      .on('progress', (progress: { percent?: number }) => {
+        const percentage = progress.percent ?? 0; // Set to 0 if percent is undefined
+        console.log(`Processing: ${percentage}% done`);
       })
       .on('end', () => {
       readFile(outputFileName, (err, data) => {
