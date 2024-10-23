@@ -31,6 +31,7 @@ export default function App() {
     recorded_seconds: 0,
     video_link: ''
   })
+  const [questionType, setQuestionType] = useState<'for me' | 'by me'>('for me')
 
   const [fileName, setFileName] = useState<string>('')
   const [videoFile, setVideoFile] = useState<File | null>(null)
@@ -111,6 +112,7 @@ export default function App() {
               selected_subject: allTopics.find((t) => t.topicId === topicId)!.topic[lang]
             })
           }}
+          questionType={questionType}
         />
       )}
       {currentScreen === 5 && (
@@ -168,6 +170,7 @@ export default function App() {
               setCurrentScreen(1)
               closeOverlayModal()
             }}
+            questionType={questionType}
           />
         </div>
       )}

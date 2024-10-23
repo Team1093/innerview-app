@@ -10,6 +10,7 @@ interface TopicSelectionScreenProps {
   topics: Topic[]
   questions: Question[]
   selectTopic: (topicId: number) => void
+  questionType: 'for me' | 'by me'
 }
 
 const TopicSelectionScreen: React.FC<TopicSelectionScreenProps> = ({

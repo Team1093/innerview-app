@@ -10,6 +10,7 @@ import DeviceSelectModal from '../components/DeviceSelectModal';
 
 interface LangSelectScreenProps {
   lang: 'ko' | 'en'
+  questionType: 'for me' | 'by me'
   peopleMode: number
   setLang: (lang: 'ko' | 'en') => void
   setPeopleMode: (peopleMode: number) => void
@@ -18,6 +19,7 @@ interface LangSelectScreenProps {
 
 const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
   lang,
+  questionType,
   peopleMode,
   setLang,
   setPeopleMode,
@@ -84,12 +86,35 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
           English
         </button>
       </div>
+    
+      <div className={styles.section}>
+        <h3>{quotes[16][lang]}</h3>
+        <button
+          className={`
+            ${questionType === 'for me' ? styles.selected : ''}
+            ${currentRow === 1 && currentColumn === 0 ? styles.hovered : ''}
+            `}
+          tabIndex={-1}
+        >
+          {quotes[17][lang]}
+        </button>
+        <button
+          className={`
+            ${questionType === 'by me' ? styles.selected : ''}
+            ${currentRow === 1 && currentColumn === 1 ? styles.hovered : ''}
+            `}
+            tabIndex={-1}
+        >
+          {quotes[18][lang]}
+        </button>
+      </div>
+
       <div className={styles.section}>
         <h3>{quotes[1][lang]}</h3>
         <button
           className={`
             ${peopleMode === 1 ? styles.selected : ''}
-            ${currentRow === 1 && currentColumn === 0 ? styles.hovered : ''}
+            ${currentRow === 2 && currentColumn === 0 ? styles.hovered : ''}
             `}
           tabIndex={-1}
         >
@@ -98,15 +123,17 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
         <button
           className={`
             ${peopleMode === 2 ? styles.selected : ''}
-            ${currentRow === 1 && currentColumn === 1 ? styles.hovered : ''}
+            ${currentRow === 2 && currentColumn === 1 ? styles.hovered : ''}
             `}
             tabIndex={-1}
         >
           {quotes[3][lang]}
         </button>
       </div>
+      
+
       <div className={styles.section}>
-        <button className={currentRow === 2 ? styles.hovered : ''} tabIndex={-1}>
+        <button className={currentRow === 3 ? styles.hovered : ''} tabIndex={-1}>
           {quotes[4][lang]}</button>
       </div>
         

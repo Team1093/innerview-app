@@ -145,5 +145,20 @@ export const quotes: langText[] = [
   {
     ko: '기기 설정',
     en: 'Device Settings'
+  },
+  //16
+  {
+    ko: '어떤 유형의 질문지를 원하시나요?',
+    en: 'Which type of questionnaire would you like?'
+  },
+  //17
+  {
+    ko: '당신을 위한',
+    en: 'for you'
+  },
+  //18
+  {
+    ko: '당신에 의한',
+    en: 'by you'
   }
 ]

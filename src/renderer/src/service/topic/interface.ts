@@ -5,6 +5,7 @@ export interface Topic {
   topic: langText
   description: langText
   peopleType: number
+  questionType: 'for me' | 'by me'
 }
 
 export interface Question {

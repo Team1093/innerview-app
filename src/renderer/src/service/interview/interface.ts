@@ -4,7 +4,9 @@ export interface Interview {
   selected_language: string;
   selected_people_mode: string;
   selected_color_mode: string;
+
   selected_subject: string;
+
   recorded_seconds: number;
   video_status: number;
   video_link: string;
