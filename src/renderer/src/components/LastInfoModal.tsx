@@ -47,10 +47,8 @@ const LastInfoModal: React.FC<LastInfoModalProps> = ({ lang, closeModal, time_li
           transition={{ duration: 0.4 }}
         >
           <p>This concludes your INNERVIEW.</p>,
-          <p>
-            We hope that this 10 to 15 minutes has been a meaningful time for you to reflect on
-            yourself.
-          </p>
+          <p>We hope that this {time_limit_seconds/60} minutes has been a meaningful time</p>
+          <p>for you to reflect on yourself.</p>
         </motion.div>,
         <motion.div
           key="msg"
@@ -60,7 +58,8 @@ const LastInfoModal: React.FC<LastInfoModalProps> = ({ lang, closeModal, time_li
           transition={{ duration: 0.4 }}
         >
           <p>Thank you sincerely for visiting INNERVIEW..</p>,
-          <p>You can download your video using the QR code that will appear on the next page.</p>
+          <p>You can download your video using the QR code</p>
+          <p>that will appear on the next page.</p>
         </motion.div>
       ]
     }),
