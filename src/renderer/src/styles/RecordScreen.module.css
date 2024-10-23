@@ -84,7 +84,6 @@
     padding: 2vh; /* 32px */
     gap: 0.5vh; /* 5px */
     width: 100%;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.70) 0%, rgba(0, 0, 0, 0.00) 100%);
     white-space: pre-wrap;
     overflow-wrap: break-word;
 }
