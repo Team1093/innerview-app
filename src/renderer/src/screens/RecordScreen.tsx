@@ -371,7 +371,6 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
     <div className={styles.screen}>
       {videoUploadState === 0 && (
         <>
-          <p className={styles.timer}>{formattedTime}</p>
           <video
             ref={videoRef}
             autoPlay
@@ -383,28 +382,32 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
             }}
           />
           <p className={styles.watermark}>
-            <img src={textLogo} alt="logo" width={210} height={45} />
+            <img src={textLogo} alt="logo" />
           </p>
-          <div className={styles.question}>
-            {currentQuestionIndex < questions.length && (
-              <>
-                {currentQuestionIndex === questions.length - 1 ? (
-                  <h3>{`${
-                    lang === 'ko'
-                      ? '마지막으로 아래 문구를 읽어주세요'
-                      : 'Please read the following text'
-                  }`}</h3>
-                ) : (
-                  <h3>{`${krNumPrefixs[currentQuestionIndex][lang]} ${questionSuffixs[lang]}`}</h3>
-                )}
-                <p>{questions[currentQuestionIndex][lang]}</p>
-              </>
-            )}
+
+          <div className={styles.container}>
+            <div className={styles.question}>
+              {currentQuestionIndex < questions.length && (
+                <>
+                  {currentQuestionIndex === questions.length - 1 ? (
+                    <h3>{`${
+                      lang === 'ko'
+                        ? '마지막으로 아래 문구를 읽어주세요'
+                        : 'Please read the following text'
+                    }`}</h3>
+                  ) : (
+                    <h3>{`${krNumPrefixs[currentQuestionIndex][lang]} ${questionSuffixs[lang]}`}</h3>
+                  )}
+                  <p>{questions[currentQuestionIndex][lang]}</p>
+                </>
+              )}
+            </div>
+            <div className={styles.timer}>{formattedTime}</div>
           </div>
           <p className={styles.questionIndex}>
             {currentQuestionIndex+1 === questions.length ? '' : `${currentQuestionIndex + 1} / ${questions.length-1}`}
           </p>
-          <p className={styles.timer}>{formattedTime}</p>
+          
         </>
       )}
       {videoUploadState === 1 && (

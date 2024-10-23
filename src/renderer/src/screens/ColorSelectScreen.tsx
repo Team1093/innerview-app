@@ -14,7 +14,7 @@ interface ColorSelectScreenProps {
   setVideoMode: (mode: string) => void
 }
 
-const WEBCAM_SIZE = 640
+const WEBCAM_SIZE_VW = 45 // 640px in vw (640 / 1920 * 100)
 
 const ColorSelectScreen: React.FC<ColorSelectScreenProps> = ({ nextScreen, setVideoMode }) => {
   const [selectedGrayScale, setSelectedGrayScale] = useState<boolean>(false)
@@ -40,19 +40,19 @@ const ColorSelectScreen: React.FC<ColorSelectScreenProps> = ({ nextScreen, setVi
   return (
     <div className={styles.screen}>
       <div className={`${styles.section} ${styles.alt} ${!selectedGrayScale && styles.selected}`}>
-        <img src={colorLogo} alt="color" width={468} height={408}/>
+        <img src={colorLogo} alt="color" style={{ width: '27vw', height: '40vh' }} />
         <WebcamStream
-          width={WEBCAM_SIZE}
-          height={WEBCAM_SIZE * (9 / 16)}
+          width={String(WEBCAM_SIZE_VW)+'vw'}
+          height={String(WEBCAM_SIZE_VW * (9 / 16))+'vw'}
           ratio="16/9"
           isGrayScale={false}
         />
       </div>
       <div className={`${styles.section} ${selectedGrayScale && styles.selected}`}>
-        <img src={blackwhiteLogo} alt="gray" width={468} height={408} />
+        <img src={blackwhiteLogo} alt="gray" style={{ width: '27vw', height: '40vh' }} />
         <WebcamStream
-          width={WEBCAM_SIZE}
-          height={WEBCAM_SIZE * (9 / 16)}
+          width={String(WEBCAM_SIZE_VW)+'vw'}
+          height={String(WEBCAM_SIZE_VW * (9 / 16))+'vw'}
           ratio="16/9"
           isGrayScale={true}
         />

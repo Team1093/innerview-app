@@ -8,18 +8,18 @@
     overflow: hidden;
     text-align: center;
     z-index: 1;
-    gap: 20px; /* 그리드 아이템 간의 간격 */
+    gap: 1.04vw; /* 그리드 아이템 간의 간격 */
 }
 
 .screen p {
-    font-size: 30px;
+    font-size: 4vh;
     font-weight: 800;
     font-family: 'pretendard';
     color: rgba(0, 0, 0, 0.7);
 }
 
 .span  {
-    font-size: 30px;
+    font-size: 4vh;
     font-weight: 800;
     font-family: 'pretendard';
     color: rgba(0, 0, 0, 0.7);
@@ -46,14 +46,7 @@
     z-index: 1;
 }
 
-.info p {
-    text-align: center;
-    font-size: 30px;
-    font-weight: 800;
-    font-family: 'pretendard';
-    bottom : 0;
-    color: rgb(255, 255, 255, 0.7);
-}
+
 
 .video {
     position: absolute;

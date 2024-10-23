@@ -40,7 +40,7 @@ const FinalScreen: React.FC<FinalScreenProps> = ({ lang, qrcodeLink }) => {
             {quotes[10][lang]}
           </h4>
           {qrcodeLink !== '' ? (
-            <img src={qrcodeLink} alt="qrcode" className={styles.qrcode} width={320} height={320} />
+            <img src={qrcodeLink} alt="qrcode" className={styles.qrcode} width={'449vw'} height={'449vw'} />
           ) : (
             <div className={styles.qrcodeBox} />
           )}
