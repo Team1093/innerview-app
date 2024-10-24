@@ -10,7 +10,6 @@ interface TopicSelectionScreenProps {
   topics: Topic[]
   questions: Question[]
   selectTopic: (topicId: number) => void
-  questionType: 'for me' | 'by me'
 }
 
 const TopicSelectionScreen: React.FC<TopicSelectionScreenProps> = ({
@@ -18,7 +17,7 @@ const TopicSelectionScreen: React.FC<TopicSelectionScreenProps> = ({
   nextScreen,
   topics,
   questions,
-  selectTopic
+  selectTopic,
 }) => {
   const [selectedTopicIndex, setSelectedTopicIndex] = useState<number>(0)
 

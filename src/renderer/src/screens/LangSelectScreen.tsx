@@ -15,6 +15,7 @@ interface LangSelectScreenProps {
   setLang: (lang: 'ko' | 'en') => void
   setPeopleMode: (peopleMode: number) => void
   close: () => void
+  setQuestionType: (questionType: 'for me' | 'by me') => void
 }
 
 const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
@@ -23,7 +24,8 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
   peopleMode,
   setLang,
   setPeopleMode,
-  close
+  close,
+  setQuestionType,
 }) => {
   const [currentRow, setCurrentRow] = useState<number>(0)
   const [currentColumn, setCurrentColumn] = useState<number>(0)
@@ -48,6 +50,9 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
           setLang(currentColumn === 0 ? 'ko' : 'en')
         }
         if (currentRow === 1) {
+          setQuestionType(currentColumn === 0 ? 'for me' : 'by me')
+        }
+        if (currentRow === 2) {
           setPeopleMode(currentColumn + 1)
         }
         if (currentRow === 2) {
@@ -88,7 +93,7 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
       </div>
     
       <div className={styles.section}>
-        <h3>{quotes[16][lang]}</h3>
+        <h3>{quotes[16][lang]}</h3> {/*어떤 유형의 질문지를 원하십니까?*/}
         <button
           className={`
             ${questionType === 'for me' ? styles.selected : ''}
@@ -96,7 +101,7 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
             `}
           tabIndex={-1}
         >
-          {quotes[17][lang]}
+          {quotes[17][lang]} {/*나를 위한 질문*/}
         </button>
         <button
           className={`
@@ -105,7 +110,7 @@ const LangSelectScreen: React.FC<LangSelectScreenProps> = ({
             `}
             tabIndex={-1}
         >
-          {quotes[18][lang]}
+          {quotes[18][lang]} {/*내가 만든 질문*/}
         </button>
       </div>
 
