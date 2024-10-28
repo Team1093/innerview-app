@@ -26,12 +26,13 @@ export default function App() {
   const [interviewCreateData, setInterviewCreateData] = useState<InterviewCreateDto>({
     selected_language: 'ko',
     selected_people_mode: '1인용',
+    selected_question_type: "for me",
     selected_color_mode: '',
     selected_subject: '',
     recorded_seconds: 0,
     video_link: ''
   })
-  const [questionType, setQuestionType] = useState<'for me'| 'by me'>('for me')
+  const [questionType, setQuestionType] = useState<string>('for me')
 
   const [fileName, setFileName] = useState<string>('')
   const [videoFile, setVideoFile] = useState<File | null>(null)
@@ -61,7 +62,6 @@ export default function App() {
     const fetchTopics = async () => {
       const res = await topicService.getTopicAndQuestion()
       setAllTopics(res.topics)
-
       const year = new Date().getFullYear()
       const month = new Date().getMonth() + 1
       const date = new Date().getDate()
@@ -81,7 +81,12 @@ export default function App() {
     }
     fetchTopics()
     openOverlayModal()
+    
   }, [])
+
+  // useEffect(() => {
+  //   console.log(allTopics)
+  // }, [allTopics])
 
   return (
     <div className={styles.app}>
@@ -97,13 +102,13 @@ export default function App() {
           }}
         />
       )}
-      {currentScreen === 4 && (
+      {currentScreen === 4 && 
+      (
         <TopicSelectionScreen
           lang={lang}
           nextScreen={nextScreen}
           topics={allTopics.filter((t) => {
-            return (t.peopleType === peopleMode || t.peopleType === 0) &&
-                   (t.questionType === (questionType==='for me'?'for me':'by me'))
+            return (t.peopleType === peopleMode || t.peopleType === 0) && (t.questionType === questionType )
           })}
           questions={allQuestions}
           selectTopic={(topicId: number) => {
@@ -114,6 +119,7 @@ export default function App() {
             })
           }}
         />
+        
       )}
       {currentScreen === 5 && (
         <RecordScreen
@@ -151,7 +157,6 @@ export default function App() {
         <div className={styles.overlay}>
           <LangSelectScreen
             lang={lang}
-            peopleMode={peopleMode}
             setLang={(lang: 'ko' | 'en') => {
               setLang(lang)
               setInterviewCreateData({
@@ -159,6 +164,7 @@ export default function App() {
                 selected_language: lang
               })
             }}
+            peopleMode={peopleMode}
             setPeopleMode={(mode: number) => {
               setPeopleMode(mode)
               setInterviewCreateData({
@@ -166,13 +172,17 @@ export default function App() {
                 selected_people_mode: mode === 1 ? '1인용' : '2인용'
               })
             }}
+            questionType={questionType}
+            setQuestionType={(Qtype: string) => {
+              setQuestionType(Qtype)
+              setInterviewCreateData({
+                ...interviewCreateData,
+                selected_question_type: Qtype === 'by me' ? 'by me' : 'for me'
+              })  
+            }}
             close={() => {
               setCurrentScreen(1)
               closeOverlayModal()
-            }}
-            questionType={questionType}
-            setQuestionType={(type: 'for me' | 'by me') => {
-              setQuestionType(type)
             }}
           />
         </div>

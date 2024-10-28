@@ -10,12 +10,12 @@ import DeviceSelectModal from '../components/DeviceSelectModal';
 
 interface LangSelectScreenProps {
   lang: 'ko' | 'en'
-  questionType: 'for me' | 'by me'
+  questionType: string
   peopleMode: number
   setLang: (lang: 'ko' | 'en') => void
   setPeopleMode: (peopleMode: number) => void
   close: () => void
-  setQuestionType: (questionType: 'for me' | 'by me') => void
+  setQuestionType: (questionType: string) => void
 }
 
 const LangSelectScreen: React.FC<LangSelectScreenProps> = ({

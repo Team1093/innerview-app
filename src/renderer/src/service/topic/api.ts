@@ -10,7 +10,7 @@ export class TopicService {
 
   async getTopicAndQuestion() {
     const res = await this.instance.get("/topic/all/topicAndQuestion");
-
+    console.log(res.data);
     return res.data as TopicAndQuestionResponse;
   }
 }
