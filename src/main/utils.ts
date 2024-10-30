@@ -1,5 +1,6 @@
 const ffmpeg = require('fluent-ffmpeg')
 const path = require('path')
+const isDev = process.env.NODE_ENV === 'development';
 import { createWriteStream, mkdirSync, readFile } from 'fs'//, writeFile unlinkSync
 import { resolve } from 'path'
 import { platform, arch } from 'os'
@@ -60,7 +61,7 @@ export async function processVideoFile({
 }): Promise<Buffer> {
   const platformName = `${platform()}-${arch()}`
   const ffmpegPath =
-    process.env.NODE_ENV === 'development'
+    isDev === true
       ? path.join(
           __dirname,
           '../../resources',
@@ -97,6 +98,10 @@ export async function processVideoFile({
   const inputFileName = (process.platform==='win32') ? (tempDir +'/'+ originalFileName) : resolve(tempDir, originalFileName)
   const outputFileName = (process.platform==='win32') ? (tempDir +'/'+ 'output.mp4') : resolve(tempDir, 'output.mp4')
   const subtitleFileName = (process.platform==='win32') ? (tempDir +'/'+ localTime+'subtitles.srt') : resolve(tempDir, localTime+'subtitles.srt')
+  const watermarkFileName = isDev === true ?
+                            path.join(__dirname, '../../src/renderer/src/assets/images/watermark.png') 
+                            : path.join(process.resourcesPath, 'resources', 'assets', 'images', 'watermark.png');  // Prod 모드
+
 
   await new Promise<void>((resolve, reject) => {
     const inputWriteStream = createWriteStream(inputFileName)
@@ -120,14 +125,55 @@ export async function processVideoFile({
 
   return new Promise<Buffer>((resolve, reject) => {
     ffmpeg(inputFileName)
-      .output(outputFileName)
+      .input(watermarkFileName)
       .videoCodec('libx264')
       .audioCodec('aac')
-      .videoFilters(
-      `hflip,subtitles=${subtitleFileName}:force_style='FontName=NotoSansCJK,Alignment=1,Outline=0'${
-        toGrayScale ? ',format=gray' : ''
-      }`
-      )
+      .complexFilter([
+        {
+            filter: 'format',
+            options: 'rgba',
+            inputs: '[1]',
+            outputs: 'formatted'
+        },
+        {
+            filter: 'colorchannelmixer',
+            options: { aa: '1' },
+            inputs: 'formatted',
+            outputs: 'logo'
+        },
+        {
+            filter: 'hflip',  // 좌우 반전 필터
+            inputs: '[0]',
+            outputs: 'flipped'
+        },
+        {
+            filter: 'overlay',
+            options: { x: '0', y: '0' },
+            inputs: ['flipped', 'logo'],
+            outputs: 'overlayed'
+        },
+        {
+            filter: 'format',
+            options: toGrayScale === true ? 'gray' : 'yuv420p',  // 흑백 처리 필터
+            inputs: 'overlayed',
+            outputs: 'grayscale'
+        },
+        {
+            filter: 'subtitles',
+            options: `${subtitleFileName}:force_style='FontName=Pretendard,Alignment=1,Outline=0'`,
+            inputs: 'grayscale',
+            outputs: 'subtitled'
+        },
+        {
+            filter: 'format',
+            options: 'yuv420p',  // 최종 색상 포맷 변환
+            inputs: 'subtitled'
+        }
+      ])
+      .output(outputFileName)
+      .outputOptions('-preset fast')
+      .outputOptions('-movflags +faststart')
+      .outputOptions('-async 1') // 싱크 문제 해결 옵션
       .on('start', (commandLine) => {
       console.log('FFmpeg command:', commandLine)
       })

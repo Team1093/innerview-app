@@ -1,6 +1,6 @@
 {
   "name": "innerview-app",
-  "version": "3.0.0",
+  "version": "3.0.3",
   "description": "INNERVIEW Desktop App",
   "main": "./out/main/index.js",
   "author": "INNERVIEW",
@@ -19,6 +19,18 @@
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux"
+  },
+  "build":{
+    "extraResources": [
+      {
+        "from": "./src/renderer/src/assets/",
+        "to": "resources/assets"
+      },
+      {
+        "from": "./resources/ffmpeg-bin/",
+        "to": "resources/ffmpeg-bin"
+      }
+    ]
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
