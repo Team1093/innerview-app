@@ -286,11 +286,31 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
       // console.log('video uploaded', videoMsg)
       // console.log('video uploaded URL', uploadedURL)
     } catch (error) {
+      
       console.error(error)
+      
+      console.log('internet error, save interview in local')
+      
+      const videoData: VideoData = {
+        isGrayScale: videoMode === 'black-and-white',
+        subtitles: totalSubtitles,
+        interview_id: 0
+      }
+
+      const fileReader = new FileReader()
+      fileReader.readAsArrayBuffer(file)
+      fileReader.onload = () => {
+        const fileContent = fileReader.result as ArrayBuffer
+        window.electron.ipcRenderer.send('save-video-local', {
+          fileName,
+          fileContent,
+          videoData,
+          interviewId: 0,
+        })
       setVideoUploadState(0)
+      }
     }
   }
-
   const handlePreviousQuestion = () => {
     setCurrentQuestionIndex((prevIndex) => {
       if (prevIndex === 0) {

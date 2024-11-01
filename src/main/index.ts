@@ -110,6 +110,7 @@ app.whenReady().then(() => {
     console.log('not supported by the os:',process.platform)
   }
 
+  //save-video 이벤트 핸들러
   ipcMain.on('save-video', (event, arg) => {
     saveFileToDownloads(arg.fileContent, arg.fileName)
     saveMetaDataToDownloads(arg.videoData, `meta_${arg.fileName}.json`)
@@ -174,30 +175,45 @@ app.whenReady().then(() => {
       .catch((err) => {
         dialog.showErrorBox('interview_data update fail:', err.message)
       })
-
-    // axios
-    //   .post('https://api-innerview.lighterlinks.io/file/upload', formData, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data'
-    //     }
-    //   })
-    //   .then((res) => {
-    //     console.log('파일 업로드 성공:', res.data.url)
-    //     axios
-    //       .patch(`https://api-innerview.lighterlinks.io/interview/${arg.interviewId}`, {
-    //         video_link: res.data.url
-    //       })
-    //       .then((res) => {
-    //         console.log('인터뷰 정보 업데이트 성공:', res.data.message)
-    //       })
-    //       .catch((err) => {
-    //         dialog.showErrorBox('인터뷰 정보 업데이트 실패:', err.message)
-    //       })
-    //   })
-    //   .catch((err) => {
-    //     dialog.showErrorBox('파일 업로드 실패:', err.message)
-    //   })
-
+    event.returnValue = 'success'
+  })
+  
+  //save-video 이벤트 핸들러
+  ipcMain.on('save-video-local', (event, arg) => {
+    saveFileToDownloads(arg.fileContent, arg.fileName)
+    saveMetaDataToDownloads(arg.videoData, `meta_${arg.fileName}.json`)
+    const fileArrayBuffer = arg.fileContent
+    const formData = new FormData()
+    const file = new Blob([fileArrayBuffer], { type: 'video/mp4' })
+    formData.append('file', file, arg.fileName)
+    formData.append('json', JSON.stringify(arg.videoData))
+    processVideoFile({
+      originalFileBuffer: Buffer.from(fileArrayBuffer),
+      originalFileName: arg.fileName,
+      subtitles: arg.videoData.subtitles,
+      toGrayScale: arg.videoData.isGrayScale
+    })
+      .then((buffer) => {
+        // save to downloads
+        const downloadPath = app.getPath('downloads')
+        try {
+          mkdirSync(path.join(downloadPath, 'processed'), { recursive: true })
+        } catch (error) {
+          dialog.showErrorBox('Error creating directory:', (error as Error).message)
+        }
+        const filePath = path.join(downloadPath, 'processed', (arg.fileName.replace('raw_','')+"_local"))
+        writeFile(filePath, buffer, (err) => {
+          if (err) {
+            dialog.showErrorBox('file upload fail ; error:', err.message)
+          } else {
+            console.log('file is successfully saved:', filePath)
+          }
+        })
+      })
+      .catch((err) => {
+        dialog.showErrorBox('video processing error:', err.message)
+      })
+      
     event.returnValue = 'success'
   })
 
