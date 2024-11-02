@@ -201,7 +201,7 @@ app.whenReady().then(() => {
         } catch (error) {
           dialog.showErrorBox('Error creating directory:', (error as Error).message)
         }
-        const filePath = path.join(downloadPath, 'processed', (arg.fileName.replace('raw_','')+"_local"))
+        const filePath = path.join(downloadPath, 'processed', "local_"+(arg.fileName.replace('raw_','')))
         writeFile(filePath, buffer, (err) => {
           if (err) {
             dialog.showErrorBox('file upload fail ; error:', err.message)
