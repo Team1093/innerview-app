@@ -92,7 +92,7 @@ export async function processVideoFile({
     hour12: false
   }).replace(':', '')
   
-  const tempDir = (process.platform==='win32') ? `../../innerview-downloads/${tempCode}` : path.join(app.getPath('temp'), tempCode)
+  const tempDir = (process.platform==='win32') ? `../../innerview-downloads/${tempCode}` : path.join(app.getPath('downloads'), tempCode)
   mkdirSync(tempDir,{ recursive: true })
 
   const inputFileName = (process.platform==='win32') ? (tempDir +'/'+ originalFileName) : resolve(tempDir, originalFileName)
