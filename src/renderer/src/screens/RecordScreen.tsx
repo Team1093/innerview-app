@@ -51,7 +51,7 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [isRecording, setIsRecording] = useState(false)
-  const [timestamps, setTimestamps] = useState<number[]>([0])
+  const [timestamps, setTimestamps] = useState<{questionIndex:number,time:number}[]>([{questionIndex:0,time:0}])
   const [videoUploadState, setVideoUploadState] = useState<number>(0)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
   const { formattedTime, seconds } = useTimer(isRecording, time_limit_seconds, () => nextScreen(6))
@@ -195,31 +195,19 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
     // generate subtitles based on timestamps
     const totalSubtitles = timestampsRef.current
       .map((timestamp, index) => {
-        if (index === timestampsRef.current.length - 1) {
-          if (playType === '2' && timestampsRef.current.length < questions.length + 1) {
             return {
-              startSeconds: timestamp,
-              endSeconds: secondsRef.current,
-              text1: `${krNumPrefixs[index][lang]} ${questionSuffixs[lang]}`,
-              text2: questions[index][lang]
+              startSeconds: timestamp.time,
+              // if it's the last timestamp, set endSeconds to the last second of the video
+              endSeconds: index === timestampsRef.current.length - 1
+                ? secondsRef.current
+                : timestampsRef.current[index + 1].time,
+              text1:
+              // if it's the last question, set text1 to the last subtitle
+              timestamp.questionIndex === questions.length - 1
+                ? `${lang === 'ko' ? '마지막으로 아래 문구를 읽어주세요' : 'Please read the following text'}`
+                : `${krNumPrefixs[timestamp.questionIndex][lang]} ${questionSuffixs[lang]}`,
+              text2: questions[timestamp.questionIndex][lang]
             }
-          } else {
-            return null
-          }
-        }
-        return {
-          startSeconds: timestamp,
-          endSeconds: timestampsRef.current[index + 1],
-          text1:
-            index === questions.length - 1 && index === timestampsRef.current.length - 2
-              ? `${
-                  lang === 'ko'
-                    ? '마지막으로 아래 문구를 읽어주세요'
-                    : 'Please read the following text'
-                }`
-              : `${krNumPrefixs[index][lang]} ${questionSuffixs[lang]}`,
-          text2: questions[index][lang]
-        }
       })
       .filter((subtitle) => subtitle !== null) as subtitleData[]
 
@@ -358,7 +346,7 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
       }
 
       setTimestamps((prev) => {
-        return [...prev, secondsRef.current]
+        return [...prev, {questionIndex:currentQuestionIndexRef.current, time:secondsRef.current}]
       })
       handleNextQuestion()
     } else if (KEYS_SCREEN_BACK.includes(event.key)) {
