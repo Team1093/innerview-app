@@ -1,6 +1,6 @@
 {
   "name": "innerview-app",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "INNERVIEW Desktop App",
   "main": "./out/main/index.js",
   "author": "INNERVIEW",
