@@ -269,7 +269,7 @@ ipcMain.handle('load-settings', () => {
 });
 
 export async function saveFileToDownloads(fileContent: ArrayBuffer, fileName: string) {
-  const downloadPath = (process.platform==='win32') ? `../../innerview-downloads` : app.getPath('temp')
+  const downloadPath = (process.platform==='win32') ? `../../innerview-downloads` : app.getPath('downloads')
   try {
     mkdirSync(downloadPath, { recursive: true })
   } catch (error) {
@@ -294,7 +294,7 @@ export async function saveFileToDownloads(fileContent: ArrayBuffer, fileName: st
 }
 
 export async function saveMetaDataToDownloads(metaData: any, fileName: string) {
-  const downloadPath = (process.platform==='win32') ? `../../innerview-downloads` : app.getPath('temp')
+  const downloadPath = (process.platform==='win32') ? `../../innerview-downloads` : app.getPath('downloads')
   try {
     mkdirSync(downloadPath, { recursive: true })
   } catch (error) {
