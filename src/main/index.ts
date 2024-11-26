@@ -164,7 +164,7 @@ app.whenReady().then(() => {
 
     axios
       .patch(
-        `http://ec2-13-125-239-221.ap-northeast-2.compute.amazonaws.com:8080/interview/${arg.interviewId}`,
+        `http://api.innerviewkr.com/interview/${arg.interviewId}`,
         {
           video_link: `${arg.presignedPutUrl.split('?')[0]}`
         }
