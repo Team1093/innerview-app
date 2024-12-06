@@ -4,6 +4,6 @@ out
 .DS_Store
 *.log*
 
-resources/ffmpeg-bin
+# resources/ffmpeg-bin
 innerview-downloads
 download

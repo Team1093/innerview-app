@@ -71,7 +71,8 @@ const LastInfoModal: React.FC<LastInfoModalProps> = ({ lang, closeModal, time_li
       if (KEYS_SCREEN_NEXT.includes(e.key) || KEYS_SCREEN_CONFIRM.includes(e.key)) {
         if (currentMessageIndex < InfoMessages[lang].length - 1) {
           setCurrentMessageIndex((prev) => prev + 1)
-        } else {
+        } 
+        else {
           closeModal()
         }
       }
@@ -89,7 +90,8 @@ const LastInfoModal: React.FC<LastInfoModalProps> = ({ lang, closeModal, time_li
     const interval = setInterval(() => {
       if (currentMessageIndex < InfoMessages[lang].length - 1) {
         setCurrentMessageIndex((prev) => prev + 1)
-      } else {
+      } 
+      else {
         clearInterval(interval)
         closeModal()
       }

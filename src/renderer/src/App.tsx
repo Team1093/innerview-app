@@ -84,16 +84,16 @@ export default function App() {
     
   }, [])
 
-  // useEffect(() => {
-  //   console.log(allTopics)
-  // }, [allTopics])
-
   return (
     <div className={styles.app}>
-      {currentScreen === 1 && <StartScreen lang={lang} nextScreen={nextScreen} />}
+
+      {currentScreen === 1 && (
+        <StartScreen lang={lang} nextScreen={nextScreen} />
+        )}
+
       {currentScreen === 2 && (
         <InfoScreen nextScreen={nextScreen} lang={lang} peopleMode={peopleMode} time_limit_seconds={time_limit_seconds} />
-      )}
+        )}
       {currentScreen === 3 && (
         <ColorSelectScreen
           nextScreen={nextScreen}

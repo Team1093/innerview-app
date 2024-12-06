@@ -1,5 +1,6 @@
 import { AxiosInstance } from "axios";
 import { TopicAndQuestionResponse } from "./interface";
+import { SCHEMA } from '../../assets/constants';
 
 export class TopicService {
   private instance: AxiosInstance;
@@ -9,7 +10,7 @@ export class TopicService {
   }
 
   async getTopicAndQuestion() {
-    const res = await this.instance.get("/topic/all/topicAndQuestion");
+    const res = await this.instance.get(`/topic/${SCHEMA}/all/topicAndQuestion`);
     console.log(res.data);
     return res.data as TopicAndQuestionResponse;
   }
