@@ -1,18 +1,16 @@
 import { AxiosInstance } from "axios";
-import { user, reservation } from "./interface";
-import { SCHEMA } from '../../assets/constants';
+import { ResponseToDesktop } from "./interface";
 
-export class TopicService {
+export class UserService {
   private instance: AxiosInstance;
 
   constructor(instance: AxiosInstance) {
     this.instance = instance;
   }
 
-  async getUsersAndReservations() {
-    const res = await this.instance.get(`/users/${SCHEMA}/`);
-    console.log(res.data);
-
-    return res.data as [user, reservation];
+  async checkVerification(location: string) {
+    const res = await this.instance.get(`/user/check/${location}`);
+    console.log(`/user/check/${location}:`+res);
+    return res.data as ResponseToDesktop;
   }
 }

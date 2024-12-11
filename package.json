@@ -1,6 +1,6 @@
 {
   "name": "innerview-app",
-  "version": "4.0.0",
+  "version": "3.9.9",
   "description": "INNERVIEW Desktop App",
   "main": "./out/main/index.js",
   "author": "INNERVIEW",
@@ -20,7 +20,7 @@
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux"
   },
-  "build":{
+  "build": {
     "extraResources": [
       {
         "from": "./src/renderer/src/assets/",
@@ -42,7 +42,8 @@
     "electron-updater": "^6.1.7",
     "file-loader": "^6.2.0",
     "fluent-ffmpeg": "^2.1.3",
-    "framer-motion": "^11.11.4"
+    "framer-motion": "^11.11.4",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",

@@ -2,6 +2,8 @@ import axios from 'axios'
 import { InterviewService } from './interview/api'
 import { FileService } from './file/api'
 import { TopicService } from './topic/api'
+import { UserService } from './user/api'
+// import { SettingService } from './settings/api'
 
 export const useService = () => {
   const instance = axios.create({
@@ -29,6 +31,8 @@ export const useService = () => {
   return {
     topicService: new TopicService(instance),
     interviewService: new InterviewService(instance),
-    fileService: new FileService(instance)
+    fileService: new FileService(instance),
+    userService: new UserService(instance)
+    // settingService: new SettingService(instance)
   }
 }

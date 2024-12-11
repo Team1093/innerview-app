@@ -10,6 +10,7 @@ const A5LastInfoScreen: React.FC<A5LastInfoScreenProps> = ({ nextScreen }) => {
   return (
     <div className={styles.bg}>
       {/* Add your component JSX here */}
+      <h1>Last Info Screen</h1>
       <button onClick={() => nextScreen(6)}>Next</button>
     </div>
   );

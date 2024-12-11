@@ -1,192 +1,84 @@
 import { useEffect, useState } from 'react'
 import styles from './page.module.css'
-import StartScreen from './screens/StartScreen'
-import InfoScreen from './screens/InfoScreen'
-import ColorSelectScreen from './screens/ColorSelectScreen'
-import RecordScreen from './screens/RecordScreen'
-import FinalScreen from './screens/FinalScreen'
-import TopicSelectionScreen from './screens/TopicSelectionScreen'
+import A0ManagementScreen from './screens/A0ManagementScreen'
+import A1IdentificationScreen from './screens/A1IdentificationScreen'
+import A2InfoScreen from './screens/A2InfoScreen'
+import A3CameraSettingScreen from './screens/A3CameraSettingScreen'
+import A4RecordScreen from './screens/A4RecordScreen'
+import A5LastInfoScreen from './screens/A5LastInfoScreen'
+import A6EndingScreen from './screens/A6EndingScreen'
 
 import useModal from './lib/useModal'
-import { InterviewCreateDto } from './service/interview/interface'
-import LangSelectScreen from './screens/LangSelectScreen'
-import { Question, Topic } from './service/topic/interface'
-import { useService } from './service/useService'
-import { VideoData } from './service/file/interface'
+
+// import useModal from './lib/useModal'
+// import { InterviewCreateDto } from './service/interview/interface'
+// import LangSelectScreen from './screens/LangSelectScreen'
+// import { Question, Topic } from './service/topic/interface'
+// import { useService } from './service/useService'
+// import { VideoData } from './service/file/interface'
+
+
+// A0에 필요한 변수들
+import { Settings } from './service/settings/interface'
+import { DBUserData, DBReservation } from './service/user/interface'
 
 export default function App() {
+  // 화면 전환 변수 세팅
+  const { openModal: openOverlayModal, closeModal: closeOverlayModal, renderModal: renderOverlayModal } = useModal()
   const [currentScreen, setCurrentScreen] = useState<number>(0)
-  const [allTopics, setAllTopics] = useState<Topic[]>([])
-  const [allQuestions, setAllQuestions] = useState<Question[]>([])
-  const [selectedTopicId, setSelectedTopicId] = useState<number>(0)
-  const [videoMode, setVideoMode] = useState<string>('')
-  const [qrcodeLink, setQrcodeLink] = useState<string>('')
-  const [lang, setLang] = useState<'ko' | 'en'>('ko')
-  const [peopleMode, setPeopleMode] = useState<number>(1)
-  const [interviewCreateData, setInterviewCreateData] = useState<InterviewCreateDto>({
-    selected_language: 'ko',
-    selected_people_mode: '1인용',
-    selected_question_type: "for me",
-    selected_color_mode: '',
-    selected_subject: '',
-    recorded_seconds: 0,
-    video_link: ''
-  })
-  const [questionType, setQuestionType] = useState<string>('for me')
-
-  const [fileName, setFileName] = useState<string>('')
-  const [videoFile, setVideoFile] = useState<File | null>(null)
-  const [videoMetadata, setVideoMetadata] = useState<VideoData | null>(null)
-
-  // 인터뷰 제한시간 설정
-  const TimeLimitof = [10*60, 15*60] //1인용 10분, 2인용 15분
-  const [time_limit_seconds, setTimeLimit] = useState<number>(TimeLimitof[peopleMode-1])
-  useEffect(() => {
-    setTimeLimit(TimeLimitof[peopleMode-1])
-  },[peopleMode]);
-
-  const { topicService } = useService()
-
-  const {
-    openModal: openOverlayModal,
-    closeModal: closeOverlayModal,
-    renderModal: renderOverlayModal
-  } = useModal()
-
   const nextScreen = (screenNumber: number) => {
     closeOverlayModal()
     setCurrentScreen(screenNumber)
   }
 
+  // 전역 변수 세팅
+  const [ settings, setSettings ] = useState<Settings>({audio: '', video: '', location: ''})
+
+
+  // 예약자 정보
+  const [reservationInfo, setReservationInfo] = useState<DBReservation>({
+    id: 0,
+    userId: 0,
+    date: new Date(),
+    time_range: '',
+    start_time: '',
+    end_time: '',
+    selected_topic_id: 0
+  });
+  const [innerviewUser, setInnerviewUser] = useState<DBUserData>({
+    id: 0,
+    name: '',
+    phone_number: ''
+  });
+  const [forceQuit, setForceQuit] = useState<boolean>(false)
+
+
   useEffect(() => {
-    const fetchTopics = async () => {
-      const res = await topicService.getTopicAndQuestion()
-      setAllTopics(res.topics)
-      const year = new Date().getFullYear()
-      const month = new Date().getMonth() + 1
-      const date = new Date().getDate()
-
-      const today = {
-        ko: `${year}년 ${month}월 ${date}일`,
-        en: `${month}/${date}/${year}`
-      }
-
-      res.questions.forEach((question: Question) => {
-        question.questions.push({
-          ko: `${today['ko']} ${peopleMode === 1 ? '나' : '우리'}의 INNERVIEW 여기까지.`,
-          en: `${peopleMode === 1 ? 'My' : 'Our'} INNERVIEW on ${today['en']} finished.`
-        })
-        setAllQuestions(res.questions)
-      })
-    }
-    fetchTopics()
     openOverlayModal()
-    
   }, [])
 
   return (
     <div className={styles.app}>
 
       {currentScreen === 1 && (
-        <StartScreen lang={lang} nextScreen={nextScreen} />
+        <A1IdentificationScreen nextScreen={nextScreen} settings={settings} setInnerviewUser={setInnerviewUser} setReservationInfo={setReservationInfo} setForceQuit={setForceQuit}/>
         )}
-
       {currentScreen === 2 && (
-        <InfoScreen nextScreen={nextScreen} lang={lang} peopleMode={peopleMode} time_limit_seconds={time_limit_seconds} />
+        <A2InfoScreen nextScreen={nextScreen} settings={settings} innerviewUser={innerviewUser} reservationInfo={reservationInfo} forceQuit={forceQuit}/>
         )}
       {currentScreen === 3 && (
-        <ColorSelectScreen
-          nextScreen={nextScreen}
-          setVideoMode={(mode: string) => {
-            setVideoMode(mode)
-          }}
-        />
-      )}
-      {currentScreen === 4 && 
-      (
-        <TopicSelectionScreen
-          lang={lang}
-          nextScreen={nextScreen}
-          topics={allTopics.filter((t) => {
-            return (t.peopleType === peopleMode || t.peopleType === 0) && (t.questionType === questionType )
-          })}
-          questions={allQuestions}
-          selectTopic={(topicId: number) => {
-            setSelectedTopicId(topicId)
-            setInterviewCreateData({
-              ...interviewCreateData,
-              selected_subject: allTopics.find((t) => t.topicId === topicId)!.topic[lang]
-            })
-          }}
-        />
-        
-      )}
+        <A3CameraSettingScreen nextScreen={nextScreen}/>
+        )}
+      {currentScreen === 4 && (
+        <A4RecordScreen nextScreen={nextScreen}/>
+        )}
       {currentScreen === 5 && (
-        <RecordScreen
-          lang={lang}
-          //peopleMode={peopleMode}
-          nextScreen={nextScreen}
-          questions={allQuestions.find((q) => q.topicId === selectedTopicId)!.questions}
-          setQRCodeLink={(link: string) => {
-            setQrcodeLink(link)
-          }}
-          interviewCreateData={interviewCreateData}
-          videoMode={videoMode}
-          setFileName={(name: string) => {
-            setFileName(name)
-          }}
-          setVideoFile={(file: File) => {
-            setVideoFile(file)
-          }}
-          setVideoMetadata={(metadata: VideoData) => {
-            setVideoMetadata(metadata)
-          }}
-          time_limit_seconds={time_limit_seconds}
-        />
-      )}
+        <A5LastInfoScreen nextScreen={nextScreen}/>
+        )}
       {currentScreen === 6 && (
-        <FinalScreen
-          lang={lang}
-          qrcodeLink={qrcodeLink}
-          fileName={fileName}
-          videoFile={videoFile}
-          videoMetadata={videoMetadata}
-        />
-      )}
-      {renderOverlayModal(
-        <div className={styles.overlay}>
-          <LangSelectScreen
-            lang={lang}
-            setLang={(lang: 'ko' | 'en') => {
-              setLang(lang)
-              setInterviewCreateData({
-                ...interviewCreateData,
-                selected_language: lang
-              })
-            }}
-            peopleMode={peopleMode}
-            setPeopleMode={(mode: number) => {
-              setPeopleMode(mode)
-              setInterviewCreateData({
-                ...interviewCreateData,
-                selected_people_mode: mode === 1 ? '1인용' : '2인용'
-              })
-            }}
-            questionType={questionType}
-            setQuestionType={(Qtype: string) => {
-              setQuestionType(Qtype)
-              setInterviewCreateData({
-                ...interviewCreateData,
-                selected_question_type: Qtype === 'by me' ? 'by me' : 'for me'
-              })  
-            }}
-            close={() => {
-              setCurrentScreen(1)
-              closeOverlayModal()
-            }}
-          />
-        </div>
-      )}
+        <A6EndingScreen nextScreen={nextScreen}/>
+        )}
+      {renderOverlayModal(<A0ManagementScreen nextScreen={nextScreen} settings={settings} setSettings={setSettings}/>)}
     </div>
   )
 }

@@ -257,14 +257,16 @@ ipcMain.handle('load-settings', () => {
   try {
     if (fs.existsSync(CACHE_PATH)) {
       const data = fs.readFileSync(CACHE_PATH, 'utf-8');
+      console.log('Settings loaded:', data);
       return JSON.parse(data); // JSON 파일 파싱
-    } else {
+    } 
+    else {
       console.warn('No settings file found, returning default values.');
-      return { audio: null, video: null }; // 기본 값
+      return { audio: null, video: null, location: 'innerview'}; // 기본 값
     }
   } catch (error) {
     dialog.showErrorBox('Error loading settings:', (error as Error).message)
-    return { audio: null, video: null }; // 오류 시 기본 값 반환
+    return { audio: null, video: null, location: 'innerview'}; // 오류 시 기본 값 반환
   }
 });
 
