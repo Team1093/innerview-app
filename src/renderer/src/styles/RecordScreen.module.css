@@ -67,7 +67,7 @@
 
 .video {
     width: 100%;
-    height: auto;
+    height: fit-content;
     background-color: black;
     transform: rotateY(180deg);
     -webkit-transform: rotateY(180deg);

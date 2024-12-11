@@ -124,9 +124,16 @@ export async function processVideoFile({
   })
 
   const commonFilters =[
-    [{
+    [
+      {
+        filter: 'scale',
+        options: '1920:1080', // 1080p 해상도로 스케일 고정
+        inputs: '[0]',
+        outputs: 'scaledInput',
+      },
+      {
       filter: 'hflip',  // 좌우 반전 필터
-      inputs: '[0]',
+      inputs: 'scaledInput',
       outputs: 'flippedRawVideo'
     }],
     [{

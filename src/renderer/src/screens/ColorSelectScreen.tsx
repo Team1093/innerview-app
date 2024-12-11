@@ -45,7 +45,7 @@ const ColorSelectScreen: React.FC<ColorSelectScreenProps> = ({ nextScreen, setVi
     
         <WebcamStream
           width="100%"
-          height="100%"
+          height="fit-content"
           ratio="16/9"
           filter={filters[videoMode] ? filters[videoMode] : 'none'}
         />
