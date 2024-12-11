@@ -6,7 +6,7 @@ export interface subtitleData {
 }
 
 export interface VideoData {
-  isGrayScale: boolean;
+  videoMode: number;
   subtitles: subtitleData[];
   interview_id: number;
 }

@@ -1,31 +1,34 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import styles from '../styles/ColorSelectScreen.module.css'
 import WebcamStream from '../components/WebcamStream'
-import colorLogo from '../assets/images/BoothImgColor.svg'
-import blackwhiteLogo from '../assets/images/BoothImgBNW.svg'
+// import colorLogo from '../assets/images/BoothImgColor.svg'
+// import blackwhiteLogo from '../assets/images/BoothImgBNW.svg'
 // import COLORbg from '../assets/images/noiseBg.svg'
 // import BNWbg from '../assets/images/ColorSelectScreenBG.svg'
 import { KEYS_SCREEN_BACK, KEYS_SCREEN_CONFIRM, KEYS_SCREEN_NEXT } from '../assets/constants'
 
 interface ColorSelectScreenProps {
   nextScreen: (screenNumber: number) => void
-  setVideoMode: (mode: string) => void
+  setVideoMode: (mode: number) => void
+  videoMode: number
+  filters: string[]
 }
 
-const WEBCAM_SIZE_VW = 45 // 640px in vw (640 / 1920 * 100)
+const ColorSelectScreen: React.FC<ColorSelectScreenProps> = ({ nextScreen, setVideoMode, videoMode, filters }) => {
 
-const ColorSelectScreen: React.FC<ColorSelectScreenProps> = ({ nextScreen, setVideoMode }) => {
-  const [selectedGrayScale, setSelectedGrayScale] = useState<boolean>(false)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (KEYS_SCREEN_NEXT.includes(e.key) || KEYS_SCREEN_BACK.includes(e.key)) {
-        setSelectedGrayScale((prev) => !prev)
+        if (e.key === 'ArrowRight') {
+          setVideoMode((videoMode + 1) % filters.length)
+        } else if (e.key === 'ArrowLeft') {
+          setVideoMode((videoMode + filters.length - 1) % filters.length)
+        }
       }
       if (KEYS_SCREEN_CONFIRM.includes(e.key)) {
-        setVideoMode(selectedGrayScale ? 'black-and-white' : 'color')
         nextScreen(4)
       }
     }
@@ -35,27 +38,22 @@ const ColorSelectScreen: React.FC<ColorSelectScreenProps> = ({ nextScreen, setVi
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [nextScreen, selectedGrayScale, setVideoMode])
+  }, [ videoMode])
 
   return (
     <div className={styles.screen}>
-      <div className={`${styles.section} ${styles.alt} ${!selectedGrayScale && styles.selected}`}>
-        <img src={colorLogo} alt="color" style={{ width: '27vw', height: '40vh' }} />
+    
         <WebcamStream
-          width={String(WEBCAM_SIZE_VW)+'vw'}
-          height={String(WEBCAM_SIZE_VW * (9 / 16))+'vw'}
+          width="100%"
+          height="100%"
           ratio="16/9"
-          isGrayScale={false}
+          filter={filters[videoMode] ? filters[videoMode] : 'none'}
         />
-      </div>
-      <div className={`${styles.section} ${selectedGrayScale && styles.selected}`}>
-        <img src={blackwhiteLogo} alt="gray" style={{ width: '27vw', height: '40vh' }} />
-        <WebcamStream
-          width={String(WEBCAM_SIZE_VW)+'vw'}
-          height={String(WEBCAM_SIZE_VW * (9 / 16))+'vw'}
-          ratio="16/9"
-          isGrayScale={true}
-        />
+      <div className = {styles.selection}>
+        <div className={`${styles.filterBox} ${videoMode===0 ? styles.selected : styles.not_selected}`}>Original</div>
+        <div className={`${styles.filterBox} ${videoMode===1 ? styles.selected : styles.not_selected}`}>Black&White</div>
+        <div className={`${styles.filterBox} ${videoMode===2 ? styles.selected : styles.not_selected}`}>Vintage</div>
+        <div className={`${styles.filterBox} ${videoMode===3 ? styles.selected : styles.not_selected}`}>Vintage2</div>
       </div>
     </div>
   )

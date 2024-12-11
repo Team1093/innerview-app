@@ -4,7 +4,7 @@ export interface Interview {
   selected_language: string;
   selected_people_mode: string;
   selected_question_type: string ;
-  selected_color_mode: string;
+  selected_color_mode: number;
   selected_subject: string;
   recorded_seconds: number;
   video_status: number;
@@ -17,7 +17,7 @@ export interface InterviewCreateDto {
   selected_language: string;
   selected_people_mode: string;
   selected_question_type: string ;
-  selected_color_mode: string;
+  selected_color_mode: number;
   selected_subject: string;
   recorded_seconds: number;
   video_link: string;

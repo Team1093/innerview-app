@@ -19,7 +19,7 @@ export default function App() {
   const [allTopics, setAllTopics] = useState<Topic[]>([])
   const [allQuestions, setAllQuestions] = useState<Question[]>([])
   const [selectedTopicId, setSelectedTopicId] = useState<number>(0)
-  const [videoMode, setVideoMode] = useState<string>('')
+  const [videoMode, setVideoMode] = useState<number>(0)
   const [qrcodeLink, setQrcodeLink] = useState<string>('')
   const [lang, setLang] = useState<'ko' | 'en'>('ko')
   const [peopleMode, setPeopleMode] = useState<number>(1)
@@ -27,7 +27,7 @@ export default function App() {
     selected_language: 'ko',
     selected_people_mode: '1인용',
     selected_question_type: "for me",
-    selected_color_mode: '',
+    selected_color_mode: 0,
     selected_subject: '',
     recorded_seconds: 0,
     video_link: ''
@@ -37,6 +37,14 @@ export default function App() {
   const [fileName, setFileName] = useState<string>('')
   const [videoFile, setVideoFile] = useState<File | null>(null)
   const [videoMetadata, setVideoMetadata] = useState<VideoData | null>(null)
+
+  const filters = [
+    'none',
+    'grayscale(100%)',
+    'sepia(50%) contrast(1.2) brightness(0.9) saturate(0.8) blur(1px)',
+    'sepia(60%) contrast(1.2) brightness(1.1) saturate(0.9) hue-rotate(-10deg)'
+  ];
+  //이 필터를 수정할 때는 uitls.ts의 processVideoFile 함수에 있는 complexFilter도 수정해야 함
 
   // 인터뷰 제한시간 설정
   const TimeLimitof = [10*60, 15*60] //1인용 10분, 2인용 15분
@@ -97,9 +105,11 @@ export default function App() {
       {currentScreen === 3 && (
         <ColorSelectScreen
           nextScreen={nextScreen}
-          setVideoMode={(mode: string) => {
+          setVideoMode={(mode: number) => {
             setVideoMode(mode)
           }}
+          videoMode={videoMode}
+          filters={filters}
         />
       )}
       {currentScreen === 4 && 
@@ -142,6 +152,7 @@ export default function App() {
             setVideoMetadata(metadata)
           }}
           time_limit_seconds={time_limit_seconds}
+          filters={filters}
         />
       )}
       {currentScreen === 6 && (

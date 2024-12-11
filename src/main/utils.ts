@@ -14,7 +14,7 @@ export interface subtitleData {
 }
 
 export interface VideoData {
-  isGrayScale: boolean
+  videoMode: number
   subtitles: subtitleData[]
   interview_id: number
 }
@@ -52,12 +52,12 @@ export async function processVideoFile({
   originalFileBuffer,
   originalFileName,
   subtitles,
-  toGrayScale
+  videoMode,
 }: {
   originalFileBuffer: Buffer
   originalFileName: string
   subtitles: subtitleData[]
-  toGrayScale?: boolean
+  videoMode?: number
 }): Promise<Buffer> {
   const platformName = `${platform()}-${arch()}`
   const ffmpegPath =
@@ -123,57 +123,130 @@ export async function processVideoFile({
     subtitleWriteStream.on('error', reject)
   })
 
+  const commonFilters =[
+    [{
+      filter: 'hflip',  // 좌우 반전 필터
+      inputs: '[0]',
+      outputs: 'flippedRawVideo'
+    }],
+    [{
+      filter: 'format',
+      options: 'rgba',
+      inputs: '[1]',
+      outputs: 'rawLogo'
+    },
+    {
+      filter: 'colorchannelmixer',
+      options: { aa: '0.7' },
+      inputs: 'rawLogo',
+      outputs: 'logo'
+    },
+    {
+      filter: 'overlay',
+      options: { x: '0', y: '0' },
+      inputs: ['filteredVideo', 'logo'],
+      outputs: 'overlayed'
+    },
+    {
+      filter: 'subtitles',
+      options: `filename=${subtitleFileName}:force_style='FontName=Pretendard,Alignment=1,Outline=0'`,
+      inputs: 'overlayed',
+      outputs: 'subtitled'
+    },    
+    {
+      filter: 'format',
+      options: 'yuv420p',  // 최종 색상 포맷 정상화
+      inputs: 'subtitled',
+      outputs: 'outputVideo'
+    }]
+  ]
+  const complexFilter = [
+    [ // 0. Original Filter
+      {
+      filter: 'null',
+      inputs: 'flippedRawVideo',
+      outputs: 'filteredVideo'
+      }
+    ],
+    [ // 1. Black&White Filter
+      {
+        filter: 'format',
+        options: 'gray',
+        inputs: 'flippedRawVideo',
+        outputs: 'filteredVideo'
+      }
+    ],
+    [ // 2. Vintage 1 Filter
+      // 세피아 효과
+      {
+        filter: 'colorchannelmixer',
+        options: '0.393:0.769:0.189:0:0.349:0.686:0.168:0:0.272:0.534:0.131:0',
+        inputs: 'flippedRawVideo',
+        outputs: 'firstFilteredVideo'
+      },
+      // 밝기, 대비, 채도 조정
+      {
+        filter: 'eq',
+        options: {
+          brightness: -0.1, // -0.1 밝기 감소
+          contrast: 1.2,    // 대비 증가
+          saturation: 0.8,  // 채도 감소
+        },
+        inputs: 'firstFilteredVideo',
+        outputs: 'secondFilteredVideo'
+      },
+      // 블러 효과
+      {
+        filter: 'boxblur',
+        options: '1:1', // 흐림 정도
+        inputs: 'secondFilteredVideo',
+        outputs: 'filteredVideo'
+      },
+    ],
+    [ // 3. Vintage 2 Filter
+      // 세피아 효과
+      {
+        filter: 'colorchannelmixer',
+        options: '0.472:0.858:0.234:0:0.393:0.769:0.189:0:0.272:0.534:0.131:0',
+        inputs: 'flippedRawVideo',
+        outputs: 'firstFilteredVideo'
+      },
+      // 밝기, 대비, 채도 조정
+      {
+        filter: 'eq',
+        options: {
+          brightness: 0.1,  // +0.1 밝기 증가
+          contrast: 1.2,    // 대비 증가
+          saturation: 0.9,  // 채도 약간 감소
+        },
+        inputs: 'firstFilteredVideo',
+        outputs: 'secondFilteredVideo'
+      },
+      // 색상 회전
+      {
+        filter: 'hue',
+        options: 'h=-10', // -10도 회전
+        inputs: 'secondFilteredVideo',
+        outputs: 'filteredVideo'
+      }
+    ]
+  ];
+  const finalFilter = [...commonFilters[0], ...complexFilter[videoMode ?? 0], ...commonFilters[1]]
+
   return new Promise<Buffer>((resolve, reject) => {
     ffmpeg(inputFileName)
       .input(watermarkFileName)
       .videoCodec('libx264')
       .audioCodec('aac')
-      .complexFilter([
-        {
-            filter: 'format',
-            options: 'rgba',
-            inputs: '[1]',
-            outputs: 'formatted'
-        },
-        {
-            filter: 'colorchannelmixer',
-            options: { aa: '1' },
-            inputs: 'formatted',
-            outputs: 'logo'
-        },
-        {
-            filter: 'hflip',  // 좌우 반전 필터
-            inputs: '[0]',
-            outputs: 'flipped'
-        },
-        {
-            filter: 'overlay',
-            options: { x: '0', y: '0' },
-            inputs: ['flipped', 'logo'],
-            outputs: 'overlayed'
-        },
-        {
-            filter: 'format',
-            options: toGrayScale === true ? 'gray' : 'yuv420p',  // 흑백 처리 필터
-            inputs: 'overlayed',
-            outputs: 'grayscale'
-        },
-        {
-            filter: 'subtitles',
-            options: `${subtitleFileName}:force_style='FontName=Pretendard,Alignment=1,Outline=0'`,
-            inputs: 'grayscale',
-            outputs: 'subtitled'
-        },
-        {
-            filter: 'format',
-            options: 'yuv420p',  // 최종 색상 포맷 변환
-            inputs: 'subtitled'
-        }
-      ])
+      .complexFilter(finalFilter)
       .output(outputFileName)
       .outputOptions('-preset fast')
       .outputOptions('-movflags +faststart')
       .outputOptions('-async 1') // 싱크 문제 해결 옵션
+      .outputOptions([
+        '-map [outputVideo]',
+        '-map 0:a'
+      ])
       .on('start', (commandLine) => {
       console.log('FFmpeg command:', commandLine)
       })

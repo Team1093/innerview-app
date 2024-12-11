@@ -5,10 +5,10 @@ interface WebcamStreamProps {
   width: string | number;
   height: string | number;
   ratio: string;
-  isGrayScale: boolean;
+  filter: string;
 }
 
-const WebcamStream: React.FC<WebcamStreamProps> = ({ width, height, ratio, isGrayScale }) => {
+const WebcamStream: React.FC<WebcamStreamProps> = ({ width, height, ratio, filter }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const { selectedVideo } = useDevice();
   useEffect(() => {
@@ -52,7 +52,7 @@ const WebcamStream: React.FC<WebcamStreamProps> = ({ width, height, ratio, isGra
           height: height,
           aspectRatio: ratio,
           objectFit: "cover",
-          filter: isGrayScale ? "grayscale(100%)" : "none",
+          filter: filter ? filter : "none",
           transform: "rotateY(180deg)",
           WebkitTransform: "rotateY(180deg)",
           MozTransform: "rotateY(180deg)",

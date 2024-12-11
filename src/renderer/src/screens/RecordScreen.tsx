@@ -26,11 +26,12 @@ interface RecordScreenProps {
   questions: langText[]
   setQRCodeLink: (link: string) => void
   interviewCreateData: InterviewCreateDto
-  videoMode: string
+  videoMode: number
   setFileName: (fileName: string) => void
   setVideoFile: (file: File) => void
   setVideoMetadata: (metadata: VideoData) => void
   time_limit_seconds: number
+  filters: string[]
 }
 
 const RecordScreen: React.FC<RecordScreenProps> = ({
@@ -44,7 +45,8 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
   setFileName,
   setVideoFile,
   setVideoMetadata,
-  time_limit_seconds
+  time_limit_seconds,
+  filters
 }) => {
   // 시간 관련값 세팅
   const READY_SECONDS = 5
@@ -289,7 +291,7 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
       chunksRef.current = []
 
       const videoData: VideoData = {
-        isGrayScale: videoMode === 'black-and-white',
+        videoMode: videoMode,
         subtitles: totalSubtitles,
         interview_id: res.id
       }
@@ -327,7 +329,7 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
         console.log('internet error, save interview in local')
         
         const videoData: VideoData = {
-          isGrayScale: videoMode === 'black-and-white',
+          videoMode : videoMode,
           subtitles: totalSubtitles,
           interview_id: 0
         }
@@ -432,7 +434,7 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
             muted
             className={styles.video}
             style={{
-              filter: videoMode == 'black-and-white' ? 'grayscale(100%)' : 'none'
+              filter: filters[videoMode] ? filters[videoMode] : 'none'
             }}
           />
 
