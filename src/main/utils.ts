@@ -127,7 +127,11 @@ export async function processVideoFile({
     [
       {
         filter: 'scale',
-        options: '1920:1080', // 1080p 해상도로 스케일 고정
+        options: {
+          w: '1920',
+          h: '1080',
+          force_original_aspect_ratio: 'increase', // 비율 유지하면서 더 큰 쪽을 맞춤
+        },
         inputs: '[0]',
         outputs: 'scaledInput',
       },

@@ -128,17 +128,12 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
 
       // 미디어 스트림 정의
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: selectedVideo
-          ? {
-              deviceId: { exact: selectedVideo },
+        video: 
+            {
+              deviceId: selectedVideo ? {  exact: selectedVideo} : undefined ,
               width: { ideal: 1920 }, // 16:9 비율의 가로 해상도
               height: { ideal: 1080 }, // 16:9 비율의 세로 해상도
               aspectRatio: 16 / 9, // 16:9 비율 고정
-            }
-          : {
-              width: { ideal: 1920 },
-              height: { ideal: 1080 },
-              aspectRatio: 16 / 9,
             },
         audio: selectedAudio ? { deviceId: { exact: selectedAudio } } : true,
       });
@@ -447,8 +442,6 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
             className={styles.video}
             style={{
               filter: filters[videoMode] ? filters[videoMode] : 'none',
-              width: "100%",
-              height: 'fit-content'
             }}
           />
 
