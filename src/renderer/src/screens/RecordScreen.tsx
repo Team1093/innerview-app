@@ -131,9 +131,6 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
         video: 
             {
               deviceId: selectedVideo ? {  exact: selectedVideo} : undefined ,
-              width: { ideal: 1920 }, // 16:9 비율의 가로 해상도
-              height: { ideal: 1080 }, // 16:9 비율의 세로 해상도
-              aspectRatio: 16 / 9, // 16:9 비율 고정
             },
         audio: selectedAudio ? { deviceId: { exact: selectedAudio } } : true,
       });
@@ -434,17 +431,18 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
       {videoUploadState === 0 && (
         <>
           {/* 비디오 */}
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
-            className={styles.video}
-            style={{
-              filter: filters[videoMode] ? filters[videoMode] : 'none',
-            }}
-          />
-
+          <div className={styles.videocontainer}>
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className={styles.video}
+              style={{
+                filter: filters[videoMode] ? filters[videoMode] : 'none',
+              }}
+            />
+          </div>
           {/* 워터마크 */}
           <p className={styles.watermark}>
             <img src={textLogo} alt="logo" />

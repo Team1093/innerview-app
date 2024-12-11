@@ -125,19 +125,30 @@ export async function processVideoFile({
 
   const commonFilters =[
     [
-      {
-        filter: 'scale',
-        options: {
-          w: '1920',
-          h: '1080',
-          force_original_aspect_ratio: 'increase', // 비율 유지하면서 더 큰 쪽을 맞춤
-        },
-        inputs: '[0]',
-        outputs: 'scaledInput',
-      },
+      // {
+      //   filter: 'scale',
+      //   options: {
+      //     w: '1920',
+      //     h: '1080',
+      //     force_original_aspect_ratio: 'increase', // 비율 유지하면서 더 큰 쪽을 맞춤
+      //   },
+      //   inputs: '[0]',
+      //   outputs: 'scaledInput',
+      // },
+      // {
+      //   filter: 'crop',
+      //   options: {
+      //     w: '1920', // 크롭할 가로 길이
+      //     h: '1080', // 크롭할 세로 길이
+      //     x: '0',    // 왼쪽 상단 기준의 X 좌표
+      //     y: '0',    // 왼쪽 상단 기준의 Y 좌표
+      //   },
+      //   inputs: 'scaledInput', // 입력 스트림 (예: 비디오 스트림)
+      //   outputs: 'croppedVideo', // 크롭된 출력 스트림 이름
+      // },
       {
       filter: 'hflip',  // 좌우 반전 필터
-      inputs: 'scaledInput',
+      inputs: '[0]',
       outputs: 'flippedRawVideo'
     }],
     [{
