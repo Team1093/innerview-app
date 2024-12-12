@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react'
 import styles from '../styles/ColorSelectScreen.module.css'
 import WebcamStream from '../components/WebcamStream'
+import bgImage from '../assets/images/whiteNoiseBg.svg'
 // import colorLogo from '../assets/images/BoothImgColor.svg'
 // import blackwhiteLogo from '../assets/images/BoothImgBNW.svg'
 // import COLORbg from '../assets/images/noiseBg.svg'
@@ -42,13 +43,17 @@ const ColorSelectScreen: React.FC<ColorSelectScreenProps> = ({ nextScreen, setVi
 
   return (
     <div className={styles.screen}>
-    
+    <img className={styles.bg} src={bgImage} alt="background"/>
+    <div className={styles.title}>원하시는 필터를 선택해주세요</div>
+      <div className={styles.videoBox}>
         <WebcamStream
           width="100%"
-          height="fit-content"
+          height="auto"
           ratio="16/9"
-          filter={filters[videoMode] ? filters[videoMode] : 'none'}
+          filters={filters}
+          videoMode={videoMode}
         />
+      </div>
       <div className = {styles.selection}>
         <div className={`${styles.filterBox} ${videoMode===0 ? styles.selected : styles.not_selected}`}>Original</div>
         <div className={`${styles.filterBox} ${videoMode===1 ? styles.selected : styles.not_selected}`}>Black&White</div>

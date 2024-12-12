@@ -125,32 +125,12 @@ export async function processVideoFile({
 
   const commonFilters =[
     [
-      // {
-      //   filter: 'scale',
-      //   options: {
-      //     w: '1920',
-      //     h: '1080',
-      //     force_original_aspect_ratio: 'increase', // 비율 유지하면서 더 큰 쪽을 맞춤
-      //   },
-      //   inputs: '[0]',
-      //   outputs: 'scaledInput',
-      // },
-      // {
-      //   filter: 'crop',
-      //   options: {
-      //     w: '1920', // 크롭할 가로 길이
-      //     h: '1080', // 크롭할 세로 길이
-      //     x: '0',    // 왼쪽 상단 기준의 X 좌표
-      //     y: '0',    // 왼쪽 상단 기준의 Y 좌표
-      //   },
-      //   inputs: 'scaledInput', // 입력 스트림 (예: 비디오 스트림)
-      //   outputs: 'croppedVideo', // 크롭된 출력 스트림 이름
-      // },
       {
       filter: 'hflip',  // 좌우 반전 필터
       inputs: '[0]',
       outputs: 'flippedRawVideo'
-    }],
+      }
+    ],
     [{
       filter: 'format',
       options: 'rgba',
@@ -202,7 +182,18 @@ export async function processVideoFile({
       // 세피아 효과
       {
         filter: 'colorchannelmixer',
-        options: '0.393:0.769:0.189:0:0.349:0.686:0.168:0:0.272:0.534:0.131:0',
+        options: {
+          rr: 0.8179, // (0.393 * 0.3) + (1 * 0.7)
+          rg: 0.2307, // (0.769 * 0.3) + (0 * 0.7)
+          rb: 0.0567, // (0.189 * 0.3) + (0 * 0.7)
+          gr: 0.1047, // (0.349 * 0.3) + (0 * 0.7)
+          gg: 0.9058, // (0.686 * 0.3) + (1 * 0.7)
+          gb: 0.0504, // (0.168 * 0.3) + (0 * 0.7)
+          br: 0.0816, // (0.272 * 0.3) + (0 * 0.7)
+          bg: 0.1602, // (0.534 * 0.3) + (0 * 0.7)
+          bb: 0.7393, // (0.131 * 0.3) + (1 * 0.7)
+          aa: 1       // 알파 채널 (투명도), 일반적으로 변경하지 않음
+        },
         inputs: 'flippedRawVideo',
         outputs: 'firstFilteredVideo'
       },
@@ -210,21 +201,15 @@ export async function processVideoFile({
       {
         filter: 'eq',
         options: {
-          brightness: -0.1, // -0.1 밝기 감소
-          contrast: 1.2,    // 대비 증가
-          saturation: 0.8,  // 채도 감소
+          contrast: 0.8,
+          brightness: 0.2, // CSS의 1.2는 ffmpeg에서 기준값 1에서 0.2 증가
+          saturation: 2
         },
         inputs: 'firstFilteredVideo',
-        outputs: 'secondFilteredVideo'
-      },
-      // 블러 효과
-      {
-        filter: 'boxblur',
-        options: '1:1', // 흐림 정도
-        inputs: 'secondFilteredVideo',
         outputs: 'filteredVideo'
-      },
+      }
     ],
+    
     [ // 3. Vintage 2 Filter
       // 세피아 효과
       {

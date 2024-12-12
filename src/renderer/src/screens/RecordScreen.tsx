@@ -3,7 +3,7 @@ import styles from '../styles/RecordScreen.module.css'
 import useTimer from '../lib/useTimer'
 import { useService } from '../service/useService'
 import useModal from '../lib/useModal'
-import textLogo from '../assets/images/textLogo.svg'
+// import textLogo from '../assets/images/textLogo.svg'
 import { useDevice } from '../lib/DeviceContext';
 
 import {
@@ -444,32 +444,27 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
             />
           </div>
           {/* 워터마크 */}
-          <p className={styles.watermark}>
+          {/* <p className={styles.watermark}>
             <img src={textLogo} alt="logo" />
-          </p>
+          </p> */}
+          <div className={styles.bigContainer}>
+            <div className={styles.container}>
 
-          <div className={styles.container}>
-            <div className={styles.question}>
-              {currentQuestionIndex < questions.length && (
-                <>
-                  {currentQuestionIndex === questions.length - 1 ? (
-                    <h3>{`${
-                      lang === 'ko'
-                        ? '마지막으로 아래 문구를 읽어주세요'
-                        : 'Please read the following text'
-                    }`}</h3>
-                  ) : (
-                    <h3>{`${krNumPrefixs[currentQuestionIndex][lang]} ${questionSuffixs[lang]}`}</h3>
-                  )}
-                  <p>{questions[currentQuestionIndex][lang]}</p>
-                </>
-              )}
+              <p className={styles.questionIndex}>
+                {currentQuestionIndex+1 === questions.length ? '' : `${currentQuestionIndex + 1} / ${questions.length-1}`}
+              </p>
+
+              <div className={styles.question}>
+                {currentQuestionIndex < questions.length && (
+                    <p>{questions[currentQuestionIndex][lang]}</p>
+                )}
+              </div>
+
+              <div className={styles.timer}>{formattedTime}</div>
+              
             </div>
-            <div className={styles.timer}>{formattedTime}</div>
           </div>
-          <p className={styles.questionIndex}>
-            {currentQuestionIndex+1 === questions.length ? '' : `${currentQuestionIndex + 1} / ${questions.length-1}`}
-          </p>
+
           
         </>
       )}
