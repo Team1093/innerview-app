@@ -12,24 +12,26 @@ interface FinalScreenProps {
 
 const FinalScreen: React.FC<FinalScreenProps> = ({ qrcodeLink }) => {
   const [date, setDate] = useState<string>('')
+  const [key, setKey] = useState<boolean>(true)
 
   useEffect(() => {
     const today = new Date().toLocaleDateString()
     setDate(today)
     window.addEventListener('keydown', (event) => {
-      if (event.key === 'F5') {
+      setKey(!key)
+      if (event.key === 'Tab') {
         window.location.reload()
       }
     });
 
     return () => {
       window.removeEventListener('keydown', (event) => {
-      if (event.key === 'F5') {
+      if (event.key === 'Tab') {
         window.location.reload()
       }
       });
     };
-  }, [])
+  }, [key])
 
   return (
     <>

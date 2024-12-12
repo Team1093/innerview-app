@@ -5,6 +5,7 @@ import bgImage2 from '../assets/images/test_2.jpg'
 import bgImage3 from '../assets/images/test_q1.jpg'
 import bgImage4 from '../assets/images/test_q2.jpg'
 import bgImage5 from '../assets/images/test_q3.jpg'
+import bgImage6 from '../assets/images/test_q4.jpg'
 import { KEYS_SCREEN_CONFIRM, KEYS_SCREEN_NEXT, KEYS_SCREEN_BACK } from '../assets/constants'
 
 interface StartScreenProps {
@@ -34,7 +35,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ nextScreen }) => {
         page === 2 ? <img className={styles.bg} src={bgImage2} alt="background"/> : 
         page === 3 ? <img className={styles.bg} src={bgImage3} alt="background"/> :
         page === 4 ? <img className={styles.bg} src={bgImage4} alt="background"/> :
-        <img className={styles.bg} src={bgImage5} alt="background"/>
+        page === 5 ? <img className={styles.bg} src={bgImage5} alt="background"/> :
+        <img className={styles.bg} src={bgImage6} alt="background"/>
         }
     </div>
   )
