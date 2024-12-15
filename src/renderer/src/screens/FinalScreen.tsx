@@ -56,9 +56,7 @@ const FinalScreen: React.FC<FinalScreenProps> = ({ qrcodeLink }) => {
       </div>
       
     </div>
-  </>
-            
-          
+  </>   
   )
 }
 

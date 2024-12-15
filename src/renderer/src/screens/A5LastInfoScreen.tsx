@@ -1,17 +1,22 @@
 'use client'
 import styles from '../styles/A5LastInfoScreen.module.css'
-
+import {Settings} from '../service/settings/interface'
+import ko_ending from '../assets/videos/ko_ending.mp4'
+import en_ending from '../assets/videos/en_ending.mp4'
 
 interface A5LastInfoScreenProps {
   nextScreen: (screenNumber: number) => void
+  settings: Settings
 }
 
-const A5LastInfoScreen: React.FC<A5LastInfoScreenProps> = ({ nextScreen }) => {
+const A5LastInfoScreen: React.FC<A5LastInfoScreenProps> = ({ nextScreen, settings }) => {
+  const { lang } = settings
+  const videoSrc = lang === 'ko' ? ko_ending : en_ending;
   return (
     <div className={styles.bg}>
-      {/* Add your component JSX here */}
-      <h1>Last Info Screen</h1>
-      <button onClick={() => nextScreen(6)}>Next</button>
+      <video autoPlay className={styles.video} onEnded={() => nextScreen(6)}>
+        <source src={videoSrc} type="video/mp4" />
+      </video>
     </div>
   );
 }

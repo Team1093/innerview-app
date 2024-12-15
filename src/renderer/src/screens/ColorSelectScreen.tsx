@@ -41,6 +41,8 @@ const ColorSelectScreen: React.FC<ColorSelectScreenProps> = ({ nextScreen, setVi
     }
   }, [ videoMode])
 
+
+
   return (
     <div className={styles.screen}>
     <img className={styles.bg} src={bgImage} alt="background"/>

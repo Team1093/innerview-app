@@ -10,7 +10,7 @@
     align-items: center;
 }
 
-h1 {
+.bg h1 {
     justify-self: center;
     position: static;
     color: #FFF;
@@ -25,7 +25,7 @@ h1 {
 
 .QR {
     position: static;
-    margin-top: 15vh;
+    margin-top: 10vh;
     justify-self: center;
     background-color: #F2F2F2;
     border-radius: 15vh; /* 10px */

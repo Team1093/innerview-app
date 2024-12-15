@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styles from '../styles/RecordScreen.module.css'
-import useTimer from '../lib/useTimer'
+
 import { useService } from '../service/useService'
 import useModal from '../lib/useModal'
 // import textLogo from '../assets/images/textLogo.svg'
@@ -15,6 +15,7 @@ import {
   quotes
 } from '../assets/constants'
 
+import useTimer from '../lib/useTimer'
 import { subtitleData, VideoData } from '../service/file/interface'
 import { InterviewCreateDto } from '../service/interview/interface'
 import LastInfoModal from '../components/LastInfoModal'
@@ -78,8 +79,8 @@ const RecordScreen: React.FC<RecordScreenProps> = ({
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
-
   const streamRef = useRef<MediaStream | null>(null)
+  
   const { selectedAudio, selectedVideo } = useDevice();
 
   const timestampsRef = useRef(timestamps)

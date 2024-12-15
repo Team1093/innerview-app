@@ -1,6 +1,118 @@
-.bg {
+.frame {
+    position: absolute;
     width: 100vw;
     height: 100vh;
-    background-color: #000000;
+}
+
+.userInfoBg{
+    width: 100vw;
+    height: 100vh;
     color :beige;
+}
+
+.bgImg{
+    position:fixed;
+    z-index: -1;
+}
+
+.langContainer{
+    position: absolute;
+    display: flex;
+    left : 20vw;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 80vw;
+}
+
+.langContainer h1{
+    position : relative;
+    font-size: 4vh;
+    font-weight: 200;
+    color:#000000;
+}
+.langContainer h2{
+    position : relative;
+
+    font-size: 2em;
+    font-weight: 200;
+    color:#000000;
+}
+.langBoxContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-top: 10vh;
+    height: 10vh;
+    width: 50vw;
+    gap: 5vh;
+    
+}
+
+.langBox{
+    position: relative;
+    width: 100vw;
+    height: 10vh;
+    border: 1px solid #000000;
+    border-radius: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5vh;
+    font-family: 'Pretendard';
+    font-weight: 200;
+}
+
+.selected {
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+.unSelected {
+    background-color: #FFFFFF;
+    color: #000000;
+    opacity: 0.3;
+}
+
+.messageContainer{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+.messageContainer h1{
+    position : relative;
+    font-size: 6vh;
+    font-family: 'Pretendard';
+    font-weight: 500;
+    color:#000000;
+}
+.messageContainer p{
+    position : relative;
+
+    font-size: 3vh;
+    font-weight: 200;
+    font-family: 'Pretendard';
+    color:#000000;
+}
+
+.userInfoBg {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: beige;
+    color: #000000;
+}
+
+.video {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
 }

@@ -262,11 +262,11 @@ ipcMain.handle('load-settings', () => {
     } 
     else {
       console.warn('No settings file found, returning default values.');
-      return { audio: null, video: null, location: 'innerview'}; // 기본 값
+      return { audio: null, video: null, location: 'innerview', lang: ''}; // 기본 값
     }
   } catch (error) {
     dialog.showErrorBox('Error loading settings:', (error as Error).message)
-    return { audio: null, video: null, location: 'innerview'}; // 오류 시 기본 값 반환
+    return { audio: null, video: null, location: 'innerview', lang: ''}; // 오류 시 기본 값 반환
   }
 });
 

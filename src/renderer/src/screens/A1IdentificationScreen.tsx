@@ -53,7 +53,6 @@ const A1IdentificationScreen: React.FC<A1IdentificationScreenProps> = ({ nextScr
       <div className={styles.qrbox}>
         <canvas ref={QRcanvasRef} className={styles.QR}/>
       </div>
-      {/* <button onClick={() => nextScreen(2)}>Next</button> */}
     </div>
   );
 }

@@ -7,7 +7,7 @@ export interface DBUserData {
 export interface DBReservation {
   id: number;
   userId: number;
-  date: Date;
+  date: string;
   time_range: string;
   selected_topic_id: number;
   start_time: string;

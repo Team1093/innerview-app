@@ -36,13 +36,9 @@ function subtitleDataToString(subtitles: subtitleData[]): string {
   }
   return subtitles
     .map((subtitle, index) => {
-      if (!subtitle.text1 || !subtitle.text2) {
-        return ''
-      }
       return `${index + 1}
 ${secondsToString(subtitle.startSeconds)} --> ${secondsToString(subtitle.endSeconds)}
 <font size="24px"><b>${subtitle.text1}</b></font>
-<font size="20px">${subtitle.text2}</font>
 `
     })
     .join('\n')
@@ -151,7 +147,7 @@ export async function processVideoFile({
     },
     {
       filter: 'subtitles',
-      options: `filename=${subtitleFileName}:force_style='FontName=Pretendard,Alignment=1,Outline=0'`,
+      options: `filename=${subtitleFileName}:force_style='FontName=Pretendard,Alignment=8,Outline=0'`,
       inputs: 'overlayed',
       outputs: 'subtitled'
     },    

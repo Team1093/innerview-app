@@ -3,6 +3,7 @@ export interface subtitleData {
   endSeconds: number;
   text1: string;
   text2: string;
+  isFirst: boolean;
 }
 
 export interface VideoData {
