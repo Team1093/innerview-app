@@ -30,24 +30,19 @@ const A3CameraSettingScreen: React.FC<A3CameraSettingScreenProps> = ({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (KEYS_SCREEN_NEXT.includes(e.key) || KEYS_SCREEN_BACK.includes(e.key)) {
-        if (e.key === 'ArrowRight') {
+      if (KEYS_SCREEN_NEXT.includes(e.key)) 
           setVideoMode((videoMode + 1) % filters.length)
-        } else if (e.key === 'ArrowLeft') {
+      else if ( KEYS_SCREEN_BACK.includes(e.key)) 
           setVideoMode((videoMode + filters.length - 1) % filters.length)
-        }
-      }
-      if (KEYS_SCREEN_CONFIRM.includes(e.key)) {
+      else if (KEYS_SCREEN_CONFIRM.includes(e.key)) {
         nextScreen(4)
       }
     }
-
     window.addEventListener('keydown', handleKeyDown)
-
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [ videoMode])
+  }, [videoMode])
 
 
   const headTitle : langText = { 

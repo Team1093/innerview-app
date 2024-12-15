@@ -17,7 +17,7 @@ const A6EndingScreen: React.FC<A6EndingScreenProps> = ({
   topic,
   settings
 }) => {
-  const { formattedTime } = useTimer(true, 60, () => nextScreen(1))
+  const { formattedTime, seconds } = useTimer(true, 60, () => nextScreen(1))
   const date = `${new Date().getFullYear()}- ${new Date().getMonth() + 1}- ${new Date().getDate()}`
   return (
     <>
@@ -41,7 +41,7 @@ const A6EndingScreen: React.FC<A6EndingScreenProps> = ({
       <div className={styles.section}>
         <p>Edited by <b>INNERVIEW</b></p>
       </div>
-      
+      {60 - seconds} 초 후에 처음 화면으로 돌아갑니다.
     </div>
   </>   
   )
