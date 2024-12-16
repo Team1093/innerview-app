@@ -71,12 +71,39 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   const chunksRef = useRef<Blob[]>([])
   const streamRef = useRef<MediaStream | null>(null)
 
-  const [time_limit, setTimeLimit] = useState<number>(15*60)
-  // 시간 설정해야 함함
+
+
+  // 시간 설정정
+  const setTimeLimitFunction = () => {
+    const time_milli_seconds = new Date(reservationInfo.end_time).getTime() - new Date().getTime()
+    if(forceQuit) {
+      if(topic.peopleType === 2) {
+        return time_milli_seconds > (30+3)*60*1000 ? (30*60) : (time_milli_seconds/1000 - 3*60)
+      }
+      else if(topic.peopleType === 1) {
+        return  time_milli_seconds > (15+2)*60*1000 ? (15*60) : (time_milli_seconds/1000 - 2*60)
+      }
+    }
+    else {
+      if(topic.peopleType === 2) {
+        return 30*60;
+      } else if (topic.peopleType === 1) {
+        return 15*60;
+      } else {
+        return 30*60;
+      }
+    }
+    return 0; // Default return value
+  }
+  const time_limit = setTimeLimitFunction() ?? 0;
   const { formattedTime, seconds } = useTimer(
     isRecording, 
     time_limit, 
-    () => setIsEndingPopup(true));
+    () => {
+      console.log('녹화 시간 초과')
+      setIsByebyePopup(true);
+      handleResumeRecording();
+    });
   const secondsRef = useRef(seconds)
 
 
@@ -241,28 +268,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   }, [subtitlePieces]);
 
 
-  // 진행 시간 관리
-  const setTimeLimitFunction = () => {
-    const time_milli_seconds = new Date(reservationInfo.end_time).getTime() - new Date().getTime()
-    if(forceQuit) {
-      if(topic.peopleType === 2) {
-        time_milli_seconds > (30+3)*60*1000 ? setTimeLimit(30*60) : setTimeLimit(time_milli_seconds/1000 - 3*60)
-      }
-      else if(topic.peopleType === 1) {
-        time_milli_seconds > (15+2)*60*1000 ? setTimeLimit(15*60) : setTimeLimit(time_milli_seconds/1000 - 2*60)
-      }
-    }
-    else {
-      if(topic.peopleType === 2) {
-        setTimeLimit(30*60)
-      } else if (topic.peopleType === 1) {
-        setTimeLimit(15*60)
-      } else {
-        setTimeLimit(15*60)
-      }
-    }
-    return;
-  }
+
 
   const initializeMedia = async () : Promise<void> => {
     try {
