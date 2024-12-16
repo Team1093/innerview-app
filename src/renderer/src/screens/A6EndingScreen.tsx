@@ -40,8 +40,8 @@ const A6EndingScreen: React.FC<A6EndingScreenProps> = ({
       </div>
       <div className={styles.section}>
         <p>Edited by <b>INNERVIEW</b></p>
+        <p className={styles.lastTime}>{60 - seconds} 초 후에 처음 화면으로 돌아갑니다.</p>
       </div>
-      {60 - seconds} 초 후에 처음 화면으로 돌아갑니다.
     </div>
   </>   
   )
