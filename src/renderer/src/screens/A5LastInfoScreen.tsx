@@ -1,8 +1,8 @@
 'use client'
 import styles from '../styles/A5LastInfoScreen.module.css'
 import {Settings} from '../service/settings/interface'
-import ko_ending from '../assets/videos/ko_ending.mp4'
-import en_ending from '../assets/videos/en_ending.mp4'
+import ko_ending from '../assets/videos/ending_guide.mp4'
+import en_ending from '../assets/videos/ending_guide.mp4'
 
 interface A5LastInfoScreenProps {
   nextScreen: (screenNumber: number) => void
