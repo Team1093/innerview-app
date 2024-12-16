@@ -9,8 +9,8 @@ import ko_single from '../assets/videos/ko_single.mp4'
 import ko_couple from '../assets/videos/ko_couple.mp4'
 import en_single from '../assets/videos/en_single.mp4'
 import en_couple from '../assets/videos/en_couple.mp4'
-import bgImg from '../assets/images/gridBgWithRemoteController.jpg'
-import gridBg from '../assets/images/gridBg.jpg'
+import bgImg from '../assets/images/LangSelectScreen.jpg'
+import gridBg from '../assets/images/whiteNoiseBg.svg'
 
 import { useEffect, useState } from 'react'
 import { useService } from '../service/useService'
@@ -65,16 +65,16 @@ const A2InfoScreen: React.FC<A2InfoScreenProps> = ({ nextScreen, settings, setSe
   const [videoIndex, setVideoIndex] = useState<boolean>(false)
   const nextPageInfo : langText[] = [
     {
-      ko: '아무 버튼을 누르면 다음 화면으로 넘어갑니다.',
-      en: 'Press any key to go to the next page!',
+      ko: '[다음] 버튼을 누르면 다음 화면으로 넘어갑니다.',
+      en: 'Press [Next] key to go to the next page!',
     },
     {
-      ko: '착용하신 후에 버튼을 눌러주세요.',
-      en: 'Press any key after wearing the headset.',
+      ko: '착용하신 후에 [다음]버튼을 눌러주세요.',
+      en: 'Press [Next] key after wearing the headset.',
     },
     {
-      ko: '버튼을 누르시면 안내 영상이 시작됩니다.',
-      en: 'Press any key to start the guide video!',
+      ko: '',
+      en: '',
     },
 ];
   const messages:langText[] = [
@@ -87,8 +87,8 @@ const A2InfoScreen: React.FC<A2InfoScreenProps> = ({ nextScreen, settings, setSe
       en: 'Please wear your headset!'
     },
     {
-      ko: '이제 안내 영상이 시작됩니다!',
-      en: 'Starting the guide video!'
+      ko: '[다음] 버튼을 누르시면 안내 영상이 시작됩니다.',
+      en: 'Press any key to start the guide video!',
     }
   ]
   

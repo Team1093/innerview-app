@@ -71,20 +71,6 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   const chunksRef = useRef<Blob[]>([])
   const streamRef = useRef<MediaStream | null>(null)
 
-  // const [totalVideoSeconds, setTotalVideoSeconds] = useState<number>(0)
-  // const [isTotalVideoRecording, setIsTotalVideoRecording] = useState<boolean>(false)
-  // const totalVideoSecondsRef = useRef(totalVideoSeconds);
-  // useEffect(() => {
-  //   totalVideoSecondsRef.current = totalVideoSeconds;
-  //   if(isTotalVideoRecording) {
-  //     const timer = setTimeout(() => {
-  //       setTotalVideoSeconds((prev) => prev + 1);
-  //     }, 1000);
-  //     return () => clearTimeout(timer);
-  //   } 
-  //   return;
-  // }, [totalVideoSeconds]);
-
   const [time_limit, setTimeLimit] = useState<number>(15*60)
   // 시간 설정해야 함함
   const { formattedTime, seconds } = useTimer(
@@ -163,16 +149,16 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
         setIsStartingPopup(false);
         handleStartRecording();
         setIsHelloPopup(true);
-      }, 3000);
+      }, 5000);
       return () => clearTimeout(timer);
     }
     else if(isStartingPopup2) {
       const timer1 = setTimeout(() => {
         setIsStartingPopup2(false);
-      }, 5000);
+      }, 3000);
       const timer1_1 = setTimeout(() => {
         setIsLogoPopup(true);
-      }, 4000);
+      }, 2000);
       return () => {clearTimeout(timer1_1); clearTimeout(timer1);}
     } else if(isLogoPopup) {
       const timer2 = setTimeout(() => {
@@ -209,7 +195,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
       const isQuestionPopupTimer = setTimeout(() => {
         setIsQuestionPopup(false);
         setIsKeydownActive(true);
-      }, 2000);
+      }, 5000);
       return () => clearTimeout(isQuestionPopupTimer);
     } else if(videoUploadState === 'only local uploaded') {
         window.addEventListener('keydown', () => {
@@ -628,14 +614,14 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
             <div className={styles.textContainer}>
               <h1>
                 {lang === 'ko' ?
-                '본격적인 인터뷰에 앞서 가볍게 인사 한 마디씩 부탁드립니다.' 
-                : 'Please leave a short greeting before the interview.'
+                 `본격적인 인터뷰에 앞서 ${helloTime}초 간\n 가벼운 인사를 촬영합니다.`
+                : `Please leave a short greeting\nbefore the interview for ${helloTime} seconds.`
                 }
               </h1>
               <p>
                 {lang === 'ko' ?
-                  '"안녕하세요, 저는 2025년 1월 1일의 홍길동입니다."\n와 같이 짧게 말씀해주시면 됩니다.\n인사를 남기신 뒤에는는 다음 버튼을 눌러주세요!' 
-                  : 'Please say something like\n"Hello, I am Hong Gil-dong on January 1, 2025."\nAfter leaving a greeting, please press the next button!'
+                  '다음 예시와 같이 짧게 인사를 남겨주세요!\n"안녕하세요, 저는 2025년 1월 1일의 홍길동입니다."' 
+                  : 'Please say something like\n"Hello, I am Hong Gil-dong on January 1, 2025."'
                   }
               </p>
             </div>
@@ -667,7 +653,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
             animate='visible'
             exit='exit'
             transition={{
-              duration: 1,
+              duration: 0.5,
             }}
             className={styles.popup}
             >
@@ -679,9 +665,9 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
                 }
               </h1>
               <p>
-                {lang === 'ko' ?
-                  '부디 편안한 시간이 되시길 바랍니다.' 
-                  : 'I hope you have a comfortable time.'
+                {lang === 'ko' ? ( topic.peopleType === 1 ?
+                  '온전히 나다운 시간이 되시길 바랍니다.' : '온전히 우리다운 시간이 되시길 바랍니다.' )
+                  : 'I hope you have a good time being yourself.'
                   }
               </p>
             </div>
@@ -720,8 +706,8 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
             className={styles.popup}
           >
             <div className={styles.textContainer}>
-              <h1>{questions[currentQuestionIndexRef.current].questions[lang]}</h1>
-              <p>{questions[currentQuestionIndexRef.current].detailedQuestions[lang]}</p>
+              <h1>{questions[currentQuestionIndex].questions[lang]}</h1>
+              <p>{questions[currentQuestionIndex].detailedQuestions[lang]}</p>
             </div>
           </motion.div>
         )}

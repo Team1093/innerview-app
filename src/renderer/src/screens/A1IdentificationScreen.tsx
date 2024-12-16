@@ -21,8 +21,8 @@ const A1IdentificationScreen: React.FC<A1IdentificationScreenProps> = ({ nextScr
   useEffect(() => {
     if (QRcanvasRef.current) {
       QRcode.toCanvas(QRcanvasRef.current, URL, {
-        width: window.innerWidth*0.4, // QR 코드 크기 (픽셀 단위)
-        errorCorrectionLevel: "H" // 오류 복구 수준 (L, M, Q, H)
+        width: window.innerWidth*0.3, // QR 코드 크기 (픽셀 단위)
+        errorCorrectionLevel: "M" // 오류 복구 수준 (L, M, Q, H)
       });
     }
   }, [URL]);// URL이 변경될 때만 실행);
@@ -49,9 +49,13 @@ const A1IdentificationScreen: React.FC<A1IdentificationScreenProps> = ({ nextScr
   return (
     <div className={styles.bg}>
       {/* Add your component JSX here */}
-      <h1>Identification Screen</h1>
+      <p className={styles.logo}>INNERVIEW</p>
       <div className={styles.qrbox}>
         <canvas ref={QRcanvasRef} className={styles.QR}/>
+      </div>
+      <div>
+        <p className={styles.ment}>QR코드를 스캔하여 예약 확인을 진행해주세요.</p>
+        <p className={styles.ment}>Please scan the QR code to verify your reservation.</p>
       </div>
     </div>
   );

@@ -2,31 +2,51 @@
     position: absolute;
     width: 100vw;
     height: 100vh;
-    background-color: #000000;
+    background-color: #ffffff;
 
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: center;
     align-items: center;
+    gap: 3vh;
 }
 
-.bg h1 {
+.bg .logo {
     justify-self: center;
-    position: static;
-    color: #FFF;
+    position: relative;
+    color: #000000;
     text-align: center;
     font-family: Pretendard;
-    font-size: 11.11vh; /* 120px / 1080px * 100 */
+    font-size: 6vh; /* 120px / 1080px * 100 */
     font-style: normal;
     font-weight: 700;
     line-height: normal;
-    text-shadow: 0.46vh 0.93vh 0.37vh rgba(255, 255, 255, 0.50);
+}
+
+.bg .ment{
+    position: relative;
+    color: #000000;
+    text-align: center;
+    font-family: Pretendard;
+    font-size: 4.5vh; /* 60px / 1080px * 100 */
+    font-style: normal;
+    font-weight: 200;
+    line-height: normal;
+}
+
+
+.qrbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    width:45vh;
+    height:45vh;
 }
 
 .QR {
-    position: static;
-    margin-top: 10vh;
-    justify-self: center;
-    background-color: #F2F2F2;
-    border-radius: 15vh; /* 10px */
-}
+    display: block; /* 캔버스를 블록 요소로 설정하여 주변 마진을 없앰 */
+    margin: 0 auto; /* 상하 마진을 0으로 설정하고 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+    padding: 0; /* 패딩을 없앰 */
+    background-color: white; /* 배경색을 흰색으로 설정, 필요에 따라 조정 */
+  }

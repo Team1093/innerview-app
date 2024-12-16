@@ -62,6 +62,7 @@ const A3CameraSettingScreen: React.FC<A3CameraSettingScreenProps> = ({
           ratio="16/9"
           filters={filters}
           videoMode={videoMode}
+          video={settings.video}
         />
       </div>
       <div className = {styles.selection}>

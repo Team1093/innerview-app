@@ -7,18 +7,18 @@ interface WebcamStreamProps {
   ratio: string;
   filters: string[];
   videoMode: number;
+  video: string | undefined;
 }
 
-const WebcamStream: React.FC<WebcamStreamProps> = ({ width, height, ratio, filters, videoMode }) => {
+const WebcamStream: React.FC<WebcamStreamProps> = ({ width, height, ratio, filters, videoMode, video }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const { selectedVideo } = useDevice();
   const filter = filters[videoMode] ? filters[videoMode] : 'none'
   useEffect(() => {
     // 웹캠 스트림을 가져오기 위한 MediaDevices API 호출
     
     navigator.mediaDevices
       .getUserMedia({ 
-        video : selectedVideo ? { deviceId: { exact: selectedVideo } } : true })
+        video : video ? { deviceId: { exact: video } } : true })
       .then((stream) => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
