@@ -6,12 +6,14 @@ import { useEffect } from 'react'
 import WebcamStream from '../components/WebcamStream'
 import gridBg from '../assets/images/gridBg.jpg'
 import { Settings } from '../service/settings/interface'
+import { ipcRenderer } from 'electron'
 
 interface A3CameraSettingScreenProps {
   nextScreen: (screenNumber: number) => void
   setVideoMode: (mode: number) => void
   videoMode: number
   filters: string[]
+  setFilters: (filters: string[]) => void
   settings : Settings
 }
 
@@ -36,8 +38,13 @@ const A3CameraSettingScreen: React.FC<A3CameraSettingScreenProps> = ({
           setVideoMode((videoMode + filters.length - 1) % filters.length)
       else if (KEYS_SCREEN_CONFIRM.includes(e.key)) {
         nextScreen(4)
+        
       }
     }
+    filters.forEach((filterName) => {
+      ipcRenderer.send('set-filter-enabled', {sourceName:'innerview', filterName, enabled:false})
+    });
+    ipcRenderer.send('set-filter-enabled', {sourceName:'innerview', filterName:filters[videoMode], enabled:true})
     window.addEventListener('keydown', handleKeyDown)
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
@@ -60,7 +67,6 @@ const A3CameraSettingScreen: React.FC<A3CameraSettingScreenProps> = ({
           width="100%"
           height="auto"
           ratio="16/9"
-          filters={filters}
           videoMode={videoMode}
           video={settings.video}
         />
@@ -68,6 +74,8 @@ const A3CameraSettingScreen: React.FC<A3CameraSettingScreenProps> = ({
       <div className = {styles.selection}>
         <div className={`${styles.filterBox} ${videoMode===0 ? styles.selected : styles.not_selected}`}>Original</div>
         <div className={`${styles.filterBox} ${videoMode===1 ? styles.selected : styles.not_selected}`}>Black&White</div>
+        <div className={`${styles.filterBox} ${videoMode===2 ? styles.selected : styles.not_selected}`}>Cinematic</div>
+        <div className={`${styles.filterBox} ${videoMode===3 ? styles.selected : styles.not_selected}`}>Vintage</div>
       </div>
       <div className={styles.timer}>{formattedTime}</div>
     </div>

@@ -63,12 +63,7 @@ export default function App() {
 
   // 촬영 관련
     // 이 필터를 수정할 때는 uitls.ts의 processVideoFile 함수에 있는 complexFilter도 수정해야 함
-  const filters = [
-    'none',
-    'grayscale(100%)',
-    // 'sepia(40%) contrast(0.8) brightness(1.2) saturate(2)',
-    // 'sepia(60%) contrast(1.0) brightness(1.1) saturate(0.9) hue-rotate(-10deg)'
-  ];
+  const [filters, setFilters] = useState<string[]>(['original', 'black-and-white', 'cinematic', 'vintage'])
 
   const [videoMode, setVideoMode] = useState<number>(0)
   
@@ -113,6 +108,7 @@ export default function App() {
         setVideoMode={setVideoMode}
         videoMode={videoMode}
         filters={filters}
+        setFilters={setFilters}
         settings={settings}/>
         )}
       {currentScreen === 4 && (
@@ -126,7 +122,6 @@ export default function App() {
         // setFileName={setFileName}
         // setVideoFile={setVideoFile}
         // setVideoMetadata={setVideoMetadata}
-        filters={filters}
         reservationInfo={reservationInfo}
         forceQuit={forceQuit}
         />

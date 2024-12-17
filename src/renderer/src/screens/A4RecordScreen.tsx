@@ -37,7 +37,7 @@ interface A4RecordScreenProps {
   nextScreen: (screenNumber: number) => void
   questions: Question[]
   topic: Topic
-  filters: string[]
+  // filters: string[]
   videoMode: number
   setQRCodeLink: (link: string) => void
   // setVideoFile: (file: File) => void
@@ -52,7 +52,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   settings,
   questions,
   topic,
-  filters,
+  // filters,
   videoMode,
   setQRCodeLink,
   reservationInfo,
@@ -614,9 +614,9 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
           playsInline
           muted
           className={styles.video}
-          style={{
-            filter: filters[videoMode] ? filters[videoMode] : 'none',
-          }}
+          // style={{
+          //   filter: filters[videoMode] ? filters[videoMode] : 'none',
+          // }}
         />
       </div>
       {/* 녹화 중 자막 UI */}

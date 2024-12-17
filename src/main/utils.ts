@@ -90,6 +90,7 @@ export async function processVideoFile({
   subtitles: subtitleData[]
   videoMode?: number
 }): Promise<Buffer> {
+  console.log(videoMode);
   const platformName = `${platform()}-${arch()}`
   const ffmpegPath =
     isDev === true
@@ -338,7 +339,7 @@ export async function processVideoFile({
       }
     ]
   ];
-  const finalFilter = [...commonFilters[0], ...complexFilter[videoMode ?? 0], ...filterGraph, ...commonFilters[1]]
+  const finalFilter = [...commonFilters[0], ...complexFilter[0], ...filterGraph, ...commonFilters[1]]
 
   return new Promise<Buffer>((resolve, reject) => {
     ffmpeg(inputFileName)

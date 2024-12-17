@@ -1,21 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDevice } from '../lib/DeviceContext';
+import React, { useEffect, useRef } from "react";
 
 interface WebcamStreamProps {
   width: string | number;
   height: string | number;
   ratio: string;
-  filters: string[];
   videoMode: number;
   video: string | undefined;
 }
 
-const WebcamStream: React.FC<WebcamStreamProps> = ({ width, height, ratio, filters, videoMode, video }) => {
+const WebcamStream: React.FC<WebcamStreamProps> = ({ width, height, ratio, videoMode, video }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const filter = filters[videoMode] ? filters[videoMode] : 'none'
   useEffect(() => {
     // 웹캠 스트림을 가져오기 위한 MediaDevices API 호출
-    
     navigator.mediaDevices
       .getUserMedia({ 
         video : video ? { deviceId: { exact: video } } : true })
@@ -69,7 +65,6 @@ const WebcamStream: React.FC<WebcamStreamProps> = ({ width, height, ratio, filte
           height: height,
           aspectRatio: ratio,
           objectFit: "cover",
-          filter: filter,
           transform: "rotateY(180deg)",
           WebkitTransform: "rotateY(180deg)",
           MozTransform: "rotateY(180deg)",

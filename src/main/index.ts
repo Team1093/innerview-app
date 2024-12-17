@@ -47,33 +47,18 @@ function createWindow(): void {
   }
 }
 
-// const OBSWebSocket = require('obs-websocket-js').default;
+const OBSWebSocket = require('obs-websocket-js').default;
+const obs = new OBSWebSocket();
 
-// const obs = new OBSWebSocket();
-
-// async function connectToOBS() {
-//     try {
-//         // v5 API는 connect 함수의 인자가 달라졌습니다.
-//         await obs.connect('ws://localhost:4455', 'jxHT3NhxpCCDpGDU'); 
-//         console.log('OBS WebSocket successfully connected!');
-//     } catch (error) {
-//         console.error('OBS WebSocket failed to  Error:', error);
-//     }
-// }
-
-// connectToOBS();
-
-// obs.on('ConnectionOpened', () => {
-//   console.log('OBS WebSocket connected open');
-// });
-
-// obs.on('ConnectionClosed', () => {
-//   console.log('OBS WebSocket disconnected');
-// });
-
-// obs.on('ConnectionError', (err) => {
-//   console.error('OBS WebSocket Error:', err);
-// });
+async function connectToOBS() {
+    try {
+        // v5 API는 connect 함수의 인자가 달라졌습니다.
+        await obs.connect('ws://localhost:4455', 'jxHT3NhxpCCDpGDU'); 
+        console.log('OBS WebSocket successfully connected!');
+    } catch (error) {
+        console.error('OBS WebSocket failed to  Error:', error);
+    }
+}
 
 autoUpdater.on('checking-for-update', () => {
   Logger.log('Checking for update...')
@@ -102,12 +87,28 @@ autoUpdater.on('update-downloaded', () => {
   Logger.log('Update downloaded')
 })
 
+async function getFiltersForSource(sourceName: string) {
+  try {
+      const response = await obs.call('GetSourceFilterList', { sourceName });
+      console.log(`"${sourceName}"의 필터 리스트:`, response.filters);
+      return response.filters;
+  } catch (error) {
+      console.error('필터 리스트를 가져오는 데 실패했습니다:', error);
+      return [];
+  }
+}    
+
+
+
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
+  // Connect to OBS
+  connectToOBS();
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -139,6 +140,31 @@ app.whenReady().then(() => {
     console.log('not supported by the os:',process.platform)
   }
 
+
+  // filters 이벤트 핸들러
+  ipcMain.on('get-filters', async (_, arg) => {
+    try{
+    return await getFiltersForSource(arg.sourceName);
+    }
+    catch (error) {
+      console.error('필터 리스트를 가져오는 데 실패했습니다:', error);
+      return [];
+    }
+  });
+
+  ipcMain.on('set-filter-enabled', async (_, args) => {
+    const { sourceName, filterName, enabled } = args;
+    try {
+        await obs.call('SetSourceFilterEnabled', {
+            sourceName,
+            filterName,
+            filterEnabled: enabled,
+        });
+        console.log(`"${filterName}" 필터를 ${enabled ? '활성화' : '비활성화'}했습니다.`);
+    } catch (error) {
+        console.error(`"${filterName}" 필터를 변경하는 데 실패했습니다:`, error);
+    }
+});
   //save-video 이벤트 핸들러
   ipcMain.on('save-video', (event, arg) => {
     saveFileToDownloads(arg.fileContent, arg.fileName)
