@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDevice } from '../lib/DeviceContext';
+import React, { useEffect, useRef } from "react";
 
 interface WebcamStreamProps {
   width: string | number;

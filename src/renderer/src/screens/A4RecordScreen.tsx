@@ -84,7 +84,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
 
     let calculatedTimeLimit = 10 * 60; // 기본값
 
-    if (forceQuit) {
+    // if (forceQuit) {
       if (topic.peopleType === 2) {
         if (time_milli_seconds > (30 + 3) * 60 * 1000) { // 33분
           calculatedTimeLimit = 30 * 60;
@@ -103,19 +103,19 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
           console.log('setTimeLimit - peopleType 1, time_milli_seconds <= 17분, set to', calculatedTimeLimit);
         }
       }
-    }
-    else {
-      if (topic.peopleType === 2) {
-        calculatedTimeLimit = 30 * 60;
-        console.log('setTimeLimit - peopleType 2, forceQuit false, set to 30*60');
-      } else if (topic.peopleType === 1) {
-        calculatedTimeLimit = 15 * 60;
-        console.log('setTimeLimit - peopleType 1, forceQuit false, set to 15*60');
-      } else {
-        calculatedTimeLimit = 30 * 60;
-        console.log('setTimeLimit - unknown peopleType, set to 30*60');
-      }
-    }
+    // }
+    // else {
+    //   if (topic.peopleType === 2) {
+    //     calculatedTimeLimit = 30 * 60;
+    //     console.log('setTimeLimit - peopleType 2, forceQuit false, set to 30*60');
+    //   } else if (topic.peopleType === 1) {
+    //     calculatedTimeLimit = 15 * 60;
+    //     console.log('setTimeLimit - peopleType 1, forceQuit false, set to 15*60');
+    //   } else {
+    //     calculatedTimeLimit = 30 * 60;
+    //     console.log('setTimeLimit - unknown peopleType, set to 30*60');
+    //   }
+    // }
 
     // 최소 시간 보장 (예: 최소 1분)
     if (calculatedTimeLimit < 60) {
@@ -331,7 +331,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
       await initializeMedia(); // 미디어 초기화
       chunksRef.current = []; // 녹화 데이터 초기화
       mediaRecorderRef.current?.start(500); // 500ms 간격으로 녹화 시작
-      setIsRecording(true);
+      // setIsRecording(true);
       console.log('녹화가 시작되었습니다.');
     } catch (err) {
       console.error('녹화를 시작할 수 없습니다:', err);
