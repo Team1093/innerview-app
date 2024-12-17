@@ -264,7 +264,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
     return;
   }, [isStartingPopup, isStartingPopup2, isLogoPopup, isQuestionPopup, videoUploadState]);
 
-  const [isEndingPopupKeydownActive, setIsEndingPopupKeydownActive] = useState<boolean>(true)
+  const [isEndingPopupKeydownActive, setIsEndingPopupKeydownActive] = useState<boolean>(false)
   useEffect(() => {
     if(isEndingPopupKeydownActive) 
       window.addEventListener('keydown', handleKeyDownInEndingPage);
