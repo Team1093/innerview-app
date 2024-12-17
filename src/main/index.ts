@@ -8,6 +8,7 @@ import { processVideoFile } from './utils'
 import { autoUpdater } from 'electron-updater'
 import Logger from 'electron-log'
 
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -45,6 +46,34 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
+
+// const OBSWebSocket = require('obs-websocket-js').default;
+
+// const obs = new OBSWebSocket();
+
+// async function connectToOBS() {
+//     try {
+//         // v5 API는 connect 함수의 인자가 달라졌습니다.
+//         await obs.connect('ws://localhost:4455', 'jxHT3NhxpCCDpGDU'); 
+//         console.log('OBS WebSocket successfully connected!');
+//     } catch (error) {
+//         console.error('OBS WebSocket failed to  Error:', error);
+//     }
+// }
+
+// connectToOBS();
+
+// obs.on('ConnectionOpened', () => {
+//   console.log('OBS WebSocket connected open');
+// });
+
+// obs.on('ConnectionClosed', () => {
+//   console.log('OBS WebSocket disconnected');
+// });
+
+// obs.on('ConnectionError', (err) => {
+//   console.error('OBS WebSocket Error:', err);
+// });
 
 autoUpdater.on('checking-for-update', () => {
   Logger.log('Checking for update...')

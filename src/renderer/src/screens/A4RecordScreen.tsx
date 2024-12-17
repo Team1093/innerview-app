@@ -72,39 +72,49 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   const streamRef = useRef<MediaStream | null>(null)
 
 
+   // 타이머 훅 초기화
+  const [timeLimit, setTimeLimit] = useState<number>(0);
+   const { formattedTime, seconds } = useTimer(
+    isRecording, 
+    timeLimit, 
+    () => {
+      console.log('녹화 시간 초과');
+      setIsByebyePopup(true);
+      handleResumeRecording();
+    }
+  );
+  const secondsRef = useRef(seconds);
 
-  // 시간 설정정
-  const setTimeLimitFunction = () => {
-    const time_milli_seconds = new Date(reservationInfo.end_time).getTime() - new Date().getTime()
-    if(forceQuit) {
-      if(topic.peopleType === 2) {
-        return time_milli_seconds > (30+3)*60*1000 ? (30*60) : (time_milli_seconds/1000 - 3*60)
+  // setTimeLimitFunction 정의
+  const setTimeLimitFunction = useCallback((): number => {
+    const time_milli_seconds = new Date(reservationInfo.end_time).getTime() - new Date().getTime();
+    if (forceQuit) {
+      if (topic.peopleType === 2) {
+        return time_milli_seconds > (30 + 3) * 60 * 1000 ? 30 * 60 : Math.floor(time_milli_seconds / 1000) - 3 * 60;
       }
-      else if(topic.peopleType === 1) {
-        return  time_milli_seconds > (15+2)*60*1000 ? (15*60) : (time_milli_seconds/1000 - 2*60)
+      else if (topic.peopleType === 1) {
+        return time_milli_seconds > (15 + 2) * 60 * 1000 ? 15 * 60 : Math.floor(time_milli_seconds / 1000) - 2 * 60;
       }
     }
     else {
-      if(topic.peopleType === 2) {
-        return 30*60;
+      if (topic.peopleType === 2) {
+        return 30 * 60;
       } else if (topic.peopleType === 1) {
-        return 15*60;
+        return 15 * 60;
       } else {
-        return 30*60;
+        return 30 * 60;
       }
     }
-    return 0; // Default return value
-  }
-  const time_limit = setTimeLimitFunction() ?? 0;
-  const { formattedTime, seconds } = useTimer(
-    isRecording, 
-    time_limit, 
-    () => {
-      console.log('녹화 시간 초과')
-      setIsByebyePopup(true);
-      handleResumeRecording();
-    });
-  const secondsRef = useRef(seconds)
+    return 0; // 기본 반환값
+  }, [reservationInfo.end_time, forceQuit, topic.peopleType]);
+
+  // 컴포넌트 마운트 시 타임 리밋 설정
+  useEffect(() => {
+    const calculatedTimeLimit = setTimeLimitFunction() ?? 30*60;
+    setTimeLimit(calculatedTimeLimit);
+    console.log('타임 리밋 초기화:', calculatedTimeLimit);
+  }, [setTimeLimitFunction]);
+
 
 
   // 질문 관리하는 변수들 설정
