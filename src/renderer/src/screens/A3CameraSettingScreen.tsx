@@ -68,8 +68,6 @@ const A3CameraSettingScreen: React.FC<A3CameraSettingScreenProps> = ({
       <div className = {styles.selection}>
         <div className={`${styles.filterBox} ${videoMode===0 ? styles.selected : styles.not_selected}`}>Original</div>
         <div className={`${styles.filterBox} ${videoMode===1 ? styles.selected : styles.not_selected}`}>Black&White</div>
-        <div className={`${styles.filterBox} ${videoMode===2 ? styles.selected : styles.not_selected}`}>Vintage</div>
-        <div className={`${styles.filterBox} ${videoMode===3 ? styles.selected : styles.not_selected}`}>Vintage2</div>
       </div>
       <div className={styles.timer}>{formattedTime}</div>
     </div>

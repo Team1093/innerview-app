@@ -53,8 +53,8 @@ export class TopicService {
         'ko': res.data.description_ko,
         'en': res.data.description_en
       },
-      peopleType: res.data.peopleType,
-      questionType: res.data.questionType
+      peopleType: res.data.people_type,
+      questionType: res.data.question_type
     }
     return selected_topic as Topic;
   }

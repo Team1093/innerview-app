@@ -1,3 +1,4 @@
+// A4RecordScreen.tsx
 'use client'
 // 플로우 : 본격적인 인터뷰 녹화에 앞서 짧은 인사나 각오 한 마디 부탁드립니다! : 영상 파일을 따로 저장 
 // -> 인사를 남긴 후 본격적인 녹화 시작 : 
@@ -54,9 +55,6 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   filters,
   videoMode,
   setQRCodeLink,
-  // setVideoFile,
-  // setVideoMetadata,
-  // setFileName,
   reservationInfo,
   forceQuit,
 }) => {
@@ -71,12 +69,68 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   const chunksRef = useRef<Blob[]>([])
   const streamRef = useRef<MediaStream | null>(null)
 
+  const [timeLimit, setTimeLimit] = useState<number | null>(null); // 초기값을 null로 설정
+  const [isByebyePopup, setIsByebyePopup] = useState<boolean>(false);
 
-   // 타이머 훅 초기화
-  // const [timeLimit, setTimeLimit] = useState<number>(0);
-   const { formattedTime, seconds } = useTimer(
+  // 컴포넌트 마운트 시 타임 리밋 설정
+  useEffect(() => {
+    const currentTime = new Date().getTime();
+    const endTime = new Date(reservationInfo.end_time).getTime();
+    const time_milli_seconds = endTime - currentTime;
+
+    console.log('setTimeLimit - currentTime:', new Date(currentTime).toISOString());
+    console.log('setTimeLimit - endTime:', new Date(endTime).toISOString());
+    console.log('setTimeLimit - time_milli_seconds:', time_milli_seconds);
+
+    let calculatedTimeLimit = 10 * 60; // 기본값
+
+    if (forceQuit) {
+      if (topic.peopleType === 2) {
+        if (time_milli_seconds > (30 + 3) * 60 * 1000) { // 33분
+          calculatedTimeLimit = 30 * 60;
+          console.log('setTimeLimit - peopleType 2, time_milli_seconds > 33분, set to 30*60');
+        } else {
+          calculatedTimeLimit = Math.floor(time_milli_seconds / 1000) - 3 * 60;
+          console.log('setTimeLimit - peopleType 2, time_milli_seconds <= 33분, set to', calculatedTimeLimit);
+        }
+      }
+      else if (topic.peopleType === 1) {
+        if (time_milli_seconds > (15 + 2) * 60 * 1000) { // 17분
+          calculatedTimeLimit = 15 * 60;
+          console.log('setTimeLimit - peopleType 1, time_milli_seconds > 17분, set to 15*60');
+        } else {
+          calculatedTimeLimit = Math.floor(time_milli_seconds / 1000) - 2 * 60;
+          console.log('setTimeLimit - peopleType 1, time_milli_seconds <= 17분, set to', calculatedTimeLimit);
+        }
+      }
+    }
+    else {
+      if (topic.peopleType === 2) {
+        calculatedTimeLimit = 30 * 60;
+        console.log('setTimeLimit - peopleType 2, forceQuit false, set to 30*60');
+      } else if (topic.peopleType === 1) {
+        calculatedTimeLimit = 15 * 60;
+        console.log('setTimeLimit - peopleType 1, forceQuit false, set to 15*60');
+      } else {
+        calculatedTimeLimit = 30 * 60;
+        console.log('setTimeLimit - unknown peopleType, set to 30*60');
+      }
+    }
+
+    // 최소 시간 보장 (예: 최소 1분)
+    if (calculatedTimeLimit < 60) {
+      calculatedTimeLimit = 60;
+      console.log('setTimeLimit - calculatedTimeLimit < 60, set to 60');
+    }
+
+    setTimeLimit(calculatedTimeLimit);
+    console.log('타임 리밋 작동 끝:', calculatedTimeLimit, forceQuit, topic.peopleType);
+  }, [reservationInfo.end_time, forceQuit, topic.peopleType]);
+
+  // 타이머 훅 초기화 (조건부 호출)
+  const { formattedTime, seconds } = useTimer(
     isRecording, 
-    30*60, 
+    timeLimit !== null ? timeLimit : 0, // timeLimit이 null이 아닐 때만 전달
     () => {
       console.log('녹화 시간 초과');
       setIsByebyePopup(true);
@@ -85,45 +139,12 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   );
   const secondsRef = useRef(seconds);
 
-  // setTimeLimitFunction 정의
-  const setTimeLimitFunction = useCallback((): number => {
-    const time_milli_seconds = new Date(reservationInfo.end_time).getTime() - new Date().getTime();
-    if (forceQuit) {
-      if (topic.peopleType === 2) {
-        return time_milli_seconds > (30 + 3) * 60 * 1000 ? 30 * 60 : Math.floor(time_milli_seconds / 1000) - 3 * 60;
-      }
-      else if (topic.peopleType === 1) {
-        return time_milli_seconds > (15 + 2) * 60 * 1000 ? 15 * 60 : Math.floor(time_milli_seconds / 1000) - 2 * 60;
-      }
-    }
-    else {
-      if (topic.peopleType === 2) {
-        return 30 * 60;
-      } else if (topic.peopleType === 1) {
-        return 15 * 60;
-      } else {
-        return 30 * 60;
-      }
-    }
-    return 0; // 기본 반환값
-  }, [reservationInfo.end_time, forceQuit, topic.peopleType]);
-
-  // 컴포넌트 마운트 시 타임 리밋 설정
-  useEffect(() => {
-    const calculatedTimeLimit = setTimeLimitFunction() ?? 30*60;
-    // setTimeLimit(calculatedTimeLimit);
-    console.log('타임 리밋 초기화:', calculatedTimeLimit);
-  }, [setTimeLimitFunction]);
-
-
-
   // 질문 관리하는 변수들 설정
   const [subtitlePieces, setSubtitlePieces] = useState<subtitleData[]>([])
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [isCQIworking, setIsCQIworking] = useState<boolean>(false)
   const [isFirst, setIsFirst] = useState<boolean[]>(Array(questions.length).fill(true));
   const [isQuestionPopup, setIsQuestionPopup] = useState<boolean>(false)
-
 
   // 추가 창 관리하는 변수들 설정
   const [isStartingPopup, setIsStartingPopup] = useState<boolean>(true)
@@ -149,7 +170,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   const [isLogoPopup, setIsLogoPopup] = useState<boolean>(false)
   const [isEndingPopup, setIsEndingPopup] = useState<boolean>(false)
   const [endingOption, setEndingOption] = useState<number>(0)
-  const [isByebyePopup, setIsByebyePopup] = useState<boolean>(false)
+  // const [isByebyePopup, setIsByebyePopup] = useState<boolean>(false) // 이미 선언됨
   const { formattedTime:formattedTimeForByebye, } = useTimer(
       isByebyePopup, 
       10, 
@@ -254,31 +275,29 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
 
   // 시작
     // useEffect 처리
-  useEffect(() => {
-    setTimeLimitFunction();
-    return () => {
-      setIsKeydownActive(false);
-    }
-  }, []);
+  // 기존 useEffect에서 setTimeLimitFunction을 호출하고 있지만, 이미 별도의 useEffect에서 설정했으므로 제거
+  // useEffect(() => {
+  //   setTimeLimitFunction();
+  //   return () => {
+  //     setIsKeydownActive(false);
+  //   }
+  // }, []);
 
+  // timeLimit이 null이 아닐 때만 타이머를 업데이트
   useEffect(() => {
-    if(isRecording) {
+    if(isRecording && timeLimit !== null) {
       secondsRef.current = seconds;
       totalSecondsRef.current = seconds + helloTime;
     }
-  }, [seconds]);
+  }, [seconds, isRecording, timeLimit, helloTime]);
 
   useEffect(() => {
     if(videoUploadState === 'uploaded') nextScreen(5);
   },[videoUploadState]);
 
-
   useEffect(() => {
     console.log('Updated subtitlePieces:', subtitlePieces);
   }, [subtitlePieces]);
-
-
-
 
   const initializeMedia = async () : Promise<void> => {
     try {
@@ -312,6 +331,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
       await initializeMedia(); // 미디어 초기화
       chunksRef.current = []; // 녹화 데이터 초기화
       mediaRecorderRef.current?.start(500); // 500ms 간격으로 녹화 시작
+      setIsRecording(true);
       console.log('녹화가 시작되었습니다.');
     } catch (err) {
       console.error('녹화를 시작할 수 없습니다:', err);
@@ -336,6 +356,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'paused') {
       try {
         await mediaRecorderRef.current.resume();
+        setIsRecording(true);
         console.log('녹화가 재개되었습니다.');
       } catch (err) {
         console.error('녹화를 재개할 수 없습니다:', err);
@@ -348,6 +369,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
       try {
         mediaRecorderRef.current.stop();
+        setIsRecording(false);
         console.log('녹화가 종료되었습니다.');
       }
       catch (err) {
@@ -368,7 +390,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
             }의 INNERVIEW 여기까지.`,
             text2: '',
             startSeconds: prev[lastIndex]?.endSeconds || 0,
-            endSeconds: prev[lastIndex]?.endSeconds+10,
+            endSeconds: prev[lastIndex]?.endSeconds + 10,
             isFirst: false,
           },
         ];
@@ -481,7 +503,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
     else {
       if (KEYS_SCREEN_NEXT.includes(event.key)) {
         if(isRecording) {
-          if(currentQuestionIndexRef.current + 1 >= questions.length) { // 다음 질문이 없을 때때
+          if(currentQuestionIndexRef.current + 1 >= questions.length) { // 다음 질문이 없을 때
             console.log('질문이 끝났습니다.')
             setIsKeydownActive(false);
             handlePauseRecording();
@@ -527,7 +549,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
       } 
       else if (KEYS_SCREEN_BACK.includes(event.key)) {
         if(isRecording && currentQuestionIndexRef.current > 0) { // 만약 지금이 녹화 중이고, 질문이 첫 번째가 아닐 때
-          try{ // 이전 질문으로 돌아가기 위한 코드 : 예컨대 지금 currentQuestionIndex가 2일 때, 1로 돌아가야 함.
+          try{ // 이전 질문으로 돌아가기 위한 코드
             const updateSubtitle = () => new Promise<subtitleData[]>((resolve) => {
               console.log('KEYDOWNBACK currentIndex : ', currentQuestionIndexRef.current)
               setSubtitlePieces((prev) => {

@@ -43,6 +43,7 @@ const A2InfoScreen: React.FC<A2InfoScreenProps> = ({ nextScreen, settings, setSe
     const topicData = await topicService.getTopic(settings.location, reservationInfo.selected_topic_id)
     setTopic(topicData);
     setIsQNTloaded(true);
+    console.log('questions and topic data loaded', questions, topicData);
   }
 
   useEffect(() => {

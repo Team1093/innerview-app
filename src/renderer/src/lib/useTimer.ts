@@ -1,3 +1,4 @@
+// useTimer.ts
 import { useState, useEffect, useRef } from "react";
 
 const useTimer = (isRecording: boolean, duration: number, onEnd: () => void) => {

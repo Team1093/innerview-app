@@ -66,8 +66,8 @@ export default function App() {
   const filters = [
     'none',
     'grayscale(100%)',
-    'sepia(40%) contrast(0.8) brightness(1.2) saturate(2)',
-    'sepia(60%) contrast(1.0) brightness(1.1) saturate(0.9) hue-rotate(-10deg)'
+    // 'sepia(40%) contrast(0.8) brightness(1.2) saturate(2)',
+    // 'sepia(60%) contrast(1.0) brightness(1.1) saturate(0.9) hue-rotate(-10deg)'
   ];
 
   const [videoMode, setVideoMode] = useState<number>(0)
