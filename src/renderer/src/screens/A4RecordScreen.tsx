@@ -73,10 +73,10 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
 
 
    // 타이머 훅 초기화
-  const [timeLimit, setTimeLimit] = useState<number>(0);
+  // const [timeLimit, setTimeLimit] = useState<number>(0);
    const { formattedTime, seconds } = useTimer(
     isRecording, 
-    timeLimit, 
+    30*60, 
     () => {
       console.log('녹화 시간 초과');
       setIsByebyePopup(true);
@@ -111,7 +111,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   // 컴포넌트 마운트 시 타임 리밋 설정
   useEffect(() => {
     const calculatedTimeLimit = setTimeLimitFunction() ?? 30*60;
-    setTimeLimit(calculatedTimeLimit);
+    // setTimeLimit(calculatedTimeLimit);
     console.log('타임 리밋 초기화:', calculatedTimeLimit);
   }, [setTimeLimitFunction]);
 
