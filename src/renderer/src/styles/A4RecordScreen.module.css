@@ -67,10 +67,10 @@
     position: fixed;
     top: 0;
     width: 100%; /* 부모 요소에 맞추기 */
-    height: 25vh; /* 컨텐츠에 맞게 조정 */
+    height: 18vh; /* 컨텐츠에 맞게 조정 */
     box-sizing: border-box; /* 패딩 포함 크기 계산 */
     z-index: 999;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.70) 100%);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.40) 100%);
 
     display: flex;
     align-items: start ; /* 세로 정렬 */

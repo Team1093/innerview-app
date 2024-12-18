@@ -82,7 +82,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
     console.log('setTimeLimit - endTime:', new Date(endTime).toISOString());
     console.log('setTimeLimit - time_milli_seconds:', time_milli_seconds);
 
-    let calculatedTimeLimit = 10 * 60; // 기본값
+    let calculatedTimeLimit = 30 * 60; // 기본값
 
     // if (forceQuit) {
       if (topic.peopleType === 2) {
