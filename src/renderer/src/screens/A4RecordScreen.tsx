@@ -357,7 +357,6 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'paused') {
       try {
         await mediaRecorderRef.current.resume();
-        setIsRecording(true);
         console.log('녹화가 재개되었습니다.');
       } catch (err) {
         console.error('녹화를 재개할 수 없습니다:', err);

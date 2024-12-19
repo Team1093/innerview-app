@@ -12,7 +12,6 @@ const useTimer = (isRecording: boolean, duration: number, onEnd: () => void) => 
 
   useEffect(() => {
     if (!isRecording) {
-      setSeconds(0); // 녹화가 시작되지 않았을 때 타이머 초기화
       return;
     }
 
