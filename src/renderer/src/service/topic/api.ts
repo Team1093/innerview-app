@@ -42,7 +42,7 @@ export class TopicService {
   
 
   async getTopic(location:string, topicId: number) : Promise<Topic> {
-    const res = await this.instance.get(`/topic/${location}/${topicId}`);
+    const res = await this.instance.get(`/topic/${location}/a/${topicId}`);
     console.log(res.data);
     const selected_topic : Topic ={
       topicId: res.data.topic_id,

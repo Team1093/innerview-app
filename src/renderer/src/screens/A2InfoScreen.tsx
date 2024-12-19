@@ -122,6 +122,7 @@ const A2InfoScreen: React.FC<A2InfoScreenProps> = ({ nextScreen, settings, setSe
       if (messageIndex >= 1) {
         if(messageIndex === messages.length) {
           setVideoIndex(true);
+          setIsAbleToQuit(true);
         } 
         else if(KEYS_SCREEN_NEXT.includes(e.key) || KEYS_SCREEN_BACK.includes(e.key) || KEYS_SCREEN_CONFIRM.includes(e.key)) { 
           setMessageIndex((messageIndex + 1))
@@ -135,6 +136,20 @@ const A2InfoScreen: React.FC<A2InfoScreenProps> = ({ nextScreen, settings, setSe
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [messageIndex])
+
+  const [isAbleToQuit, setIsAbleToQuit] = useState(false);
+  useEffect(() => {
+    const handleQDown = (e: KeyboardEvent) => {
+      if(e.key === 'q') {
+      setWannaQuit(true);
+    }}
+    if(isAbleToQuit) {
+      window.addEventListener('keydown', handleQDown)
+    }
+    return () => {
+      window.removeEventListener('keydown', handleQDown)
+    }
+  }, [isAbleToQuit]);
 
 
   const peopleType = topic.peopleType === 2 ? 'couple' : 'single';

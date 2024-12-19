@@ -134,6 +134,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
     () => {
       console.log('녹화 시간 초과');
       setIsByebyePopup(true);
+      setIsRecording(false);
       handleResumeRecording();
     }
   );
@@ -149,7 +150,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   // 추가 창 관리하는 변수들 설정
   const [isStartingPopup, setIsStartingPopup] = useState<boolean>(true)
   const [isHelloPopup, setIsHelloPopup] = useState<boolean>(false)
-  const helloTime = topic.peopleType === 1 ? 5 : 10;
+  const helloTime = 10;
   const { formattedTime:formattedTimeForHello, } = useTimer(
       isHelloPopup, 
       helloTime,
@@ -596,6 +597,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
       else if(endingOption === 1) {
         console.log('바로 종료')
         setIsByebyePopup(true);
+        setIsRecording(false);
         handleResumeRecording();
       } 
     }
