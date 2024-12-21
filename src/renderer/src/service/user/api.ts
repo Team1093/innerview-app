@@ -13,4 +13,14 @@ export class UserService {
     console.log(`/user/check/${location}:`+res);
     return res.data as ResponseToDesktop;
   }
+
+  async deleteReservation(location: string, reservationId: number) {
+    try {
+      const res = await this.instance.delete(`/reservation/${location}/delete/${reservationId}`);
+      console.log("Reservation deletion:" + String(res.data));
+    } catch (error) {
+      console.error('Reservation deletion failed:', error instanceof Error ? error.message : error);
+      throw new Error('Could not delete reservation');
+    }
+  }
 }

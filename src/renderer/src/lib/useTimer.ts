@@ -1,35 +1,58 @@
-// useTimer.ts
 import { useState, useEffect, useRef } from "react";
 
-const useTimer = (isRecording: boolean, duration: number, onEnd: () => void) => {
-  const [seconds, setSeconds] = useState(0);
-  const onEndRef = useRef(onEnd);
+const useTimer = (
+  isRecording: boolean,
+  duration: number,
+  onEnd: () => void
+) => {
+  const [seconds, setSeconds] = useState(0); // 경과 시간
+  const onEndRef = useRef(onEnd); // 최신 onEnd 콜백 저장
+  const lastTimestamp = useRef<number | null>(null); // 마지막 프레임의 타임스탬프
+  const accumulatedTime = useRef(0); // 멈췄을 때까지 누적된 경과 시간
 
-  // onEnd 콜백을 ref에 저장하여 최신 상태 유지
   useEffect(() => {
-    onEndRef.current = onEnd;
+    onEndRef.current = onEnd; // onEnd 업데이트
   }, [onEnd]);
 
   useEffect(() => {
     if (!isRecording) {
+      // 타이머 멈추면 마지막까지 누적된 시간 저장
+      lastTimestamp.current = null;
       return;
     }
 
-    const timer = setInterval(() => {
-      setSeconds((prevSeconds) => {
-        if (prevSeconds >= duration) {
-          onEndRef.current(); // 종료 콜백 호출
-          clearInterval(timer); // 타이머 정리
-          return 0;
-        }
-        return prevSeconds + 1;
-      });
-    }, 1000);
+    const updateTimer = (timestamp: number) => {
+      if (lastTimestamp.current !== null) {
+        // 경과 시간 계산
+        const delta = timestamp - lastTimestamp.current;
+        accumulatedTime.current += delta;
 
-    return () => clearInterval(timer); // 컴포넌트 언마운트 시 타이머 정리
+        // 초 단위 업데이트
+        const newSeconds = Math.floor(accumulatedTime.current / 1000);
+        if (newSeconds >= duration) {
+          setSeconds(duration);
+          onEndRef.current();
+          return; // 타이머 종료
+        }
+
+        setSeconds(newSeconds);
+      }
+      lastTimestamp.current = timestamp;
+
+      // 다음 프레임 요청
+      requestAnimationFrame(updateTimer);
+    };
+
+    // 첫 프레임 요청
+    requestAnimationFrame(updateTimer);
+
+    return () => {
+      // 타이머 정리
+      lastTimestamp.current = null;
+    };
   }, [isRecording, duration]);
 
-  const remaining = duration - seconds;
+  const remaining = Math.max(duration - seconds, 0);
   const formattedTime = `${Math.floor(remaining / 60)
     .toString()
     .padStart(2, "0")}:${(remaining % 60).toString().padStart(2, "0")}`;

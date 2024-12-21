@@ -60,7 +60,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
 }) => {
 
   const { lang, audio, video } = settings;
-  const { interviewService } = useService()
+  const { interviewService, userService } = useService()
 
   const [isRecording, setIsRecording] = useState<boolean>(false)
   const [videoUploadState, setVideoUploadState] = useState<string>('before saving')
@@ -165,7 +165,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
       }
   );
 
-  const totalSecondsRef = useRef((secondsRef.current+helloTime));
+  const totalSecondsRef = useRef(0);
 
   const [isStartingPopup2, setIsStartingPopup2] = useState<boolean>(false)
   const [isLogoPopup, setIsLogoPopup] = useState<boolean>(false)
@@ -251,10 +251,14 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
       }, 4000);
       return () => clearTimeout(timer2);
     } else if(isQuestionPopup){
+        let questionPopupTime = 5000;
+        if(questions[currentQuestionIndex].detailedQuestions[lang] != '') {
+          questionPopupTime = 10000;
+        }
       const isQuestionPopupTimer = setTimeout(() => {
         setIsQuestionPopup(false);
         setIsKeydownActive(true);
-      }, 5000);
+      }, questionPopupTime);
       return () => clearTimeout(isQuestionPopupTimer);
     } else if(videoUploadState === 'only local uploaded') {
         window.addEventListener('keydown', () => {
@@ -288,7 +292,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   useEffect(() => {
     if(isRecording && timeLimit !== null) {
       secondsRef.current = seconds;
-      totalSecondsRef.current = seconds + helloTime;
+      totalSecondsRef.current = secondsRef.current + helloTime||10;
     }
   }, [seconds, isRecording, timeLimit, helloTime]);
 
@@ -371,6 +375,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
         mediaRecorderRef.current.stop();
         setIsRecording(false);
         console.log('녹화가 종료되었습니다.');
+        userService.deleteReservation(settings.location, reservationInfo.id);
       }
       catch (err) {
         console.error('녹화를 종료할 수 없습니다다:', err)
@@ -389,7 +394,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
               topic.peopleType === 1 ? '나' : '우리'
             }의 INNERVIEW 여기까지.`,
             text2: '',
-            startSeconds: prev[lastIndex]?.endSeconds || 0,
+            startSeconds: prev[lastIndex]?.endSeconds || totalSecondsRef.current,
             endSeconds: prev[lastIndex]?.endSeconds + 10,
             isFirst: false,
           },
