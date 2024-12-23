@@ -408,6 +408,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   const saveRecording = async () => {
     if (chunksRef.current.length === 0) return
     setVideoUploadState('saving')
+
     const blob = new Blob(chunksRef.current, {type: 'video/mp4'})
     const timeString = new Date().toLocaleString('ko-KR',
       { year: 'numeric', month: '2-digit', day: '2-digit', 
@@ -418,9 +419,6 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
     // 파일 이름 정하는 곳 ; 파일 이름을 랜덤이 아닌 그날의 날짜와 시간으로 표기(yyyymmdd_hhmmss)
     const fileName = `raw_innerview_${timeString}.mp4`
     const file = new File([blob], fileName, { type: 'video/mp4' })
-
-    // setVideoFile(file)
-    // setFileName(fileName)
 
     try {
 
@@ -437,6 +435,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
         recorded_seconds: totalSecondsRef.current,
         video_link: ''
       }
+
       const res = await interviewService.createInterview(payload)
       
       setQRCodeLink(res.qr_code_link)
@@ -465,13 +464,13 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
           presignedPutUrl: res.video_link
         })
 
-      setVideoUploadState('uploaded') 
+        setVideoUploadState('uploaded') 
+        console.log('video uploaded')
       // at this point, this component will be unmounted
       }
 
     } catch (error) {
         console.error(error)
-        
         console.log('internet error, save interview in local')
         
         const videoData: VideoData = {

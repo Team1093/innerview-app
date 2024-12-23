@@ -79,6 +79,114 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   return assHeader + assEntries.join('\n');
 }
 
+// 배경 이미지 경로 설정\
+async function createSubtitleFile(subtitleFileName: string, assContent: string): Promise<string> {
+  return new Promise<string>((resolvePath, reject) => {
+    const subtitleWriteStream = createWriteStream(subtitleFileName, {
+      encoding: 'utf-8',
+    });
+    subtitleWriteStream.write(assContent);
+    subtitleWriteStream.end();
+    subtitleWriteStream.on('finish', () => {
+      console.log(`Subtitle file ${subtitleFileName} created successfully.`);
+      resolvePath(subtitleFileName);
+    });
+    subtitleWriteStream.on('error', (err) => {
+      console.error(`Error creating subtitle file ${subtitleFileName}:`, err);
+      reject(err);
+    });
+  });
+}
+
+async function setupFilterGraph(
+  subtitles: subtitleData[],
+  assFilePath: string,
+): Promise<any[]> {
+  try {
+    // 배경 이미지까지 처리 후 기본 자막 및 자막 배경 설정
+    const firstSubtitleTimes = subtitles
+      .filter(sub => sub.isFirst)
+      .map(sub => ({
+        start: sub.startSeconds,
+        end: sub.startSeconds + 5,
+      }));
+
+    // 그 외 자막 배경 이미지 오버레이 시간대 추출
+    const otherSubtitleTimes1 = subtitles
+      .filter(sub => !sub.isFirst)
+      .map(sub => ({
+        start: sub.startSeconds,
+        end: sub.endSeconds,
+      }));
+    const otherSubtitleTimes2 = subtitles
+      .filter(sub => sub.isFirst)
+      .map(sub => ({
+        start: sub.startSeconds + 5,
+        end: sub.endSeconds,
+      }));
+    const otherSubtitleTimes = [...otherSubtitleTimes1, ...otherSubtitleTimes2];
+
+    // FFmpeg 필터 그래프 설정
+    const filterGraph: Array<{
+      filter: string;
+      options: any;
+      inputs: string | string[];
+      outputs: string;
+    }> = [];
+    // isFirst 배경 이미지 오버레이
+
+    firstSubtitleTimes.forEach((time, index) => {
+      filterGraph.push({
+        filter: 'overlay',
+        options: {
+          enable: `between(t,${time.start},${time.end})`,
+          x: '0',
+          y: '0'
+        },
+        inputs: [index === 0 ? 'filteredVideo' : `v_first_${index - 1}`, '1:v'],
+        outputs: `v_first_${index}`
+      });
+    });
+
+    // 그 외 배경 이미지 오버레이
+    otherSubtitleTimes.forEach((time, index) => {
+      const prevStream = firstSubtitleTimes.length > 0 ? `v_first_${firstSubtitleTimes.length - 1}` : 'filteredVideo';
+      filterGraph.push({
+        filter: 'overlay',
+        options: {
+          enable: `between(t,${time.start},${time.end})`,
+          x: '0',
+          y: '0'
+        },
+        inputs: [index === 0 ? prevStream : `v_other_${index - 1}`, '2:v'],
+        outputs: `v_other_${index}`
+      });
+    });
+
+    // ASS 자막 적용 (최종 스트림에 자막을 오버레이하여 최상위에 표시)
+    const finalStream = otherSubtitleTimes.length > 0
+      ? `v_other_${otherSubtitleTimes.length - 1}`
+      : firstSubtitleTimes.length > 0
+        ? `v_first_${firstSubtitleTimes.length - 1}`
+        : 'filteredVideo';
+
+    filterGraph.push({
+      filter: 'ass',
+      options: {
+        filename: assFilePath
+      },
+      inputs: finalStream,
+      outputs: 'v_final_with_subtitles'
+    });
+
+    console.log('Filter graph successfully created.');
+    return filterGraph;
+  } catch (error) {
+    console.error('Error creating filter graph:', error);
+    throw error;
+  }
+}
+
 export async function processVideoFile({
   originalFileBuffer,
   originalFileName,
@@ -147,104 +255,12 @@ export async function processVideoFile({
 
   const assContent = generateASS(subtitles);
 
-  // 배경 이미지 경로 설정
   const subtitleFileName = (process.platform === 'win32') 
   ? `${tempDir}/${localTime}subtitles.ass` 
   : resolve(tempDir, `${localTime}subtitles.ass`);
 
-  const assFilePath = await new Promise<string>((resolvePath, reject) => {
-    const subtitleWriteStream = createWriteStream(subtitleFileName, {
-      encoding: 'utf-8',
-    });
-
-    subtitleWriteStream.write(assContent);
-    subtitleWriteStream.end();
-
-    subtitleWriteStream.on('finish', () => {
-      resolvePath(subtitleFileName);
-    });
-
-    subtitleWriteStream.on('error', (err) => {
-      reject(err);
-    });
-  });
-
-  // 배경 이미지까지 처리 후 기본 자막 및 자막 배경 설정
-  const firstSubtitleTimes = subtitles
-  .filter(sub => sub.isFirst)
-  .map(sub => ({
-    start: sub.startSeconds,
-    end: sub.startSeconds + 5,
-  }));
-
-  // 그 외 자막 배경 이미지 오버레이 시간대 추출
-  const otherSubtitleTimes1 = subtitles
-    .filter(sub => !sub.isFirst)
-    .map(sub => ({
-      start: sub.startSeconds,
-      end: sub.endSeconds,
-    }));
-  const otherSubtitleTimes2 = subtitles
-    .filter(sub => sub.isFirst)
-    .map(sub => ({
-      start: sub.startSeconds+5,
-      end: sub.endSeconds,
-    }));
-  const otherSubtitleTimes = [...otherSubtitleTimes1, ...otherSubtitleTimes2];
-
-  // FFmpeg 필터 그래프 설정
-  const filterGraph: Array<{
-    filter: string;
-    options: any;
-    inputs: string | string[];
-    outputs: string;
-  }> = [];
-  // isFirst 배경 이미지 오버레이
-
-  firstSubtitleTimes.forEach((time, index) => {
-    filterGraph.push({
-      filter: 'overlay',
-      options: {
-        enable: `between(t,${time.start},${time.end})`,
-        x: '0',
-        y: '0'
-      },
-      inputs: [index === 0 ? 'filteredVideo' : `v_first_${index - 1 }`, '1:v'],
-      outputs: `v_first_${index}`
-    });
-  });
-
-  // 그 외 배경 이미지 오버레이
-  otherSubtitleTimes.forEach((time, index) => {
-    const prevStream = firstSubtitleTimes.length > 0 ? `v_first_${firstSubtitleTimes.length - 1}` : 'filteredVideo';
-    filterGraph.push({
-      filter: 'overlay',
-      options: {
-        enable: `between(t,${time.start},${time.end})`,
-        x: '0',
-        y: '0'
-      },
-      inputs: [index === 0 ? prevStream :`v_other_${index - 1}`, '2:v'],
-      outputs: `v_other_${index}`
-    });
-  });
-
-  // ASS 자막 적용 (최종 스트림에 자막을 오버레이하여 최상위에 표시)
-  const finalStream = otherSubtitleTimes.length > 0
-    ? `v_other_${otherSubtitleTimes.length - 1}`
-    : firstSubtitleTimes.length > 0
-      ? `v_first_${firstSubtitleTimes.length - 1}`
-      : 'filteredVideo:v';
-
-  filterGraph.push({
-    filter: 'ass',
-    options: {
-      filename: assFilePath
-    },
-    inputs: finalStream,
-    outputs: 'v_final_with_subtitles'
-  });
-
+  const assFilePath = await createSubtitleFile(subtitleFileName, assContent);
+  const filterGraph = await setupFilterGraph(subtitles, assFilePath);
 
   const commonFilters =[
     [
@@ -355,7 +371,7 @@ export async function processVideoFile({
       .outputOptions([
         '-preset fast',     // 인코딩 속도/품질 균형
         '-movflags +faststart', // MP4 헤더 스트리밍 최적화
-        '-async 1',         // 싱크 문제 해결
+        '-af aresample=async=1',         // 싱크 문제 해결
         '-ac 2',            // 스테레오 오디오
         '-ar 44100',         // 오디오 샘플레이트 44100Hz
         '-map [outputVideo]',// 필터링된 비디오 스트림 매핑
