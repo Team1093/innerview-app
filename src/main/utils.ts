@@ -376,7 +376,9 @@ export async function processVideoFile({
         '-ar 44100',         // 오디오 샘플레이트 44100Hz
         '-map [outputVideo]',// 필터링된 비디오 스트림 매핑
         '-map 0:a',          // 원본 오디오 스트림 매핑
-        '-strict -2'         // FFmpeg 일부 경고 무시
+        '-strict -2',         // FFmpeg 일부 경고 무시
+        '-r 60',                      // 비디오 프레임 속도를 60fps로 고정
+        '-af "aresample=async=1:min_hard_comp=0.140:first_pts=0"', // 140ms 버퍼 추가
       ])
       .on('start', (commandLine) => {
       console.log('FFmpeg command:', commandLine)

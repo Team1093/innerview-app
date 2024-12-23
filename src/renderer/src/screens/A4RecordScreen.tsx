@@ -307,8 +307,8 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   const initializeMedia = async () : Promise<void> => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video:  video ? {deviceId: {  exact: video } } : true,
-        audio: audio ? {deviceId: { exact: audio } } : true,
+        video:  video ? {deviceId: {  exact: video }, frameRate: {ideal:60, max:60} } : true,
+        audio: audio ? {deviceId: { exact: audio }, sampleRate: 44100,  } : true,
       });
       streamRef.current = stream;
       // HTML 비디오 요소에 스트림 연결
