@@ -361,25 +361,21 @@ export async function processVideoFile({
       .input(backgroundFirstPath)
       .input(backgroundOtherPath)
       // .inputOptions('-hwaccel auto') // 하드웨어 가속을 입력 옵션으로 설정 -> 쓰고 싶다면 mac에서 h264_videotoolbox를 쓰고 싶다면 이 옵션을 사용
-
       .complexFilter(finalFilter)
-
       .videoCodec('libx264') // .videoCodec('h264_videotoolbox') 을 고려해봐도 좋음
       .audioCodec('aac') // 오디오 코덱을 aac로 설정
-      
       .output(outputFileName)
       .outputOptions([
-        '-preset fast',     // 인코딩 속도/품질 균형
-        '-movflags +faststart', // MP4 헤더 스트리밍 최적화
-        '-af aresample=async=1',         // 싱크 문제 해결
-        '-ac 2',            // 스테레오 오디오
-        '-ar 44100',         // 오디오 샘플레이트 44100Hz
-        '-map [outputVideo]',// 필터링된 비디오 스트림 매핑
-        '-map 0:a',          // 원본 오디오 스트림 매핑
-        '-strict -2',         // FFmpeg 일부 경고 무시
-        '-r 60',                      // 비디오 프레임 속도를 60fps로 고정
-        '-af "aresample=async=1:min_hard_comp=0.140:first_pts=0"', // 140ms 버퍼 추가
+        '-preset fast',          // 인코딩 속도/품질 균형
+        '-movflags +faststart',  // MP4 헤더 스트리밍 최적화
+        '-af aresample=async=1:min_hard_comp=0.140:first_pts=0', // 오디오 리샘플링
+        '-ar 44100',             // 오디오 샘플레이트
+        '-ac 2',                 // 스테레오 오디오 설정
+        '-strict -2',            // 실험적인 옵션 활성화
+        '-map [outputVideo]',    // 필터링된 비디오 매핑
+        '-map 0:a',              // 오디오 매핑
       ])
+      
       .on('start', (commandLine) => {
       console.log('FFmpeg command:', commandLine)
       })
