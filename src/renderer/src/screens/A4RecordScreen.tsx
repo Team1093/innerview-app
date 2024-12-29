@@ -84,7 +84,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
 
     let calculatedTimeLimit = 30 * 60; // 기본값
 
-    // if (forceQuit) {
+    if (forceQuit) {
       if (topic.peopleType === 2) {
         if (time_milli_seconds > (30 + 3) * 60 * 1000) { // 33분
           calculatedTimeLimit = 30 * 60;
@@ -103,19 +103,19 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
           console.log('setTimeLimit - peopleType 1, time_milli_seconds <= 17분, set to', calculatedTimeLimit);
         }
       }
-    // }
-    // else {
-    //   if (topic.peopleType === 2) {
-    //     calculatedTimeLimit = 30 * 60;
-    //     console.log('setTimeLimit - peopleType 2, forceQuit false, set to 30*60');
-    //   } else if (topic.peopleType === 1) {
-    //     calculatedTimeLimit = 15 * 60;
-    //     console.log('setTimeLimit - peopleType 1, forceQuit false, set to 15*60');
-    //   } else {
-    //     calculatedTimeLimit = 30 * 60;
-    //     console.log('setTimeLimit - unknown peopleType, set to 30*60');
-    //   }
-    // }
+    }
+    else {
+      if (topic.peopleType === 2) {
+        calculatedTimeLimit = 30 * 60;
+        console.log('setTimeLimit - peopleType 2, forceQuit false, set to 30*60');
+      } else if (topic.peopleType === 1) {
+        calculatedTimeLimit = 15 * 60;
+        console.log('setTimeLimit - peopleType 1, forceQuit false, set to 15*60');
+      } else {
+        calculatedTimeLimit = 30 * 60;
+        console.log('setTimeLimit - unknown peopleType, set to 30*60');
+      }
+    }
 
     // 최소 시간 보장 (예: 최소 1분)
     if (calculatedTimeLimit < 60) {
@@ -444,7 +444,8 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
       const videoData: VideoData = {
         videoMode: videoMode,
         subtitles: subtitleData,
-        interview_id: res.id
+        interview_id: res.id,
+        location: settings.location
       }
 
       // setVideoMetadata(videoData)
@@ -476,7 +477,8 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
         const videoData: VideoData = {
           videoMode : videoMode,
           subtitles: subtitlePieces,
-          interview_id: 0
+          interview_id: 0,
+          location: '',
         }
 
         const fileReader = new FileReader()

@@ -82,6 +82,18 @@ export default function App() {
     openOverlayModal()
   }, [])
 
+  useEffect(() => {
+    const handleF5 = (e: KeyboardEvent) => {
+      if (e.key === 'F5') {
+        e.preventDefault()
+        window.location.reload()
+      }
+    }
+    window.addEventListener('keydown', handleF5)
+    return () => {
+      window.removeEventListener('keydown', handleF5)
+    }
+  }, []);
 
   return (
     <div className={styles.app}>

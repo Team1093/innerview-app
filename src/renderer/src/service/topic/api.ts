@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { TopicAndQuestionResponse, Topic, Question } from "./interface";
-import { SCHEMA } from '../../assets/constants';
+// import { SCHEMA } from '../../assets/constants';
 
 export class TopicService {
   private instance: AxiosInstance;
@@ -10,15 +10,15 @@ export class TopicService {
   }
 
   async getTopicAndQuestion() {
-    const res = await this.instance.get(`/topic/${SCHEMA}/all/topicAndQuestion`);
+    const res = await this.instance.get(`/topic/innerview/all/topicAndQuestion`);
     console.log(res.data);
     return res.data as TopicAndQuestionResponse;
   }
 
   async getQuestions(location: string, topicId: number): Promise<Question[]> {
     try {
-      const res = await this.instance.get(`/question/${location}/all/${topicId}`);
-      console.log(res.data);
+      const res = await this.instance.get(`/question/innerview/all/${topicId}`);
+      console.log(res.data, location);
       
       const questions: Question[] = res.data.map((question) => ({
         questionId: question.question_id, // `Question` 인터페이스에 필요한 속성 추가
@@ -42,8 +42,8 @@ export class TopicService {
   
 
   async getTopic(location:string, topicId: number) : Promise<Topic> {
-    const res = await this.instance.get(`/topic/${location}/a/${topicId}`);
-    console.log(res.data);
+    const res = await this.instance.get(`/topic/innerview/a/${topicId}`);
+    console.log(res.data, location);
     const selected_topic : Topic ={
       topicId: res.data.topic_id,
       topic: {

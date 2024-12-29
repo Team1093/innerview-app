@@ -10,4 +10,5 @@ export interface VideoData {
   videoMode: number;
   subtitles: subtitleData[];
   interview_id: number;
+  location: string;
 }

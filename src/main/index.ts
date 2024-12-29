@@ -154,6 +154,7 @@ app.whenReady().then(() => {
       originalFileName: arg.fileName,
       subtitles: arg.videoData.subtitles,
       videoMode: arg.videoData.videoMode,
+      location: arg.videoData.location,
     })
       .then((buffer) => {
         // save to downloads
@@ -221,6 +222,7 @@ app.whenReady().then(() => {
       originalFileName: arg.fileName,
       subtitles: arg.videoData.subtitles,
       videoMode: arg.videoData.videoMode,
+      location: arg.videoData.location,
     })
       .then((buffer) => {
         // save to downloads

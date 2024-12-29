@@ -1,7 +1,7 @@
 const ffmpeg = require('fluent-ffmpeg')
 const path = require('path')
 const isDev = process.env.NODE_ENV === 'development';
-import { createWriteStream, mkdirSync, readFile } from 'fs'//, writeFile unlinkSync
+import { createWriteStream, mkdirSync, readFile, unlinkSync } from 'fs'//, writeFile 
 import { resolve } from 'path'
 import { platform, arch } from 'os'
 import { app, dialog } from 'electron'
@@ -13,6 +13,8 @@ export interface subtitleData {
   text2: string
   isFirst: boolean
 }
+
+
 
 export interface VideoData {
   videoMode: number
@@ -192,11 +194,13 @@ export async function processVideoFile({
   originalFileName,
   subtitles,
   videoMode,
+  location,
 }: {
   originalFileBuffer: Buffer
   originalFileName: string
   subtitles: subtitleData[]
   videoMode?: number
+  location: string
 }): Promise<Buffer> {
   const platformName = `${platform()}-${arch()}`
   const ffmpegPath =
@@ -355,6 +359,25 @@ export async function processVideoFile({
     ]
   ];
   const finalFilter = [...commonFilters[0], ...complexFilter[videoMode ?? 0], ...filterGraph, ...commonFilters[1]]
+  const standardOutputOptions = location === 'innerview' ? [
+    '-preset fast',          // 인코딩 속도/품질 균형
+    '-movflags +faststart',  // MP4 헤더 스트리밍 최적화
+    '-af aresample=async=1:min_hard_comp=0.200:first_pts=0', // 오디오 리샘플링
+    '-ar 44100',             // 오디오 샘플레이트
+    '-ac 2',                 // 스테레오 오디오 설정
+    '-strict -2',            // 실험적인 옵션 활성화
+    '-map [outputVideo]',    // 필터링된 비디오 매핑
+    '-map 0:a',              // 오디오 매핑
+  ] : [
+    '-preset fast',          // 인코딩 속도/품질 균형
+    '-movflags +faststart',  // MP4 헤더 스트리밍 최적화
+    '-af aresample=async=1:min_hard_comp=0.001:first_pts=0', // 오디오 리샘플링
+    '-ar 44100',             // 오디오 샘플레이트
+    '-ac 2',                 // 스테레오 오디오 설정
+    '-strict -2',            // 실험적인 옵션 활성화
+    '-map [outputVideo]',    // 필터링된 비디오 매핑
+    '-map 0:a',              // 오디오 매핑
+  ];
 
   return new Promise<Buffer>((resolve, reject) => {
     ffmpeg(inputFileName)
@@ -365,16 +388,7 @@ export async function processVideoFile({
       .videoCodec('libx264') // .videoCodec('h264_videotoolbox') 을 고려해봐도 좋음
       .audioCodec('aac') // 오디오 코덱을 aac로 설정
       .output(outputFileName)
-      .outputOptions([
-        '-preset fast',          // 인코딩 속도/품질 균형
-        '-movflags +faststart',  // MP4 헤더 스트리밍 최적화
-        '-af aresample=async=1:min_hard_comp=0.140:first_pts=0', // 오디오 리샘플링
-        '-ar 44100',             // 오디오 샘플레이트
-        '-ac 2',                 // 스테레오 오디오 설정
-        '-strict -2',            // 실험적인 옵션 활성화
-        '-map [outputVideo]',    // 필터링된 비디오 매핑
-        '-map 0:a',              // 오디오 매핑
-      ])
+      .outputOptions(standardOutputOptions)
       
       .on('start', (commandLine) => {
       console.log('FFmpeg command:', commandLine)
@@ -396,13 +410,13 @@ export async function processVideoFile({
         dialog.showErrorBox('Read File Error', err.message)
         reject(err)
         } else {
-        // ;[inputFileName, subtitleFileName, outputFileName].forEach((file) => {
-        //   try {
-        //   unlinkSync(file) // 위에 import도 취소해둠
-        //   } catch (err) {
-        //   dialog.showErrorBox('Delete File Error', (err as Error).message)
-        //   }
-        // })
+        [inputFileName, subtitleFileName, outputFileName].forEach((file) => {
+          try {
+          unlinkSync(file) // 위에 import도 취소해둠
+          } catch (err) {
+          dialog.showErrorBox('Delete File Error', (err as Error).message)
+          }
+        })
 
         resolve(data)
         }
