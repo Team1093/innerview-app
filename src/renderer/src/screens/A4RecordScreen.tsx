@@ -146,6 +146,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   const [isCQIworking, setIsCQIworking] = useState<boolean>(false)
   const [isFirst, setIsFirst] = useState<boolean[]>(Array(questions.length).fill(true));
   const [isQuestionPopup, setIsQuestionPopup] = useState<boolean>(false)
+  // const [isPausePopup, setIsPausePopup] = useState<boolean>(false)
 
   // 추가 창 관리하는 변수들 설정
   const [isStartingPopup, setIsStartingPopup] = useState<boolean>(true)
@@ -580,6 +581,43 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
           }
         }
       }
+      else if (event.key === "+") {
+        setTimeLimit(prev => {
+          if (prev === null) return 60; // null이면 기본 1분
+          // 예) 최대 1시간까지 가능하다든지, 추가 제한이 있다면 조건문 삽입
+          return prev + 60;
+        });
+        return;
+      }
+      // - 키를 누르면 timeLimit 1분 감소
+      else if (event.key === "-") {
+        setTimeLimit(prev => {
+          if (prev === null) return null; // null이면 아무 동작 안 함
+          // 최소 60초는 보장
+          const newLimit = prev - 60;
+          return newLimit < 0 ? prev : newLimit;
+        });
+        return;
+      }
+      // else if (event.key.toLowerCase() === "p") {
+      //   // 녹화 중일 때만 일시정지
+      //   if (isRecording) {
+      //     handlePauseRecording();
+      //     setIsRecording(false);
+      //     setIsPausePopup(true);
+      //     console.log("녹화를 p 키로 일시정지했습니다.", isRecording);
+      //     return;
+      //   }
+      //   else if(!isRecording) {
+      //     handleResumeRecording();
+      //     setIsPausePopup(false);
+      //     setIsRecording(true);
+      //     console.log("녹화를 p 키로 재개했습니다.", isRecording);
+      //     return;
+
+      //   }
+      // }
+  
     }
   }, [isRecording, currentQuestionIndex, isFirst, subtitlePieces]);
 
@@ -643,6 +681,20 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
         </div>)
       }
 
+      {/* 일시정지 중 자막 UI */}
+      {/* {isPausePopup &&
+        (<div className={styles.bigContainer}>
+          <div className={styles.container}>
+            <p className={styles.questionIndex}>
+              {currentQuestionIndexRef.current < questions.length ? `${currentQuestionIndexRef.current + 1} / ${questions.length}` : '' }
+            </p>
+            <div className={styles.question}>
+              {lang === 'ko' ? '일시정지되었습니다' : 'Paused'}
+            </div>
+            <div className={styles.timer}>{formattedTime}</div>
+          </div>
+        </div>)
+      } */}
       {/* 시작 화면 */}
       <AnimatePresence>
         {isStartingPopup && (

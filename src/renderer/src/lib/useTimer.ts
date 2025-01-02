@@ -7,12 +7,18 @@ const useTimer = (
 ) => {
   const [seconds, setSeconds] = useState(0); // 경과 시간
   const onEndRef = useRef(onEnd); // 최신 onEnd 콜백 저장
+  const durationRef = useRef(duration);
   const lastTimestamp = useRef<number | null>(null); // 마지막 프레임의 타임스탬프
   const accumulatedTime = useRef(0); // 멈췄을 때까지 누적된 경과 시간
 
   useEffect(() => {
     onEndRef.current = onEnd; // onEnd 업데이트
   }, [onEnd]);
+
+  useEffect(() => {
+    // 매번 props 로 넘어오는 duration을 ref에 동기화해준다.
+    durationRef.current = duration;
+  }, [duration]);
 
   useEffect(() => {
     if (!isRecording) {
@@ -30,7 +36,7 @@ const useTimer = (
         // 초 단위 업데이트
         const newSeconds = Math.floor(accumulatedTime.current / 1000);
         if (newSeconds >= duration) {
-          setSeconds(duration);
+          setSeconds(durationRef.current);
           onEndRef.current();
           return; // 타이머 종료
         }
@@ -50,7 +56,7 @@ const useTimer = (
       // 타이머 정리
       lastTimestamp.current = null;
     };
-  }, [isRecording, duration]);
+  }, [isRecording]);
 
   const remaining = Math.max(duration - seconds, 0);
   const formattedTime = `${Math.floor(remaining / 60)
