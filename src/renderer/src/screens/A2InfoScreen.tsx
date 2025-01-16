@@ -125,7 +125,7 @@ const A2InfoScreen: React.FC<A2InfoScreenProps> = ({ nextScreen, settings, setSe
           setIsAbleToQuit(true);
         } 
         else if(KEYS_SCREEN_NEXT.includes(e.key) || KEYS_SCREEN_BACK.includes(e.key) || KEYS_SCREEN_CONFIRM.includes(e.key)) { 
-          setMessageIndex((messageIndex + 1))
+          setMessageIndex((prev) => (prev + 1))
         }
       }
     }

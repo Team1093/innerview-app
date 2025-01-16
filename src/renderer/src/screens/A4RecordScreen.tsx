@@ -150,7 +150,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   // 추가 창 관리하는 변수들 설정
   const [isStartingPopup, setIsStartingPopup] = useState<boolean>(true)
   const [isHelloPopup, setIsHelloPopup] = useState<boolean>(false)
-  const helloTime = 10;
+  const helloTime = 15;
   const { formattedTime:formattedTimeForHello, } = useTimer(
       isHelloPopup, 
       helloTime,
@@ -174,7 +174,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   // const [isByebyePopup, setIsByebyePopup] = useState<boolean>(false) // 이미 선언됨
   const { formattedTime:formattedTimeForByebye, } = useTimer(
       isByebyePopup, 
-      10, 
+      15, 
       () => {
         setIsByebyePopup(false);
         handleEndRecording();
@@ -851,8 +851,8 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
           <div className={styles.questionPopupContent}>
             <h1>
               {lang === 'ko' ?
-              '인터넷 연결 문제로 인해 영상 업로드에 실패했습니다.\n영상은 안전하게 저장되었으니, 관리자에게 문의해주세요.\n안내문을 확인 후에는 다음 화면으로 넘어가주세요.' 
-              : 'Failed to upload the video due to internet connection issues. \nPlease contact the administrator as the video has been safely stored.\nAfter checking the guide, please proceed to the next screen.'
+              '문제가 발생하여여 영상 업로드에 실패했습니다.\n관리자에게 문의해주세요.\n안내문을 확인 후에는 다음 화면으로 넘어가주세요.' 
+              : 'An error has occurred, and the video upload has failed.\nPlease contact the administrator.\nAfter checking the notice, please proceed to the next screen.'
               }
             </h1>
           </div>
