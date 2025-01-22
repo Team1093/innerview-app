@@ -463,28 +463,16 @@ export async function processVideoFile({
     ...commonFilters[1]
   ]
 
-  const standardOutputOptions =
-    location === 'innerview'
-      ? [
-          '-preset fast', // 인코딩 속도/품질 균형
-          '-movflags +faststart', // MP4 헤더 스트리밍 최적화
-          // '-af aresample=async=1:min_hard_comp=0.200:first_pts=0',
-          '-ar 44100', // 오디오 샘플레이트
-          '-ac 2', // 스테레오 오디오 설정
-          '-strict -2', // 실험적인 옵션 활성화
-          '-map [outputVideo]', // 필터링된 비디오 매핑
-          '-map [processedAudio]' // 필터링된 오디오 매핑
-        ]
-      : [
-          '-preset fast', // 인코딩 속도/품질 균형
-          '-movflags +faststart', // MP4 헤더 스트리밍 최적화
-          // '-af aresample=async=1:min_hard_comp=0.001:first_pts=0',
-          '-ar 44100', // 오디오 샘플레이트
-          '-ac 2', // 스테레오 오디오 설정
-          '-strict -2', // 실험적인 옵션 활성화
-          '-map [outputVideo]', // 필터링된 비디오 매핑
-          '-map [processedAudio]' // 필터링된 오디오 매핑
-        ]
+  const standardOutputOptions = [
+    '-preset fast', // 인코딩 속도/품질 균형
+    '-movflags +faststart', // MP4 헤더 스트리밍 최적화
+    // '-af aresample=async=1:min_hard_comp=0.001:first_pts=0',
+    '-ar 44100', // 오디오 샘플레이트
+    '-ac 2', // 스테레오 오디오 설정
+    '-strict -2', // 실험적인 옵션 활성화
+    '-map [outputVideo]', // 필터링된 비디오 매핑
+    '-map [processedAudio]' // 필터링된 오디오 매핑
+  ]
 
   return new Promise<Buffer>((resolve, reject) => {
     ffmpeg(inputFileName)

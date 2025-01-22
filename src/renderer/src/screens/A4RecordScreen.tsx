@@ -528,7 +528,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
               // 다음 질문이 없을 때
               console.log('질문이 끝났습니다.')
               setIsKeydownActive(false)
-              handlePauseRecording()
+              // handlePauseRecording()
               setIsEndingPopup(true)
               setIsEndingPopupKeydownActive(true)
               setSubtitlePieces((prev) => {
