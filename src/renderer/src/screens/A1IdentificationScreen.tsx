@@ -35,21 +35,21 @@ const A1IdentificationScreen: React.FC<A1IdentificationScreenProps> = ({
 
   const { userService } = useService()
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     userService.checkVerification(settings.location).then((res) => {
-  //       if (res.state) {
-  //         console.log(res)
-  //         setInnerviewUser(res.user)
-  //         setReservationInfo(res.reservation)
-  //         setForceQuit(res.forceQuit)
-  //         nextScreen(2)
-  //       }
-  //     })
-  //   }, 1000)
-  //   return () => {
-  //     clearInterval(interval)
-  //   }
+  useEffect(() => {
+    //   const interval = setInterval(() => {
+    //     userService.checkVerification(settings.location).then((res) => {
+    //       if (res.state) {
+    //         console.log(res)
+    //         setInnerviewUser(res.user)
+    //         setReservationInfo(res.reservation)
+    //         setForceQuit(res.forceQuit)
+    //         nextScreen(2)
+    //       }
+    //     })
+    //   }, 1000)
+    //   return () => {
+    //     clearInterval(interval)
+    //   }
 
     setInnerviewUser({
       id: -1,
