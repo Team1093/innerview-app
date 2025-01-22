@@ -36,37 +36,37 @@ const A1IdentificationScreen: React.FC<A1IdentificationScreenProps> = ({
   const { userService } = useService()
 
   useEffect(() => {
-    // const interval = setInterval(() => {
-    //   userService.checkVerification(settings.location).then((res) => {
-    //     if (res.state) {
-    //       console.log(res)
-    //       setInnerviewUser(res.user)
-    //       setReservationInfo(res.reservation)
-    //       setForceQuit(res.forceQuit)
-    //       nextScreen(2)
-    //     }
-    //   })
-    // }, 1000)
-    // return () => {
-    //   clearInterval(interval)
-    // }
+    const interval = setInterval(() => {
+      userService.checkVerification(settings.location).then((res) => {
+        if (res.state) {
+          console.log(res)
+          setInnerviewUser(res.user)
+          setReservationInfo(res.reservation)
+          setForceQuit(res.forceQuit)
+          nextScreen(2)
+        }
+      })
+    }, 1000)
+    return () => {
+      clearInterval(interval)
+    }
 
-    setInnerviewUser({
-      id: -1,
-      name: '홍길동',
-      phone_number: '010-1234-5678'
-    })
-    setReservationInfo({
-      id: -1,
-      userId: -1,
-      date: '2021-10-10',
-      time_range: '10:00 ~ 11:00',
-      selected_topic_id: 41,
-      start_time: new Date().getTime().toString(),
-      end_time: new Date().getTime().toString()
-    })
-    setForceQuit(false)
-    nextScreen(2)
+    // setInnerviewUser({
+    //   id: -1,
+    //   name: '홍길동',
+    //   phone_number: '010-1234-5678'
+    // })
+    // setReservationInfo({
+    //   id: -1,
+    //   userId: -1,
+    //   date: '2021-10-10',
+    //   time_range: '10:00 ~ 11:00',
+    //   selected_topic_id: 41,
+    //   start_time: new Date().getTime().toString(),
+    //   end_time: new Date().getTime().toString()
+    // })
+    // setForceQuit(false)
+    // nextScreen(2)
   }, [])
 
   return (
