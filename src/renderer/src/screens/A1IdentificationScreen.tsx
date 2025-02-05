@@ -36,38 +36,21 @@ const A1IdentificationScreen: React.FC<A1IdentificationScreenProps> = ({
   const { userService } = useService()
 
   useEffect(() => {
-    // const interval = setInterval(() => {
-    //   userService.checkVerification(settings.location).then((res) => {
-    //     if (res.state) {
-    //       console.log(res)
-    //       setInnerviewUser(res.user)
-    //       setReservationInfo(res.reservation)
-    //       // setForceQuit(res.forceQuit)
-    //       // 모든 유저가 정시에 마치 수 있도록 forceQuit을 true로 설정
-    //       setForceQuit(true)
-    //       nextScreen(2)
-    //     }
-    //   })
-    // }, 1000)
-    // console.log('interval start')
-    // return () => clearInterval(interval)
-
-    setInnerviewUser({
-      id: 1,
-      name: '홍길동',
-      phone_number: '010-1234-5678'
-    })
-    setReservationInfo({
-      id: 1,
-      userId: 1,
-      date: '2025-02-01T00:00:00.000Z',
-      time_range: '2025-02-01T10:00:00.000Z ~ 2025-02-01T11:00:00.000Z',
-      start_time: '2025-02-01T10:00:00.000Z',
-      end_time: '2025-02-01T11:00:00.000Z',
-      selected_topic_id: 41
-    })
-    setForceQuit(false)
-    nextScreen(2)
+    const interval = setInterval(() => {
+      userService.checkVerification(settings.location).then((res) => {
+        if (res.state) {
+          console.log(res)
+          setInnerviewUser(res.user)
+          setReservationInfo(res.reservation)
+          // setForceQuit(res.forceQuit)
+          // 모든 유저가 정시에 마치 수 있도록 forceQuit을 true로 설정
+          setForceQuit(true)
+          nextScreen(2)
+        }
+      })
+    }, 1000)
+    console.log('interval start')
+    return () => clearInterval(interval)
   }, [])
 
   return (
