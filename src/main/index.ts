@@ -7,7 +7,7 @@ import axios from 'axios'
 import { processVideoFile } from './utils'
 import { autoUpdater } from 'electron-updater'
 import Logger from 'electron-log'
-
+import { time } from 'console'
 
 function createWindow(): void {
   // Create the browser window.
@@ -21,11 +21,11 @@ function createWindow(): void {
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      webSecurity: false,  // 로컬 장치 접근 허용
+      webSecurity: false, // 로컬 장치 접근 허용
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       nodeIntegration: true,
-      contextIsolation: false,
+      contextIsolation: false
     }
   })
 
@@ -54,7 +54,7 @@ function createWindow(): void {
 // async function connectToOBS() {
 //     try {
 //         // v5 API는 connect 함수의 인자가 달라졌습니다.
-//         await obs.connect('ws://localhost:4455', 'jxHT3NhxpCCDpGDU'); 
+//         await obs.connect('ws://localhost:4455', 'jxHT3NhxpCCDpGDU');
 //         console.log('OBS WebSocket successfully connected!');
 //     } catch (error) {
 //         console.error('OBS WebSocket failed to  Error:', error);
@@ -136,7 +136,7 @@ app.whenReady().then(() => {
       event.reply('media-access-response')
     })
   } else {
-    console.log('not supported by the os:',process.platform)
+    console.log('not supported by the os:', process.platform)
   }
 
   //save-video 이벤트 핸들러
@@ -154,7 +154,7 @@ app.whenReady().then(() => {
       originalFileName: arg.fileName,
       subtitles: arg.videoData.subtitles,
       videoMode: arg.videoData.videoMode,
-      location: arg.videoData.location,
+      location: arg.videoData.location
     })
       .then((buffer) => {
         // save to downloads
@@ -164,7 +164,7 @@ app.whenReady().then(() => {
         } catch (error) {
           dialog.showErrorBox('Error creating directory:', (error as Error).message)
         }
-        const filePath = path.join(downloadPath, 'processed', (arg.fileName.replace('raw_','')))
+        const filePath = path.join(downloadPath, 'processed', arg.fileName.replace('raw_', ''))
 
         // put file to aws s3 using arg.presignedPutUrl and send server the s3 url
         axios
@@ -192,22 +192,21 @@ app.whenReady().then(() => {
         dialog.showErrorBox('video processing error:', err.message)
       })
 
-    axios
-      .patch(
-        `http://api.innerviewkr.com/interview/${arg.interviewId}`,
-        {
+    setTimeout(() => {
+      axios
+        .patch(`http://api.innerviewkr.com/interview/${arg.interviewId}`, {
           video_link: `${arg.presignedPutUrl.split('?')[0]}`
-        }
-      )
-      .then((res) => {
-        console.log('interview_data update success:', res.data.message)
-      })
-      .catch((err) => {
-        dialog.showErrorBox('interview_data update fail:', err.message)
-      })
-    event.returnValue = 'success'
+        })
+        .then((res) => {
+          console.log('interview_data update success:', res.data.message)
+        })
+        .catch((err) => {
+          dialog.showErrorBox('interview_data update fail:', err.message)
+        })
+      event.returnValue = 'success'
+    }, 90000)
   })
-  
+
   //save-video 이벤트 핸들러
   ipcMain.on('save-video-local', (event, arg) => {
     saveFileToDownloads(arg.fileContent, arg.fileName)
@@ -222,7 +221,7 @@ app.whenReady().then(() => {
       originalFileName: arg.fileName,
       subtitles: arg.videoData.subtitles,
       videoMode: arg.videoData.videoMode,
-      location: arg.videoData.location,
+      location: arg.videoData.location
     })
       .then((buffer) => {
         // save to downloads
@@ -232,7 +231,11 @@ app.whenReady().then(() => {
         } catch (error) {
           dialog.showErrorBox('Error creating directory:', (error as Error).message)
         }
-        const filePath = path.join(downloadPath, 'processed', "local_"+(arg.fileName.replace('raw_','')))
+        const filePath = path.join(
+          downloadPath,
+          'processed',
+          'local_' + arg.fileName.replace('raw_', '')
+        )
         writeFile(filePath, buffer, (err) => {
           if (err) {
             dialog.showErrorBox('file upload fail ; error:', err.message)
@@ -244,7 +247,7 @@ app.whenReady().then(() => {
       .catch((err) => {
         dialog.showErrorBox('video processing error:', err.message)
       })
-      
+
     event.returnValue = 'success'
   })
 
@@ -270,39 +273,38 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 
 //device-settings 저장 프로세스
-const CACHE_PATH =  path.join(app.getPath('userData'), 'device-settings.json'); // 절대 경로로 설정
-
+const CACHE_PATH = path.join(app.getPath('userData'), 'device-settings.json') // 절대 경로로 설정
 
 // 설정 저장
 ipcMain.handle('save-settings', (_, settings) => {
   try {
-    fs.writeFileSync(CACHE_PATH, JSON.stringify(settings, null, 2)); // JSON 파일로 저장
-    console.log('Settings saved:', settings);
+    fs.writeFileSync(CACHE_PATH, JSON.stringify(settings, null, 2)) // JSON 파일로 저장
+    console.log('Settings saved:', settings)
   } catch (error) {
     dialog.showErrorBox('Error saving settings:', (error as Error).message)
   }
-});
+})
 
 // 설정 불러오기
 ipcMain.handle('load-settings', () => {
   try {
     if (fs.existsSync(CACHE_PATH)) {
-      const data = fs.readFileSync(CACHE_PATH, 'utf-8');
-      console.log('Settings loaded:', data);
-      return JSON.parse(data); // JSON 파일 파싱
-    } 
-    else {
-      console.warn('No settings file found, returning default values.');
-      return { audio: null, video: null, location: 'innerview', lang: ''}; // 기본 값
+      const data = fs.readFileSync(CACHE_PATH, 'utf-8')
+      console.log('Settings loaded:', data)
+      return JSON.parse(data) // JSON 파일 파싱
+    } else {
+      console.warn('No settings file found, returning default values.')
+      return { audio: null, video: null, location: 'innerview', lang: '' } // 기본 값
     }
   } catch (error) {
     dialog.showErrorBox('Error loading settings:', (error as Error).message)
-    return { audio: null, video: null, location: 'innerview', lang: ''}; // 오류 시 기본 값 반환
+    return { audio: null, video: null, location: 'innerview', lang: '' } // 오류 시 기본 값 반환
   }
-});
+})
 
 export async function saveFileToDownloads(fileContent: ArrayBuffer, fileName: string) {
-  const downloadPath = (process.platform==='win32') ? `../../innerview-downloads` : app.getPath('downloads')
+  const downloadPath =
+    process.platform === 'win32' ? `../../innerview-downloads` : app.getPath('downloads')
   try {
     mkdirSync(downloadPath, { recursive: true })
   } catch (error) {
@@ -327,7 +329,8 @@ export async function saveFileToDownloads(fileContent: ArrayBuffer, fileName: st
 }
 
 export async function saveMetaDataToDownloads(metaData: any, fileName: string) {
-  const downloadPath = (process.platform==='win32') ? `../../innerview-downloads` : app.getPath('downloads')
+  const downloadPath =
+    process.platform === 'win32' ? `../../innerview-downloads` : app.getPath('downloads')
   try {
     mkdirSync(downloadPath, { recursive: true })
   } catch (error) {

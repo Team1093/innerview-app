@@ -16,69 +16,89 @@ import { useEffect, useState } from 'react'
 import { useService } from '../service/useService'
 import { Topic } from '../service/topic/interface'
 
-import { KEYS_SCREEN_BACK, KEYS_SCREEN_NEXT, KEYS_SCREEN_CONFIRM, langText } from '../assets/constants'
+import {
+  KEYS_SCREEN_BACK,
+  KEYS_SCREEN_NEXT,
+  KEYS_SCREEN_CONFIRM,
+  langText
+} from '../assets/constants'
 
 // 플로우 : 언어 선택 -> 안내 문구 : 헤드셋 쓰라는 문구 (클릭) -> 안내 영상 : 영상 끝나면 바로 카메라 세팅 페이지지
 
 interface A2InfoScreenProps {
   nextScreen: (screenNumber: number) => void
   settings: Settings
-  setSettings : (settings: Settings) => void
+  setSettings: (settings: Settings) => void
   innerviewUser: DBUserData
   reservationInfo: DBReservation
-  forceQuit: boolean;
+  forceQuit: boolean
   setQuestions: (questions: Question[]) => void
-  topic: Topic;
+  topic: Topic
   setTopic: (topic: Topic) => void
 }
 
-const A2InfoScreen: React.FC<A2InfoScreenProps> = ({ nextScreen, settings, setSettings, innerviewUser, reservationInfo, forceQuit, setQuestions, setTopic, topic }) => {
-
-  const [ wannaQuit, setWannaQuit ] = useState(false);
-  const [ isQNTloaded, setIsQNTloaded ] = useState(false);
-  const { topicService } = useService();
+const A2InfoScreen: React.FC<A2InfoScreenProps> = ({
+  nextScreen,
+  settings,
+  setSettings,
+  innerviewUser,
+  reservationInfo,
+  forceQuit,
+  setQuestions,
+  setTopic,
+  topic
+}) => {
+  const [wannaQuit, setWannaQuit] = useState(false)
+  const [isQNTloaded, setIsQNTloaded] = useState(false)
+  const { topicService } = useService()
   const setQuestionsAndTopicData = async () => {
-    const questions = await topicService.getQuestions(settings.location, reservationInfo.selected_topic_id);
+    const questions = await topicService.getQuestions(
+      settings.location,
+      reservationInfo.selected_topic_id
+    )
     setQuestions(questions)
-    const topicData = await topicService.getTopic(settings.location, reservationInfo.selected_topic_id)
-    setTopic(topicData);
-    setIsQNTloaded(true);
-    console.log('questions and topic data loaded', questions, topicData);
+    const topicData = await topicService.getTopic(
+      settings.location,
+      reservationInfo.selected_topic_id
+    )
+    setTopic(topicData)
+    setIsQNTloaded(true)
+    console.log('questions and topic data loaded', questions, topicData)
   }
 
   useEffect(() => {
-    try { 
-      setQuestionsAndTopicData();
+    try {
+      setQuestionsAndTopicData()
     } catch (error) {
-      console.log('Error while fetching questions and topic data', error);
-      throw error;
+      console.log('Error while fetching questions and topic data', error)
+      throw error
     } finally {
-      setIsQNTloaded(true);
+      setIsQNTloaded(true)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    if (wannaQuit && isQNTloaded) nextScreen(3);
-  }, [wannaQuit, isQNTloaded, nextScreen]);
+    if (wannaQuit && isQNTloaded) nextScreen(3)
+  }, [wannaQuit, isQNTloaded, nextScreen])
 
-  const [lang, setLang] = useState('ko');
+  const [lang, setLang] = useState('ko')
   const [messageIndex, setMessageIndex] = useState<number>(0)
   const [videoIndex, setVideoIndex] = useState<boolean>(false)
-  const nextPageInfo : langText[] = [
+  const nextPageInfo: langText[] = [
     {
       ko: '[다음] 버튼을 누르면 다음 화면으로 넘어갑니다.',
-      en: 'Press [Next] key to go to the next page!',
+      en: 'Press [Next] key to go to the next page!'
     },
     {
       ko: '착용하신 후에 [다음]버튼을 눌러주세요.',
-      en: 'Press [Next] key after wearing the headset.',
+      en: 'Press [Next] key after wearing the headset.'
     },
     {
       ko: '',
-      en: '',
-    },
-];
-  const messages:langText[] = [
+      en: ''
+    }
+  ]
+  const messages: langText[] = [
     {
       ko: 'INNERVIEW에 오신 것을 환영합니다!',
       en: 'Welcome to INNERVIEW!'
@@ -89,22 +109,20 @@ const A2InfoScreen: React.FC<A2InfoScreenProps> = ({ nextScreen, settings, setSe
     },
     {
       ko: '[다음] 버튼을 누르시면 안내 영상이 시작됩니다.',
-      en: 'Press any key to start the guide video!',
+      en: 'Press any key to start the guide video!'
     }
   ]
-  
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (KEYS_SCREEN_NEXT.includes(e.key) || KEYS_SCREEN_BACK.includes(e.key)) {
-        if(lang === 'ko') {
+        if (lang === 'ko') {
           setLang('en')
-        } 
-        else if (lang === 'en') {
+        } else if (lang === 'en') {
           setLang('ko')
         }
-      } else if(KEYS_SCREEN_CONFIRM.includes(e.key)) {
-        const new_settings = {...settings, lang: lang}
+      } else if (KEYS_SCREEN_CONFIRM.includes(e.key)) {
+        const new_settings = { ...settings, lang: lang }
         setSettings(new_settings)
         setMessageIndex(1)
         window.removeEventListener('keydown', handleKeyDown)
@@ -120,113 +138,134 @@ const A2InfoScreen: React.FC<A2InfoScreenProps> = ({ nextScreen, settings, setSe
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (messageIndex >= 1) {
-        if(messageIndex === messages.length) {
-          setVideoIndex(true);
-          setIsAbleToQuit(true);
-        } 
-        else if(KEYS_SCREEN_NEXT.includes(e.key) || KEYS_SCREEN_BACK.includes(e.key) || KEYS_SCREEN_CONFIRM.includes(e.key)) { 
-          setMessageIndex((prev) => (prev + 1))
+        if (messageIndex === messages.length) {
+          setVideoIndex(true)
+          setIsAbleToQuit(true)
+        } else if (
+          KEYS_SCREEN_NEXT.includes(e.key) ||
+          KEYS_SCREEN_BACK.includes(e.key) ||
+          KEYS_SCREEN_CONFIRM.includes(e.key)
+        ) {
+          setMessageIndex((prev) => prev + 1)
         }
       }
     }
     window.addEventListener('keydown', handleKeyDown)
 
+    // skip each message after 30 seconds
+    const interval = setInterval(() => {
+      if (messageIndex >= 1) {
+        if (messageIndex === messages.length) {
+          setVideoIndex(true)
+          setIsAbleToQuit(true)
+        } else {
+          setMessageIndex((prev) => prev + 1)
+        }
+      }
+    }, 30000)
 
     return () => {
+      clearInterval(interval)
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [messageIndex])
 
-  const [isAbleToQuit, setIsAbleToQuit] = useState(false);
+  const [isAbleToQuit, setIsAbleToQuit] = useState(false)
   useEffect(() => {
     const handleQDown = (e: KeyboardEvent) => {
-      if(e.key === 'q') {
-      setWannaQuit(true);
-    }}
-    if(isAbleToQuit) {
+      if (e.key === 'q') {
+        setWannaQuit(true)
+      }
+    }
+    if (isAbleToQuit) {
       window.addEventListener('keydown', handleQDown)
     }
     return () => {
       window.removeEventListener('keydown', handleQDown)
     }
-  }, [isAbleToQuit]);
+  }, [isAbleToQuit])
 
-
-  const peopleType = topic.peopleType === 2 ? 'couple' : 'single';
+  const peopleType = topic.peopleType === 2 ? 'couple' : 'single'
   const videoSrc = (lang: string, peopleType: string) => {
-    if(lang === 'ko') {
-      if(peopleType === 'couple') {
+    if (lang === 'ko') {
+      if (peopleType === 'couple') {
         return ko_couple
       } else {
         return ko_single
       }
-    } 
-    else {
-      if(peopleType === 'couple') {
+    } else {
+      if (peopleType === 'couple') {
         return en_couple
       } else {
         return en_single
       }
     }
   }
-  
-  const testMode = true;
 
+  const testMode = true
 
-
-  return (
-    testMode ? (
+  return testMode ? (
     <div className={styles.frame}>
-    <img src={gridBg} className={styles.bgImg}/>
+      <img src={gridBg} className={styles.bgImg} />
       {/* 언어 선택 */}
-      {messageIndex === 0 && 
-      <div className={styles.frame}>
-        <img src={bgImg} className={styles.bgImg}/>
-        <div className={styles.langContainer}>
-          <h1>리모콘의 [이전/다음 버튼]으로 사용하실 언어를 고르고 </h1>
-          <h2>Press [Go Back/Next button] on the remote controller to change your language.</h2>
-          <h1>[확인 버튼]을 눌러 선택해주세요!</h1>
-          <h2>And press [Confirm button] to confirm your language.</h2>
-          <div className={styles.langBoxContainer}>
-            <div className={`${styles.langBox} ${lang === 'ko' ? styles.selected : styles.unSelected}`}>한국어</div>
-            <div className={`${styles.langBox} ${lang === 'en' ? styles.selected : styles.unSelected}`}>English</div>
+      {messageIndex === 0 && (
+        <div className={styles.frame}>
+          <img src={bgImg} className={styles.bgImg} />
+          <div className={styles.langContainer}>
+            <h1>리모콘의 [이전/다음 버튼]으로 사용하실 언어를 고르고 </h1>
+            <h2>Press [Go Back/Next button] on the remote controller to change your language.</h2>
+            <h1>[확인 버튼]을 눌러 선택해주세요!</h1>
+            <h2>And press [Confirm button] to confirm your language.</h2>
+            <div className={styles.langBoxContainer}>
+              <div
+                className={`${styles.langBox} ${lang === 'ko' ? styles.selected : styles.unSelected}`}
+              >
+                한국어
+              </div>
+              <div
+                className={`${styles.langBox} ${lang === 'en' ? styles.selected : styles.unSelected}`}
+              >
+                English
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      }
+      )}
       {/* 환영 인사 및 안내 문구 : 헤드셋 써주세요요 */}
-      {(messageIndex >= 1 && !videoIndex) &&
+      {messageIndex >= 1 && !videoIndex && (
         <div className={styles.messageContainer}>
-          <h1>{messages[messageIndex-1][settings.lang]}</h1>
-          <p>{nextPageInfo[messageIndex-1][settings.lang]}</p>
-        </div>}
+          <h1>{messages[messageIndex - 1][settings.lang]}</h1>
+          <p>{nextPageInfo[messageIndex - 1][settings.lang]}</p>
+        </div>
+      )}
       {/* 안내 영상 */}
-      {videoIndex && 
+      {videoIndex && (
         <video autoPlay preload="auto" className={styles.video} onEnded={() => setWannaQuit(true)}>
-          <source src={videoSrc(lang, peopleType)} type="video/mp4"/>
+          <source src={videoSrc(lang, peopleType)} type="video/mp4" />
         </video>
-      }
+      )}
+    </div>
+  ) : (
+    <div className={styles.userInfoBg}>
+      {/* Add your component JSX here */}
+      <h1>Info Screen</h1>
+      <h2>예약자 정보</h2>
+      <p>예약자 이름: {innerviewUser.name}</p>
+      <p>예약자 전화번호: {innerviewUser.phone_number}</p>
+      <p>예약자 위치 : {settings.location}</p>
+      <h2>예약 정보</h2>
 
-
-    </div>)
-    :
-    (<div className={styles.userInfoBg}>
-          {/* Add your component JSX here */}
-          <h1>Info Screen</h1>
-          <h2>예약자 정보</h2>
-          <p>예약자 이름: {innerviewUser.name}</p>
-          <p>예약자 전화번호: {innerviewUser.phone_number}</p>
-          <p>예약자 위치 : {settings.location}</p>
-          <h2>예약 정보</h2>
-          
-          <p>예약 날짜: {reservationInfo.date}</p>
-          <p>예약 시간: {reservationInfo.time_range}</p>
-          <p>선택한 주제: {reservationInfo.selected_topic_id} {topic ? topic.topic['ko'] : '주제 정보 불러오는 중' }</p>
-          <h2>강제 종료 여부</h2>
-          <p>{forceQuit ? "강제 종료" : "정상 종료"}</p>
-          <button onClick={() => setWannaQuit(true)}>Next</button>
-    </div>)
-  );
+      <p>예약 날짜: {reservationInfo.date}</p>
+      <p>예약 시간: {reservationInfo.time_range}</p>
+      <p>
+        선택한 주제: {reservationInfo.selected_topic_id}{' '}
+        {topic ? topic.topic['ko'] : '주제 정보 불러오는 중'}
+      </p>
+      <h2>강제 종료 여부</h2>
+      <p>{forceQuit ? '강제 종료' : '정상 종료'}</p>
+      <button onClick={() => setWannaQuit(true)}>Next</button>
+    </div>
+  )
 }
 
-export default A2InfoScreen;
+export default A2InfoScreen
