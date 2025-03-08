@@ -21,8 +21,8 @@ const A1IdentificationScreen: React.FC<A1IdentificationScreenProps> = ({
   setReservationInfo,
   setForceQuit
 }) => {
-  // const URL = `https://innerview-client.vercel.app/identification/${settings.location}`
-  const URL = `https://innerview.today/ko/identification`
+  const URL = `https://innerview-client.vercel.app/identification/${settings.location}`
+  // const URL = `https://innerview.today/ko/identification`
   const QRcanvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
