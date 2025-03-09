@@ -1,7 +1,6 @@
 export interface Settings {
-    audio: string
-    video: string
-    location: string
-    lang: string
-  }
-
+  audio: string
+  video: string
+  booth_id: number
+  lang: string
+}

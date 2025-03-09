@@ -3,8 +3,8 @@ import styles from '../styles/A1IdentificationScreen.module.css'
 import { Settings } from '../service/settings/interface'
 import QRcode from 'qrcode'
 import { useEffect, useRef } from 'react'
-import { useService } from '../service/useService'
-import { DBUserData, DBReservation } from '../service/user/interface'
+import { useService } from '@renderer/service/useService'
+import { DBReservation, DBUserData } from '@renderer/service/facility/interface'
 
 interface A1IdentificationScreenProps {
   nextScreen: (screenNumber: number) => void
@@ -21,8 +21,7 @@ const A1IdentificationScreen: React.FC<A1IdentificationScreenProps> = ({
   setReservationInfo,
   setForceQuit
 }) => {
-  const URL = `https://innerview-client.vercel.app/identification/${settings.location}`
-  // const URL = `https://innerview.today/ko/identification`
+  const URL = `https://innerview.today/ko/identification`
   const QRcanvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -34,21 +33,31 @@ const A1IdentificationScreen: React.FC<A1IdentificationScreenProps> = ({
     }
   }, [URL]) // URL이 변경될 때만 실행);
 
-  const { userService } = useService()
+  const { facilityService } = useService()
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      userService.checkVerification(settings.location).then((res) => {
-        if (res.state) {
-          console.log(res)
-          setInnerviewUser(res.user)
-          setReservationInfo(res.reservation)
-          // setForceQuit(res.forceQuit)
-          // 모든 유저가 정시에 마치 수 있도록 forceQuit을 true로 설정
-          setForceQuit(true)
-          nextScreen(2)
-        }
-      })
+    const interval = setInterval(async () => {
+      // userService.checkVerification(settings.location).then((res) => {
+      //   if (res.state) {
+      //     console.log(res)
+      //     setInnerviewUser(res.user)
+      //     setReservationInfo(res.reservation)
+      //     // setForceQuit(res.forceQuit)
+      //     // 모든 유저가 정시에 마치 수 있도록 forceQuit을 true로 설정
+      //     setForceQuit(true)
+      //     nextScreen(2)
+      //   }
+      // })
+
+      const { status } = await facilityService.readBoothStatus(settings.booth_id)
+      if (status == 'running') {
+        const res = await facilityService.getDesktopStartResponse(settings.booth_id)
+        console.log(res)
+        setInnerviewUser(res.user)
+        setReservationInfo(res.reservation)
+        setForceQuit(true)
+        nextScreen(2)
+      }
     }, 1000)
     console.log('interval start')
     return () => clearInterval(interval)

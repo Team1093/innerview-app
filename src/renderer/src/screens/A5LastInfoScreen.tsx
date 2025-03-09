@@ -5,6 +5,7 @@ import underdog_ending from '../assets/videos/ending_guide.mp4'
 import domansa_ending from '../assets/videos/ending_guide_domansa.mp4'
 import seongsu_ending from '../assets/videos/seongsu_video.mp4'
 import { useEffect } from 'react'
+import { useService } from '@renderer/service/useService'
 
 interface A5LastInfoScreenProps {
   nextScreen: (screenNumber: number) => void
@@ -12,11 +13,12 @@ interface A5LastInfoScreenProps {
 }
 
 const A5LastInfoScreen: React.FC<A5LastInfoScreenProps> = ({ nextScreen, settings }) => {
-  const { location } = settings
+  const { facilityService } = useService()
 
   useEffect(() => {
     const handleQDown = (e: KeyboardEvent) => {
       if (e.key === 'q') {
+        facilityService.updateBoothStatus(settings.booth_id, 'idle')
         nextScreen(6)
       }
     }
@@ -32,7 +34,14 @@ const A5LastInfoScreen: React.FC<A5LastInfoScreenProps> = ({ nextScreen, setting
   const videoSrc = domansa_ending
   return (
     <div className={styles.bg}>
-      <video autoPlay className={styles.video} onEnded={() => nextScreen(6)}>
+      <video
+        autoPlay
+        className={styles.video}
+        onEnded={() => {
+          facilityService.updateBoothStatus(settings.booth_id, 'idle')
+          nextScreen(6)
+        }}
+      >
         <source src={videoSrc} type="video/mp4" />
       </video>
     </div>

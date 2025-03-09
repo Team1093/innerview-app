@@ -2,7 +2,6 @@
 import styles from '../styles/A2InfoScreen.module.css'
 
 import { Settings } from '../service/settings/interface'
-import { DBUserData, DBReservation } from '../service/user/interface'
 import { Question } from '../service/topic/interface'
 
 import ko_single from '../assets/videos/start_guide.mp4'
@@ -13,7 +12,6 @@ import bgImg from '../assets/images/LangSelectScreen.jpg'
 import gridBg from '../assets/images/whiteNoiseBg.svg'
 
 import { useEffect, useState } from 'react'
-import { useService } from '../service/useService'
 import { Topic } from '../service/topic/interface'
 
 import {
@@ -22,6 +20,8 @@ import {
   KEYS_SCREEN_CONFIRM,
   langText
 } from '../assets/constants'
+import { useService } from '@renderer/service/useService'
+import { DBReservation, DBUserData } from '@renderer/service/facility/interface'
 
 // 플로우 : 언어 선택 -> 안내 문구 : 헤드셋 쓰라는 문구 (클릭) -> 안내 영상 : 영상 끝나면 바로 카메라 세팅 페이지지
 
@@ -52,15 +52,9 @@ const A2InfoScreen: React.FC<A2InfoScreenProps> = ({
   const [isQNTloaded, setIsQNTloaded] = useState(false)
   const { topicService } = useService()
   const setQuestionsAndTopicData = async () => {
-    const questions = await topicService.getQuestions(
-      settings.location,
-      reservationInfo.selected_topic_id
-    )
+    const questions = await topicService.getQuestions(reservationInfo.selected_topic_id)
     setQuestions(questions)
-    const topicData = await topicService.getTopic(
-      settings.location,
-      reservationInfo.selected_topic_id
-    )
+    const topicData = await topicService.getTopic(reservationInfo.selected_topic_id)
     setTopic(topicData)
     setIsQNTloaded(true)
     console.log('questions and topic data loaded', questions, topicData)
@@ -252,7 +246,7 @@ const A2InfoScreen: React.FC<A2InfoScreenProps> = ({
       <h2>예약자 정보</h2>
       <p>예약자 이름: {innerviewUser.name}</p>
       <p>예약자 전화번호: {innerviewUser.phone_number}</p>
-      <p>예약자 위치 : {settings.location}</p>
+      <p>예약자 위치 : {settings.booth_id}</p>
       <h2>예약 정보</h2>
 
       <p>예약 날짜: {reservationInfo.date}</p>

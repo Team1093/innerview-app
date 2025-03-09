@@ -20,13 +20,13 @@ const popupVariants: Variants = {
 
 import { KEYS_SCREEN_BACK, KEYS_SCREEN_NEXT, KEYS_SCREEN_CONFIRM } from '../assets/constants'
 
-import { subtitleData, VideoData } from '../service/file/interface'
-import { Topic, Question } from '../service/topic/interface'
-import { InterviewCreateDto } from '../service/interview/interface'
-import { useService } from '../service/useService'
-import { Settings } from '../service/settings/interface'
-import { DBReservation } from '../service/user/interface'
 import useTimer from '../lib/useTimer'
+import { Settings } from '@renderer/service/settings/interface'
+import { Question, Topic } from '@renderer/service/topic/interface'
+import { DBReservation } from '@renderer/service/facility/interface'
+import { subtitleData, VideoData } from '@renderer/service/file/interface'
+import { useService } from '@renderer/service/useService'
+import { CreateInterviewDTO } from '@renderer/service/interview/interface'
 
 interface A4RecordScreenProps {
   settings: Settings
@@ -55,7 +55,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
   forceQuit
 }) => {
   const { lang, audio, video } = settings
-  const { interviewService, userService } = useService()
+  const { interviewService } = useService()
 
   const [isRecording, setIsRecording] = useState<boolean>(false)
   const [videoUploadState, setVideoUploadState] = useState<string>('before saving')
@@ -381,7 +381,6 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
         mediaRecorderRef.current.stop()
         setIsRecording(false)
         console.log('녹화가 종료되었습니다.')
-        userService.deleteReservation(settings.location, reservationInfo.id)
       } catch (err) {
         console.error('녹화를 종료할 수 없습니다다:', err)
       }
@@ -437,26 +436,33 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
 
       console.log('자막 마무리 완료 : ', subtitleData)
 
-      const payload: InterviewCreateDto = {
-        selected_language: lang,
-        selected_people_mode: topic.peopleType === 1 ? '1인용' : '2인용',
-        selected_question_type: topic.questionType,
-        selected_subject: lang === 'ko' ? topic.topic.ko : topic.topic.en,
-        selected_color_mode: videoMode,
+      // const payload: InterviewCreateDto = {
+      //   selected_language: lang,
+      //   selected_people_mode: topic.peopleType === 1 ? '1인용' : '2인용',
+      //   selected_question_type: topic.questionType,
+      //   selected_subject: lang === 'ko' ? topic.topic.ko : topic.topic.en,
+      //   selected_color_mode: videoMode,
+      //   recorded_seconds: totalSecondsRef.current,
+      //   video_link: ''
+      // }
+
+      const payload: CreateInterviewDTO = {
+        reservation_id: reservationInfo.id,
+        selected_color_mode: videoMode.toString(),
         recorded_seconds: totalSecondsRef.current,
-        video_link: ''
+        video_status: 'uploading'
       }
 
       const res = await interviewService.createInterview(payload)
 
-      setQRCodeLink(res.qr_code_link)
+      setQRCodeLink(`https://innerview.today/ko/interview/shared/${res.shared_code}`)
       chunksRef.current = []
 
       const videoData: VideoData = {
         videoMode: videoMode,
         subtitles: subtitleData,
-        interview_id: res.id,
-        location: settings.location
+        interview_id: res.interview_id,
+        location: ''
       }
 
       // setVideoMetadata(videoData)
@@ -472,8 +478,8 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
           fileName,
           fileContent,
           videoData,
-          interviewId: res.id,
-          presignedPutUrl: res.video_link
+          interviewId: res.interview_id,
+          presignedPutUrl: res.presigned_put_url
         })
 
         setVideoUploadState('uploaded')
@@ -517,6 +523,17 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
         setIsCQIworking(true)
         return
       } else {
+        // 테스트: b를 누르면 마지막 질문으로 바로 이동
+        if (event.key === 'b') {
+          setSubtitlePieces((prev) => {
+            const lastIndex = prev.length - 1
+            const updatedLast = { ...prev[lastIndex], endSeconds: totalSecondsRef.current }
+            return [...prev.slice(0, lastIndex), updatedLast]
+          })
+          setCurrentQuestionIndex(questions.length - 1)
+          return
+        }
+
         if (KEYS_SCREEN_NEXT.includes(event.key)) {
           if (isRecording) {
             if (currentQuestionIndexRef.current + 1 >= questions.length) {

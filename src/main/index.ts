@@ -175,6 +175,9 @@ app.whenReady().then(() => {
           })
           .then(() => {
             console.log('file upload success!')
+            axios.put(`http://api.innerview.today/interview/video/${arg.interviewId}/status`, {
+              status: 'uploaded'
+            })
           })
           .catch((err) => {
             dialog.showErrorBox('file upload fail:', err.message)
@@ -192,19 +195,19 @@ app.whenReady().then(() => {
         dialog.showErrorBox('video processing error:', err.message)
       })
 
-    setTimeout(() => {
-      axios
-        .patch(`http://api.innerviewkr.com/interview/${arg.interviewId}`, {
-          video_link: `${arg.presignedPutUrl.split('?')[0]}`
-        })
-        .then((res) => {
-          console.log('interview_data update success:', res.data.message)
-        })
-        .catch((err) => {
-          dialog.showErrorBox('interview_data update fail:', err.message)
-        })
-      event.returnValue = 'success'
-    }, 90000)
+    // setTimeout(() => {
+    //   axios
+    //     .patch(`http://api.innerviewkr.com/interview/${arg.interviewId}`, {
+    //       video_link: `${arg.presignedPutUrl.split('?')[0]}`
+    //     })
+    //     .then((res) => {
+    //       console.log('interview_data update success:', res.data.message)
+    //     })
+    //     .catch((err) => {
+    //       dialog.showErrorBox('interview_data update fail:', err.message)
+    //     })
+    //   event.returnValue = 'success'
+    // }, 90000)
   })
 
   //save-video 이벤트 핸들러

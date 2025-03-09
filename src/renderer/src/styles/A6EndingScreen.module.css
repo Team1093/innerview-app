@@ -15,7 +15,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2.6vh; /* 50px */
+    padding: 2.6vh;
+    /* 50px */
     width: 50vw;
 }
 
@@ -31,7 +32,8 @@
 
 
 .section h4 {
-    margin-bottom: 5vh; /* 10px */
+    margin-bottom: 5vh;
+    /* 10px */
     text-align: center;
     font-family: 'Pretendard';
     font-size: 5vh;
@@ -41,7 +43,8 @@
 
 .section p {
     margin-top: 3vh;
-    margin-bottom: 1.04vh; /* 20px */
+    margin-bottom: 1.04vh;
+    /* 20px */
     text-align: center;
     font-family: 'Pretendard';
     font-size: 3.2vh;
@@ -49,9 +52,10 @@
     color: rgb(255, 255, 255);
 }
 
-.section .lastTime{
+.section .lastTime {
     margin-top: 2vh;
-    margin-bottom: 1.04vh; /* 20px */
+    margin-bottom: 1.04vh;
+    /* 20px */
     text-align: center;
     font-family: 'Pretendard';
     font-size: 3.2vh;
@@ -64,11 +68,21 @@
     color: rgb(255, 255, 255);
 }
 
+.qrbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    width: 45vh;
+    height: 45vh;
+}
 
 .qrcode {
     position: relative;
-    width: 110%; /*  */
-    height: 110%; /* 320px */
+    width: 110%;
+    /*  */
+    height: 110%;
+    /* 320px */
     background-color: #F2F2F2;
     padding: 0;
     margin: 0;
@@ -79,13 +93,17 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    width:30vh;
-    height:30vh;
+    width: 30vh;
+    height: 30vh;
 }
 
 .QR {
-    display: block; /* 캔버스를 블록 요소로 설정하여 주변 마진을 없앰 */
-    margin: 0 auto; /* 상하 마진을 0으로 설정하고 좌우 마진을 자동으로 설정하여 가운데 정렬 */
-    padding: 0; /* 패딩을 없앰 */
-    background-color: white; /* 배경색을 흰색으로 설정, 필요에 따라 조정 */
-  }
+    display: block;
+    /* 캔버스를 블록 요소로 설정하여 주변 마진을 없앰 */
+    margin: 0 auto;
+    /* 상하 마진을 0으로 설정하고 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+    padding: 0;
+    /* 패딩을 없앰 */
+    background-color: white;
+    /* 배경색을 흰색으로 설정, 필요에 따라 조정 */
+}
