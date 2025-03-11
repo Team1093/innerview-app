@@ -1,92 +1,92 @@
-import React, { useEffect, useState } from 'react';
-import { useDevice } from '../lib/DeviceContext'; // DeviceContext 사용
+import React, { useEffect, useState } from 'react'
+import { useDevice } from '../lib/DeviceContext' // DeviceContext 사용
 
 interface Device {
-  label: string;
-  deviceId: string;
+  label: string
+  deviceId: string
 }
 
 interface DeviceSelectModalProps {
-  onClose: () => void;
+  onClose: () => void
 }
 
 const DeviceSelectModal: React.FC<DeviceSelectModalProps> = ({ onClose }) => {
-  const [audioDevices, setAudioDevices] = useState<Device[]>([]);
-  const [videoDevices, setVideoDevices] = useState<Device[]>([]);
+  const [audioDevices, setAudioDevices] = useState<Device[]>([])
+  const [videoDevices, setVideoDevices] = useState<Device[]>([])
 
-  const { setSelectedAudio, setSelectedVideo } = useDevice();
+  const { setSelectedAudio, setSelectedVideo } = useDevice()
 
-  const [currentAudio, setCurrentAudio] = useState<string | null>(null);
-  const [currentVideo, setCurrentVideo] = useState<string | null>(null);
+  const [currentAudio, setCurrentAudio] = useState<string | null>(null)
+  const [currentVideo, setCurrentVideo] = useState<string | null>(null)
 
-  const [isLoaded, setIsLoaded] = useState(false); // 설정 로드 여부 추적
+  const [isLoaded, setIsLoaded] = useState(false) // 설정 로드 여부 추적
 
   // 설정과 기기 목록 불러오기
   useEffect(() => {
     const loadSettingsAndDevices = async () => {
       try {
-        const settings = await window.require('electron').ipcRenderer.invoke('load-settings');
-        console.log('Settings loaded:', settings);
+        const settings = await window.require('electron').ipcRenderer.invoke('load-settings')
+        console.log('Settings loaded:', settings)
 
-        setCurrentAudio(settings.audio);
-        setCurrentVideo(settings.video);
+        setCurrentAudio(settings.audio)
+        setCurrentVideo(settings.video)
 
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const audioInputs = devices.filter((d) => d.kind === 'audioinput');
-        const videoInputs = devices.filter((d) => d.kind === 'videoinput');
+        const devices = await navigator.mediaDevices.enumerateDevices()
+        const audioInputs = devices.filter((d) => d.kind === 'audioinput')
+        const videoInputs = devices.filter((d) => d.kind === 'videoinput')
 
-        setAudioDevices(audioInputs);
-        setVideoDevices(videoInputs);
+        setAudioDevices(audioInputs)
+        setVideoDevices(videoInputs)
 
         if (!settings.audio && audioInputs.length > 0) {
-          const initialAudio = audioInputs[0].deviceId;
-          setCurrentAudio(initialAudio);
-          setSelectedAudio(initialAudio); // Context에 저장
+          const initialAudio = audioInputs[0].deviceId
+          setCurrentAudio(initialAudio)
+          setSelectedAudio(initialAudio) // Context에 저장
         }
 
         if (!settings.video && videoInputs.length > 0) {
-          const initialVideo = videoInputs[0].deviceId;
-          setCurrentVideo(initialVideo);
-          setSelectedVideo(initialVideo); // Context에 저장
+          const initialVideo = videoInputs[0].deviceId
+          setCurrentVideo(initialVideo)
+          setSelectedVideo(initialVideo) // Context에 저장
         }
 
-        setIsLoaded(true); // 설정 로드 완료 표시
+        setIsLoaded(true) // 설정 로드 완료 표시
       } catch (error) {
-        console.error('Error loading settings:', error);
+        console.error('Error loading settings:', error)
       }
-    };
+    }
 
-    loadSettingsAndDevices();
-  }, [setSelectedAudio, setSelectedVideo]);
+    loadSettingsAndDevices()
+  }, [setSelectedAudio, setSelectedVideo])
 
   // 설정이 변경될 때만 저장
   useEffect(() => {
     if (isLoaded) {
       const saveSettings = async () => {
         try {
-          console.log('Saving settings:', { audio: currentAudio, video: currentVideo });
+          console.log('Saving settings:', { audio: currentAudio, video: currentVideo })
           await window.require('electron').ipcRenderer.invoke('save-settings', {
             audio: currentAudio,
-            video: currentVideo,
-          });
+            video: currentVideo
+          })
         } catch (error) {
-          console.error('Error saving settings:', error);
+          console.error('Error saving settings:', error)
         }
-      };
+      }
 
-      saveSettings();
+      saveSettings()
     }
-  }, [currentAudio, currentVideo, isLoaded]);
+  }, [currentAudio, currentVideo, isLoaded])
 
   const handleConfirm = () => {
-    if (currentAudio!==null) {
-      setSelectedAudio(currentAudio);
+    if (currentAudio !== null) {
+      setSelectedAudio(currentAudio)
     }
-    if (currentVideo!==null) {
-      setSelectedVideo(currentVideo);
+    if (currentVideo !== null) {
+      setSelectedVideo(currentVideo)
     }
-    onClose(); // 모달 닫기
-  };
+    onClose() // 모달 닫기
+  }
 
   return (
     <div
@@ -96,7 +96,7 @@ const DeviceSelectModal: React.FC<DeviceSelectModalProps> = ({ onClose }) => {
         border: '1px solid black',
         position: 'absolute',
         right: '10px',
-        bottom: '10px',
+        bottom: '10px'
       }}
     >
       <div style={{ display: 'grid', gap: '5px' }}>
@@ -107,10 +107,7 @@ const DeviceSelectModal: React.FC<DeviceSelectModalProps> = ({ onClose }) => {
         </div>
 
         <h3>오디오 입력 장치</h3>
-        <select
-          value={currentAudio || ''}
-          onChange={(e) => setCurrentAudio(e.target.value)}
-        >
+        <select value={currentAudio || ''} onChange={(e) => setCurrentAudio(e.target.value)}>
           <option value="">오디오 기기를 선택하세요</option>
           {audioDevices.map((device) => (
             <option key={device.deviceId} value={device.deviceId}>
@@ -120,10 +117,7 @@ const DeviceSelectModal: React.FC<DeviceSelectModalProps> = ({ onClose }) => {
         </select>
 
         <h3>비디오 입력 장치</h3>
-        <select
-          value={currentVideo || ''}
-          onChange={(e) => setCurrentVideo(e.target.value)}
-        >
+        <select value={currentVideo || ''} onChange={(e) => setCurrentVideo(e.target.value)}>
           <option value="">비디오 장치를 선택하세요</option>
           {videoDevices.map((device) => (
             <option key={device.deviceId} value={device.deviceId}>
@@ -135,7 +129,7 @@ const DeviceSelectModal: React.FC<DeviceSelectModalProps> = ({ onClose }) => {
         </select>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DeviceSelectModal;
+export default DeviceSelectModal

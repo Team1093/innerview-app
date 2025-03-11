@@ -7,7 +7,6 @@ import axios from 'axios'
 import { processVideoFile } from './utils'
 import { autoUpdater } from 'electron-updater'
 import Logger from 'electron-log'
-import { time } from 'console'
 
 function createWindow(): void {
   // Create the browser window.
@@ -175,9 +174,13 @@ app.whenReady().then(() => {
           })
           .then(() => {
             console.log('file upload success!')
-            axios.put(`http://api.innerview.today/interview/video/${arg.interviewId}/status`, {
-              status: 'uploaded'
-            })
+            axios
+              .put(`https://api.innerview.today/v1/interview/video/${arg.interviewId}/status`, {
+                status: 'uploaded'
+              })
+              .then((res) => {
+                console.log('interview video status changed:', res.data)
+              })
           })
           .catch((err) => {
             dialog.showErrorBox('file upload fail:', err.message)
@@ -194,20 +197,6 @@ app.whenReady().then(() => {
       .catch((err) => {
         dialog.showErrorBox('video processing error:', err.message)
       })
-
-    // setTimeout(() => {
-    //   axios
-    //     .patch(`http://api.innerviewkr.com/interview/${arg.interviewId}`, {
-    //       video_link: `${arg.presignedPutUrl.split('?')[0]}`
-    //     })
-    //     .then((res) => {
-    //       console.log('interview_data update success:', res.data.message)
-    //     })
-    //     .catch((err) => {
-    //       dialog.showErrorBox('interview_data update fail:', err.message)
-    //     })
-    //   event.returnValue = 'success'
-    // }, 90000)
   })
 
   //save-video 이벤트 핸들러

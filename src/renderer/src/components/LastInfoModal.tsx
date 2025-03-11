@@ -24,7 +24,7 @@ const LastInfoModal: React.FC<LastInfoModalProps> = ({ lang, closeModal, time_li
           transition={{ duration: 0.4 }}
         >
           <p>이번 INNERVIEW는 여기까지였습니다.</p>,
-          <p>짧다면 짧고 길다면 긴 {time_limit_seconds/60} 분의 시간이</p>
+          <p>짧다면 짧고 길다면 긴 {time_limit_seconds / 60} 분의 시간이</p>
           <p>나 혹은 우리를 되돌아보는 소중한 시간이 되셨길 바랍니다.</p>
         </motion.div>,
         <motion.div
@@ -47,7 +47,7 @@ const LastInfoModal: React.FC<LastInfoModalProps> = ({ lang, closeModal, time_li
           transition={{ duration: 0.4 }}
         >
           <p>This concludes your INNERVIEW.</p>,
-          <p>We hope that this {time_limit_seconds/60} minutes has been a meaningful time</p>
+          <p>We hope that this {time_limit_seconds / 60} minutes has been a meaningful time</p>
           <p>for you to reflect on yourself.</p>
         </motion.div>,
         <motion.div
@@ -71,8 +71,7 @@ const LastInfoModal: React.FC<LastInfoModalProps> = ({ lang, closeModal, time_li
       if (KEYS_SCREEN_NEXT.includes(e.key) || KEYS_SCREEN_CONFIRM.includes(e.key)) {
         if (currentMessageIndex < InfoMessages[lang].length - 1) {
           setCurrentMessageIndex((prev) => prev + 1)
-        } 
-        else {
+        } else {
           closeModal()
         }
       }
@@ -90,8 +89,7 @@ const LastInfoModal: React.FC<LastInfoModalProps> = ({ lang, closeModal, time_li
     const interval = setInterval(() => {
       if (currentMessageIndex < InfoMessages[lang].length - 1) {
         setCurrentMessageIndex((prev) => prev + 1)
-      } 
-      else {
+      } else {
         clearInterval(interval)
         closeModal()
       }

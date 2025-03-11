@@ -1,13 +1,12 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 @font-face {
-    font-family: 'Pretendard';
-    src: url('/fonts/PretendardVariable.woff2') format('woff2');
-    font-weight: 100 900; /* Regular */
-    font-style: normal; /* 일반 텍스트 */
-  }
-
+  font-family: 'Pretendard';
+  src: url('/fonts/PretendardVariable.woff2') format('woff2');
+  font-weight: 100 900; /* Regular */
+  font-style: normal; /* 일반 텍스트 */
+}

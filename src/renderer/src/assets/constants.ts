@@ -2,8 +2,8 @@ export const KEYS_SCREEN_BACK = ['ArrowLeft', 'ArrowUp', 'PageUp']
 export const KEYS_SCREEN_NEXT = ['ArrowRight', 'ArrowDown', 'PageDown']
 export const KEYS_SCREEN_CONFIRM = ['Enter', 'Tab']
 
-export const SCHEMAs :string[] = ['innerview','underdog','heyground']
-export const SCHEMA :string = 'innerview'
+export const SCHEMAs: string[] = ['innerview', 'underdog', 'heyground']
+export const SCHEMA: string = 'innerview'
 
 export interface langText {
   ko: string
