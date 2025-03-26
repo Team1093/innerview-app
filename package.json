@@ -1,10 +1,10 @@
 {
   "name": "innerview-app",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "INNERVIEW Desktop App",
   "main": "./out/main/index.js",
   "author": "INNERVIEW",
-  "homepage": "https://innerview.io",
+  "homepage": "https://innerview.today",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",

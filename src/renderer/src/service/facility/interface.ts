@@ -74,6 +74,7 @@ export interface DBReservation {
   id: number
   userId: number
   date: string
+  duration_minutes: number
   time_range: string
   selected_topic_id: number
   start_time: string

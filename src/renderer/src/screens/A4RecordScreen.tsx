@@ -80,7 +80,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
     let calculatedTimeLimit = 30 * 60 // 기본값
 
     if (forceQuit) {
-      if (topic.peopleType === 2) {
+      if (reservationInfo.duration_minutes === 30) {
         if (time_milli_seconds > (30 + 3) * 60 * 1000) {
           // 33분
           calculatedTimeLimit = 30 * 60
@@ -92,7 +92,7 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
             calculatedTimeLimit
           )
         }
-      } else if (topic.peopleType === 1) {
+      } else if (reservationInfo.duration_minutes === 15) {
         if (time_milli_seconds > (15 + 2) * 60 * 1000) {
           // 17분
           calculatedTimeLimit = 15 * 60
@@ -106,10 +106,10 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
         }
       }
     } else {
-      if (topic.peopleType === 2) {
+      if (reservationInfo.duration_minutes === 30) {
         calculatedTimeLimit = 30 * 60
         console.log('setTimeLimit - peopleType 2, forceQuit false, set to 30*60')
-      } else if (topic.peopleType === 1) {
+      } else if (reservationInfo.duration_minutes === 15) {
         calculatedTimeLimit = 15 * 60
         console.log('setTimeLimit - peopleType 1, forceQuit false, set to 15*60')
       } else {
