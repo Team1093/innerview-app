@@ -47,6 +47,7 @@ export default function App() {
     id: 0,
     userId: 0,
     date: new Date().toISOString().slice(0, 10),
+    duration_minutes: 0,
     time_range: '',
     start_time: '',
     end_time: '',
