@@ -231,14 +231,14 @@ app.whenReady().then(() => {
         )
         writeFile(filePath, buffer, (err) => {
           if (err) {
-            dialog.showErrorBox('file upload fail ; error:', err.message)
+            console.log('file upload fail ; error:', err.message)
           } else {
             console.log('file is successfully saved:', filePath)
           }
         })
       })
       .catch((err) => {
-        dialog.showErrorBox('video processing error:', err.message)
+        console.log('video processing error:', err.message)
       })
 
     event.returnValue = 'success'
@@ -302,9 +302,9 @@ export async function saveFileToDownloads(fileContent: ArrayBuffer, fileName: st
     mkdirSync(downloadPath, { recursive: true })
   } catch (error) {
     if (error instanceof Error) {
-      dialog.showErrorBox('file saving failed:', error.message)
+      console.error('Error creating directory:', error.message)
     } else {
-      dialog.showErrorBox('file saving failed:', 'Unknown error')
+      console.error('Error creating directory:', error)
     }
   }
 
