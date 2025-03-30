@@ -7,6 +7,7 @@ import axios from 'axios'
 import { processVideoFile } from './utils'
 import { autoUpdater } from 'electron-updater'
 import Logger from 'electron-log'
+import { c } from 'vite/dist/node/types.d-aGj9QkWt'
 
 function createWindow(): void {
   // Create the browser window.
@@ -183,19 +184,19 @@ app.whenReady().then(() => {
               })
           })
           .catch((err) => {
-            dialog.showErrorBox('file upload fail:', err.message)
+            console.log('file upload fail:', err)
           })
 
         writeFile(filePath, buffer, (err) => {
           if (err) {
-            dialog.showErrorBox('file upload fail ; error:', err.message)
+            console.log('file upload fail ; error:', err.message)
           } else {
             console.log('file is successfully saved:', filePath)
           }
         })
       })
       .catch((err) => {
-        dialog.showErrorBox('video processing error:', err.message)
+        console.log('video processing error:', err.message)
       })
   })
 
