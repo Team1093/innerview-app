@@ -7,7 +7,9 @@ import axios from 'axios'
 import { processVideoFile } from './utils'
 import { autoUpdater } from 'electron-updater'
 import Logger from 'electron-log'
-import { c } from 'vite/dist/node/types.d-aGj9QkWt'
+
+const API_BASE_URL = 'https://api.innerview.today/v1'
+// const API_BASE_URL = 'http://localhost:8080/v1'
 
 function createWindow(): void {
   // Create the browser window.
@@ -15,8 +17,8 @@ function createWindow(): void {
     width: 1440,
     height: 960,
     show: false,
-    fullscreen: true,
-    fullscreenable: true,
+    // fullscreen: true,
+    // fullscreenable: true,
     title: 'Innerview',
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -176,7 +178,7 @@ app.whenReady().then(() => {
           .then(() => {
             console.log('file upload success!')
             axios
-              .put(`https://api.innerview.today/v1/interview/video/${arg.interviewId}/status`, {
+              .put(`${API_BASE_URL}/interview/video/${arg.interviewId}/status`, {
                 status: 'uploaded'
               })
               .then((res) => {

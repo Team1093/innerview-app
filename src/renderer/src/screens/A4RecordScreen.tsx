@@ -104,6 +104,18 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
             calculatedTimeLimit
           )
         }
+      } else if (reservationInfo.duration_minutes === 45) {
+        if (time_milli_seconds > (45 + 3) * 60 * 1000) {
+          // 17분
+          calculatedTimeLimit = 45 * 60
+          console.log('setTimeLimit - peopleType 3 , time_milli_seconds > 48분, set to 45*60')
+        } else {
+          calculatedTimeLimit = Math.floor(time_milli_seconds / 1000) - 3 * 60
+          console.log(
+            'setTimeLimit - peopleType 3 , time_milli_seconds <= 48분, set to',
+            calculatedTimeLimit
+          )
+        }
       }
     } else {
       if (reservationInfo.duration_minutes === 30) {
@@ -112,6 +124,9 @@ const A4RecordScreen: React.FC<A4RecordScreenProps> = ({
       } else if (reservationInfo.duration_minutes === 15) {
         calculatedTimeLimit = 15 * 60
         console.log('setTimeLimit - peopleType 1, forceQuit false, set to 15*60')
+      } else if (reservationInfo.duration_minutes === 45) {
+        calculatedTimeLimit = 45 * 60
+        console.log('setTimeLimit - peopleType 3 , forceQuit false, set to 45*60')
       } else {
         calculatedTimeLimit = 30 * 60
         console.log('setTimeLimit - unknown peopleType, set to 30*60')

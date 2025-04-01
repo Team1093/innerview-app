@@ -14,6 +14,9 @@ interface A1IdentificationScreenProps {
   setForceQuit: (forceQuit: boolean) => void
 }
 
+const BASE_URL = 'https://innerview.today'
+// const BASE_URL = 'http://localhost:3000'
+
 const A1IdentificationScreen: React.FC<A1IdentificationScreenProps> = ({
   nextScreen,
   settings,
@@ -21,7 +24,7 @@ const A1IdentificationScreen: React.FC<A1IdentificationScreenProps> = ({
   setReservationInfo,
   setForceQuit
 }) => {
-  const URL = `https://innerview.today/ko/identification`
+  const URL = `${BASE_URL}/ko/identification?booth_id=${settings.booth_id}&lang=${settings.lang}`
   const QRcanvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
