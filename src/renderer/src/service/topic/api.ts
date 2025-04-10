@@ -11,19 +11,21 @@ export class TopicService {
   async getQuestions(topicId: number): Promise<Question[]> {
     try {
       const res_ko = await this.instance.get(`/question/topic/${topicId}?lang=ko`)
-      const res_en = await this.instance.get(`/question/topic/${topicId}?lang=en`)
+      // const res_en = await this.instance.get(`/question/topic/${topicId}?lang=en`)
 
       const questions: Question[] = res_ko.data.map((question_ko) => ({
         topicId: topicId,
         questions: {
           ko: question_ko.question_text,
-          en: res_en.data.find((question_en) => question_en.question_id === question_ko.question_id)
-            .question_text
+          // en: res_en.data.find((question_en) => question_en.question_id === question_ko.question_id)
+          //   .question_text,
+          en: "",
         },
         detailedQuestions: {
           ko: question_ko.question_text_detailed,
-          en: res_en.data.find((question_en) => question_en.question_id === question_ko.question_id)
-            .question_text_detailed
+          // en: res_en.data.find((question_en) => question_en.question_id === question_ko.question_id)
+          //   .question_text_detailed
+          en: "",
         }
       }))
 
